@@ -8,8 +8,8 @@ class UserRepository{
     _firebaseAuth=firebaseAuth,
     _firestore=firestore;
 
-  Future <void>signInWithEmail(String email, String password){
-      _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+  Future <void>signInWithEmail(String email, String password) {
+      return _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
   }
   Future<bool>isFirstTIme(String userId)async{
     bool exist;
@@ -29,7 +29,7 @@ class UserRepository{
   return currentUser !=null;
   }
   Future <String>getUser()async{
-    return (await _firebaseAuth.currentUser).uid;
+    return (_firebaseAuth.currentUser).uid;
   }
 
   }
