@@ -47,12 +47,12 @@ bool  get isFormValid=>isEmailValid &&isPasswordValid;
         isSuccess: true,
         isFailure: false);
   }
-  LoginState update({  final bool isEmailValid,
-  final bool isPasswordValid}){
+  LoginState update({   bool isEmailValid,
+   bool isPasswordValid}){
       return copyWith( isEmailValid: isEmailValid,
           isPasswordValid: isPasswordValid,
           isSubmitting: false,
-          isSuccess: true,
+          isSuccess: false,
           isFailure: false);
   }
 

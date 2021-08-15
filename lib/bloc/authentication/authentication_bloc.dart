@@ -13,7 +13,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   AuthenticationBloc({@required UserRepository userRepository}):
         assert(userRepository!=null),
-        this.userRepository=userRepository, super(null);
+        this.userRepository=userRepository, super(Uninitialised());
 
   AuthenticationState get initialState => Uninitialised();
 

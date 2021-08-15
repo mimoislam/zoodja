@@ -1,9 +1,9 @@
-part of 'login_bloc.dart';
+part of 'sign_up_bloc.dart';
 
 
 @immutable
-abstract class LoginEvent extends Equatable {
-  const LoginEvent();
+abstract class SignUpEvent extends Equatable {
+  const SignUpEvent();
 
 
   @override
@@ -11,7 +11,7 @@ abstract class LoginEvent extends Equatable {
 
 }
 
-class EmailChanged extends LoginEvent{
+class EmailChanged extends SignUpEvent{
   final String email;
 
   EmailChanged({@required this.email});
@@ -21,7 +21,7 @@ class EmailChanged extends LoginEvent{
   @override
   String toString()=>'Email Changed {email: $email}';
 }
-class PasswordChanged extends LoginEvent{
+class PasswordChanged extends SignUpEvent{
   final String password;
 
   PasswordChanged({@required this.password});
@@ -32,19 +32,19 @@ class PasswordChanged extends LoginEvent{
   String toString()=>'Password Changed {email: $password}';
 }
 
-class Submitted extends LoginEvent{
+class Submitted extends SignUpEvent{
   final  String email;
   final String password;
 
-    Submitted({this.email, this.password});
+  Submitted({this.email, this.password});
   @override
   List <Object> get props=>[email,password];
 }
-class LoginWithCredentialsPressed extends LoginEvent{
+class SignUpWithCredentialsPressed extends SignUpEvent{
   final String email;
   final String password;
 
-  LoginWithCredentialsPressed({@required this.email,@required this.password});
+  SignUpWithCredentialsPressed({@required this.email,@required this.password});
   @override
   List <Object> get props=>[email,password];
 }
