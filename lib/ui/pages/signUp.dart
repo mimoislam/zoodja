@@ -32,7 +32,7 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: Text('Sign Up',style: TextStyle(fontSize: 36),),
         centerTitle: true,
         backgroundColor: backgroundColor,
         elevation: 0,

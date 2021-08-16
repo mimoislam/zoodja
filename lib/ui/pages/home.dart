@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
+import 'package:zoodja/ui/pages/login.dart';
 import 'package:zoodja/ui/pages/signUp.dart';
 import 'package:zoodja/ui/pages/splash.dart';
 import 'package:zoodja/ui/widgets/tabs.dart';
@@ -41,7 +42,7 @@ class _HomeState extends State<Home> {
                 if (state is Uninitialised){
                   return Splash();
                 }else{
-                  return SignUp(userRepository: _userRepository);
+                  return Login(userRepository: _userRepository);
                 }
             },
           ),

@@ -31,7 +31,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   void initState() {
-    _signUpBloc=SignUpBloc(userRepository: _userRepository);
+    _signUpBloc=BlocProvider.of<SignUpBloc>(context);
+
     _emailController.addListener( _onEmailChanged);
     _passwordController.addListener(onPasswordChanged);
     super.initState();
@@ -51,9 +52,9 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     Size size =MediaQuery.of(context).size;
-    return BlocListener(
+    return BlocListener<SignUpBloc,SignUpState>(
         bloc: _signUpBloc,
-        listener: (BuildContext context,SignUpState state){
+        listener: (BuildContext context,SignUpState state) {
             if(state.isFailure){
               return ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -88,7 +89,7 @@ class _SignUpFormState extends State<SignUpForm> {
               BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
             }
         },
-        child: BlocBuilder(
+        child: BlocBuilder<SignUpBloc,SignUpState>(
           bloc: _signUpBloc,
           builder: (BuildContext context,SignUpState state){
             return SingleChildScrollView(
@@ -167,7 +168,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       padding: EdgeInsets.all(size.height*0.02),
                       child: GestureDetector(
                         onTap: isSignUpButtonEnabled(state)
-                            ?_onFormSubmitted()
+                            ?_onFormSubmitted
                             :null,
                         child: Container(
                           width: size.width*0.7,
