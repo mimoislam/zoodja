@@ -31,7 +31,16 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+<<<<<<< HEAD
 
+=======
+      appBar: AppBar(
+        title: Text('Sign Up',style: TextStyle(fontSize: 36),),
+        centerTitle: true,
+        backgroundColor: backgroundColor,
+        elevation: 0,
+      ),
+>>>>>>> 87ba94ecb173ca7d4b667afe7ae2b79ed8c4cc90
       body: BlocProvider<SignUpBloc>(
         create: (context)=>SignUpBloc(userRepository: _userRepository),
         child: SignUpForm(userRepository: _userRepository,),
