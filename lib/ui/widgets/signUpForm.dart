@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/signup/sign_up_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
@@ -19,7 +20,7 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _emailController=TextEditingController();
   final TextEditingController _passwordController=TextEditingController();
-
+  final TextEditingController _userNameController=TextEditingController();
   SignUpBloc _signUpBloc;
   UserRepository get _userRepository=>widget._userRepository;
 
@@ -94,43 +95,91 @@ class _SignUpFormState extends State<SignUpForm> {
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child:Container(
-                color: backgroundColor,
                 width: size.width,
                 height: size.height,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: Text('Chill',
-                        style: TextStyle(fontSize: size.width*0.2, color: Colors.white,),),
-                    ),
-                    Container(
-                      width: size.width*0.8,
-                      child: Divider(height: size.height*0.05,
-                        color: Colors.white,
+                child: ListView(
 
+                  children: [
+                    SizedBox(height: 20,),
+                    Center(
+                      child: Text('True Love Stories never have endings',textAlign: TextAlign.center,
+                        style: GoogleFonts.openSans(fontSize: size.width*0.07, color: text_color, fontWeight: FontWeight.bold),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: size.width*0.3,
+                            child: Divider(height: size.height*0.05,
+                              color: text_color,
+
+
+                            ),
+                          ),
+                          Container(
+                            width: size.width*0.3,
+                            child: Text('Sign Up',textAlign: TextAlign.center,
+                              style: GoogleFonts.openSans(fontSize: size.width*0.07, color: text_color,fontWeight: FontWeight.w300 ),),
+
+                          ),
+                          Container(
+                            width: size.width*0.3,
+                            child: Divider(height: size.height*0.05,
+                              color: text_color,
+
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.all(size.height*0.02),
-                      child: TextFormField(
-                        controller: _emailController,
-                        autovalidateMode: AutovalidateMode.always,
-                        validator: (_){
-                          return !state.isEmailValid?'Invalid Email':null;
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          labelStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: size.height*0.03
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                        color: text_color2.withOpacity(0.4),
+                        child: TextFormField(
+                          controller: _userNameController,
+
+                          decoration: InputDecoration(
+                            labelText: 'User Name',
+                            labelStyle: GoogleFonts.openSans(
+                                color: text_color2,
+                                fontSize: size.height*0.03
+                            ),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white,width: 1),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white,width: 1),
+                        ),
+                      ),
+
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.all(size.height*0.02),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                        color: text_color2.withOpacity(0.4),
+
+                        child: TextFormField(
+                          controller: _emailController,
+                          autovalidateMode: AutovalidateMode.always,
+                          validator: (_){
+                            return !state.isEmailValid?'Invalid Email':null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            labelStyle: GoogleFonts.openSans(
+                              color: text_color2,
+                              fontSize: size.height*0.03
+                            ),
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
                           ),
                         ),
                       ),
@@ -138,26 +187,29 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     Padding(
                       padding: EdgeInsets.all(size.height*0.02),
-                      child: TextFormField(
-                        controller: _passwordController,
-                        autocorrect: false,
-                        obscureText: true,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                        color: text_color2.withOpacity(0.4),
+                        child: TextFormField(
+                          controller: _passwordController,
+                          autocorrect: false,
+                          obscureText: true,
 
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (_){
-                          return !state.isPasswordValid?'Invalid Password':null;
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          labelStyle: TextStyle(
-                              color: Colors.white,
-                              fontSize: size.height*0.03
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white,width: 1),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white,width: 1),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (_){
+                            return !state.isPasswordValid?'Invalid Password':null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            labelStyle: GoogleFonts.openSans(
+                                color: text_color2,
+                                fontSize: size.height*0.03
+                            ),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
                           ),
                         ),
                       ),
@@ -171,19 +223,19 @@ class _SignUpFormState extends State<SignUpForm> {
                             :null,
                         child: Container(
                           width: size.width*0.7,
-                          height: size.height*0.05,
+                          height: size.height*0.1,
                           decoration: BoxDecoration(
-                            color: isSignUpButtonEnabled(state)?Colors.white:
-                                Colors.grey,
+                            color: isSignUpButtonEnabled(state)?Colors.blue:
+                                Colors.blue,
                             borderRadius: BorderRadius.circular(size.height*0.04),
 
                           ),
                           child: Center(
                             child: Text(
                               "Sign Up",
-                              style: TextStyle(
+                              style: GoogleFonts.openSans(
                                 fontSize: size.height*0.025,
-                                color: Colors.blue,
+                                color: Colors.white,
                               ),
                             ),
                           ),

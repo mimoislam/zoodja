@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     _authenticationBloc=AuthenticationBloc(userRepository: _userRepository);
-    Timer(Duration(milliseconds: 1000), () {
+    Timer(Duration(milliseconds: 4000), () {
       _authenticationBloc.add(AppStarted());
     });
     super.initState();
