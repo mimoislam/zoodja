@@ -44,6 +44,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
     else if(event is Submitting){
       final uid=await _userRepository.getUser();
+
       yield* _mapSubmittedToState(
         gender:event.gender,
         photo:event.photo,
@@ -94,7 +95,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     );
   }
 
-  _mapSubmittedToState(
+  Stream<ProfileState> _mapSubmittedToState(
       {
         File photo,
         String name,
@@ -104,8 +105,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         String interestedIn,
         String gender
       }) async*{
-          yield ProfileState.loading();
+        print("object");
+        yield ProfileState.loading();
           try{
+
             await _userRepository.profileSetup(photo, userId, name, gender, interestedIn, age, location);
             yield ProfileState.success();
           }catch(_){

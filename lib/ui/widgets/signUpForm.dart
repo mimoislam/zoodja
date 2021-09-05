@@ -27,6 +27,7 @@ class _SignUpFormState extends State<SignUpForm> {
   bool  get isPopulated=> _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
 
   bool isSignUpButtonEnabled(SignUpState state){
+
     return isPopulated && !state.isSubmitting;
   }
 
@@ -39,7 +40,6 @@ class _SignUpFormState extends State<SignUpForm> {
     super.initState();
   }
    _onFormSubmitted(){
-    print('okay');
     _signUpBloc.add(
         SignUpWithCredentialsPressed
           (
@@ -88,6 +88,11 @@ class _SignUpFormState extends State<SignUpForm> {
             if (state.isSuccess){
               print('isSuccess');
               BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
+              Navigator.of(context).pop();
+
+            }
+            if (state.isFailure){
+              print('isf');
             }
         },
         child: BlocBuilder<SignUpBloc,SignUpState>(
@@ -197,9 +202,11 @@ class _SignUpFormState extends State<SignUpForm> {
                           obscureText: true,
 
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (_){
-                            return !state.isPasswordValid?'Invalid Password':null;
-                          },
+                            validator: (_) {
+                              return !state.isPasswordValid
+                                  ? "Invalid Password"
+                                  : null;
+                            },
                           decoration: InputDecoration(
                             labelText: 'Password',
                             labelStyle: GoogleFonts.openSans(
@@ -226,7 +233,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           width: size.width*0.7,
                           height: size.height*0.1,
                           decoration: BoxDecoration(
-                            color: isSignUpButtonEnabled(state)?Colors.blue:
+                            color: isSignUpButtonEnabled(state)?Colors.red:
                                 Colors.blue,
                             borderRadius: BorderRadius.circular(size.height*0.04),
 

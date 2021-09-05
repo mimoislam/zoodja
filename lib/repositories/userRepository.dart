@@ -8,20 +8,19 @@ import 'package:firebase_storage/firebase_storage.dart';
 class UserRepository{
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
-  UserRepository({FirebaseAuth firebaseAuth, FirebaseFirestore firestore}):
-    _firebaseAuth=firebaseAuth,
-    _firestore=firestore;
+  UserRepository({FirebaseAuth firebaseAuth, FirebaseFirestore fireStore}):
+       _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+  _firestore = fireStore ?? FirebaseFirestore.instance;
 
   Future <void>signInWithEmail(String email, String password) {
       return _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
   }
-  Future<bool>isFirstTIme(String userId)async{
+  Future<bool>isFirstTime(String userId)async{
     bool exist;
     await FirebaseFirestore.instance.collection('users').doc(userId).get().then((value) =>{exist=value.exists} );
     return exist;
   }
   Future<void>signUpWithEmail(String email, String password)async {
-    print(_firebaseAuth);
     return await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
   }
   Future <void> signout()async

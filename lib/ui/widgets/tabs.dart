@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/ui/constats.dart';
 import 'package:zoodja/ui/pages/matches.dart';
 import 'package:zoodja/ui/pages/messages.dart';
 import 'package:zoodja/ui/pages/search.dart';
 
 class Tabs extends StatelessWidget {
+  final userId;
+
+  const Tabs({this.userId});
 
   @override
   Widget build(BuildContext context) {
     List<Widget> pages=[
-      Search(),
+      Search(        userId: userId,
+      ),
       Matches(),
       Messages()
     ];
@@ -23,7 +29,9 @@ class Tabs extends StatelessWidget {
           centerTitle: true,
           title: Text('Chill',style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold)),
           actions: <Widget>[
-            IconButton(onPressed: (){}, icon: Icon(Icons.exit_to_app))
+            IconButton(onPressed: (){
+              BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+            }, icon: Icon(Icons.exit_to_app))
           ],
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(48),

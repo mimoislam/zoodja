@@ -35,7 +35,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final isSignedIn = await userRepository.isSignedIn();
       if(isSignedIn){
         final uid = await userRepository.getUser();
-        final isFirstTime=await userRepository.isFirstTIme(uid);
+        final isFirstTime=await userRepository.isFirstTime(uid);
         if(!isFirstTime){
           yield AuthenticatedButNoSet(uid);
         }else{
@@ -51,7 +51,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
  }
 
   Stream<AuthenticationState> _mapLoggedInToState() async*{
-    final isFirstTime=await userRepository.isFirstTIme(await userRepository.getUser());
+    final isFirstTime=await userRepository.isFirstTime(await userRepository.getUser());
     if(!isFirstTime){
       yield AuthenticatedButNoSet(await userRepository.getUser());
     }else{

@@ -60,8 +60,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
   Stream<SignUpState> _mapSignUpWithCredentialsPressedToState({String email, String password})async* {
     yield SignUpState.loading();
+    print("object");
     try{
-      await _userRepository.signUpWithEmail(email, password);
+      ( await _userRepository.signUpWithEmail(email, password));
       yield SignUpState.success();
     }
     catch(e){
