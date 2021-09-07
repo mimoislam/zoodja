@@ -31,7 +31,7 @@ class _SearchState extends State<Search> {
 
 getDifference(GeoPoint userLocation)async{
   Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  double location=await Geolocator.distanceBetween(
+  double location= Geolocator.distanceBetween(
       userLocation.latitude, userLocation.longitude, position.latitude, position.longitude
   );
   difference=location.toInt();
