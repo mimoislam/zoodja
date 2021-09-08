@@ -31,6 +31,7 @@ class MatchesRepository{
       _user.age=value["age"];
       _user.photo=value["photourl"];
       _user.gender=value["gender"];
+      _user.location=value["location"];
       _user.interestedIn=value["interestedIn"];
 
     });
@@ -98,8 +99,8 @@ class MatchesRepository{
     doc(currentUserId).
     collection("matchedList").
     doc(selectedUserId).set({
-      "name":selectedUserId,
-      "photourl":selectUserPhotoUrl,
+      "name":currentUserName,
+      "photourl":currentUserPhotoUrl,
     });
 
 

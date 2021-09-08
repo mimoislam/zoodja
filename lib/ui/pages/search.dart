@@ -74,8 +74,8 @@ getDifference(GeoPoint userLocation)async{
       if(state is LoadUserState){
         _user=state.user;
         _currentUser=state.currentUser;
-        getDifference(_user.location);
         if(_user.location==null){
+
           return Center(
             child: Text("No One HERE",
             style: GoogleFonts.openSans(
@@ -86,7 +86,9 @@ getDifference(GeoPoint userLocation)async{
             ),
           );
         }else
-          return profileWidget(
+          getDifference(_user.location);
+
+        return profileWidget(
           padding: size.height*0.035,
             photoHeight: size.height*0.824,
             photo: _user.photo,
