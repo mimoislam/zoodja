@@ -143,7 +143,8 @@ class _MatchesState extends State<Matches> {
                           ),
                         ),);
                     },
-                    child:  profileWidget(
+                    child:
+                    profileWidget(
                       padding: size.height*0.01,
                       photo: user[index]['photourl'],
                       photoWidth: size.width*0.5,
@@ -151,7 +152,7 @@ class _MatchesState extends State<Matches> {
                       clipRadius: size.height*0.01,
                       containerHeight: size.height*0.03 ,
                       containerWidth: size.width*0.5,
-                      child: Text(" "+user[index]['name'],style: GoogleFonts.openSans(color: Colors.white,fontSize: 30),)
+                      child: Text(" "+user[index]['name'],style: GoogleFonts.openSans(color: Colors.white),)
                     ),
                     );
 
@@ -171,7 +172,14 @@ class _MatchesState extends State<Matches> {
               SliverAppBar(
                 backgroundColor: Colors.white,
                 pinned: true,
-                title: Text("People who liked you",style: GoogleFonts.openSans(color: Colors.white),),
+                title:  Text(
+                  "People who liked you",
+                  style: GoogleFonts.openSans(
+                      color: Colors.black,
+                      fontSize: 30.0
+                  ),
+
+                ),
               ),
               StreamBuilder<QuerySnapshot>(
                 stream: state.selectedList,
@@ -198,7 +206,7 @@ class _MatchesState extends State<Matches> {
                                   photoWidth: size.width,
                                   clipRadius: size.height*0.01,
                                   containerWidth: size.width,
-                                  containerHeight: size.height*0.2,
+                                  containerHeight: size.height*0.25,
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
                                     child: Column(
@@ -224,34 +232,35 @@ class _MatchesState extends State<Matches> {
                                                   style: GoogleFonts.openSans(
                                                     color: Colors.white,
                                                   ),),
-                                                SizedBox(
-                                                  height: size.height*0.01,
+
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: size.height*0.01,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.all(size.height*0.02),
+                                                  child: iconWidget(Icons.clear , (){
+                                                    _matchesBloc.add(DeleteUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid));
+                                                    pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
+                                                  }, size.height*0.08, Colors.blue),
+
                                                 ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Padding(
-                                                      padding: EdgeInsets.all(size.height*0.02),
-                                                      child: iconWidget(Icons.clear , (){
-                                                        _matchesBloc.add(DeleteUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid));
-                                                        pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
-                                                      }, size.height*0.08, Colors.blue),
+                                                SizedBox(
+                                                  width: size.width*0.05,
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.all(size.height*0.02),
+                                                  child: iconWidget(FontAwesomeIcons.solidHeart , (){
+                                                    _matchesBloc.add(AcceptUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid,
+                                                        currentUserName: currentUser.name,currentUserPhotoUrl: currentUser.photo,
+                                                        selectedUserName: selectUser.name,selectedUserPhotoUrl: selectUser.photo));
 
-                                                    ),
-                                                    SizedBox(
-                                                      width: size.width*0.05,
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.all(size.height*0.02),
-                                                      child: iconWidget(FontAwesomeIcons.solidHeart , (){
-                                                        _matchesBloc.add(AcceptUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid,
-                                                            currentUserName: currentUser.name,currentUserPhotoUrl: currentUser.photo,
-                                                            selectedUserName: selectUser.name,selectedUserPhotoUrl: selectUser.photo));
+                                                  }, size.height*0.08, Colors.red),
 
-                                                      }, size.height*0.08, Colors.red),
-
-                                                    )
-                                                  ],
                                                 )
                                               ],
                                             )
@@ -266,17 +275,16 @@ class _MatchesState extends State<Matches> {
                             },
                             child: profileWidget(
                               padding: size.height*0.01,
-                              photo: user[index]["photourl"],
-                              photoWidth: size.width*0.05,
+                              photo: user[index].get("photoUrl"),
+                              photoWidth: size.width*0.5,
                               photoHeight: size.height*0.3,
                               clipRadius: size.height*0.01,
                               containerHeight: size.height*0.03,
                               containerWidth: size.height*0.5,
-                              child: Text(" "+user[index]['name'],style: GoogleFonts.openSans(color: Colors.white),)
-
+                              child: Text(" "+user[index].get('name'),style: GoogleFonts.openSans(color: Colors.white),)
                             ),
                           );
-                        }
+                        },childCount: user.length
                     ),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,

@@ -56,7 +56,7 @@ class SearchRepository {
 
     await _firestore.collection('users').doc(userId).get().then((user) {
       currentUser.name = user['name'];
-      currentUser.photo = user['photoUrl'];
+      currentUser.photo = user['photourl'];
       currentUser.gender = user['gender'];
       currentUser.interestedIn = user['interestedIn'];
     });
@@ -79,21 +79,39 @@ class SearchRepository {
     });
     return chosenList;
   }
+  Future<List> getMatchedList(userId) async {
+    List<String> chosenList = [];
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('matchedList')
+        .get()
+        .then((docs) {
+      for (var doc in docs.docs) {
+        if (docs.docs != null) {
+          chosenList.add(doc.id);
+        }
+      }
+    });
+    return chosenList;
+  }
 
   Future<User> getUser(userId) async {
     User _user = User();
     List<String> chosenList = await getChosenList(userId);
+    List<String> matchedList = await getMatchedList(userId);
     User currentUser = await getUserInterests(userId);
 
     await _firestore.collection('users').get().then((users) {
       for (var user in users.docs) {
         if ((!chosenList.contains(user.id)) &&
+            (!matchedList.contains(user.id)) &&
             (user.id != userId) &&
             (currentUser.interestedIn == user['gender']) &&
             (user['interestedIn'] == currentUser.gender)) {
           _user.uid = user.id;
           _user.name = user['name'];
-          _user.photo = user['photoUrl'];
+          _user.photo = user['photourl'];
           _user.age = user['age'];
           _user.location = user['location'];
           _user.gender = user['gender'];

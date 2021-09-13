@@ -31,13 +31,16 @@ class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
       yield* _mapOpenChatToState(currentUserId:event.currentUser,selectedUserId:event.selectedUser);
     }
     if(event is AcceptUserEvent){
+      print("object");
+      print(event.currentUser);
+
       yield* _mapAcceptUserToState(
           currentUserId:event.currentUser,
           selectedUserId:event.selectedUser,
           currentUserName:event.currentUserName,
-        currentUserPhotoUrl:event.currentUserPhotoUrl,
-        selectedUserName:event.selectedUserName,
-        selectedUserPhotoUrl:event.selectedUserPhotoUrl,
+          currentUserPhotoUrl:event.currentUserPhotoUrl,
+          selectedUserName:event.selectedUserName,
+          selectedUserPhotoUrl:event.selectedUserPhotoUrl,
       );
     }
 
@@ -65,7 +68,8 @@ class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
 
   }
 
-  _mapAcceptUserToState({String currentUserId, String selectedUserId, String currentUserName, String currentUserPhotoUrl, String selectedUserName, String selectedUserPhotoUrl}) async*{
+  _mapAcceptUserToState({String currentUserId, String selectedUserId, String currentUserName, String currentUserPhotoUrl, String selectedUserName, String selectedUserPhotoUrl})
+  async{
     await _matchesRepository.selectUser(selectedUserId: selectedUserId,
         currentUserId: currentUserId,
         currentUserName: currentUserName,

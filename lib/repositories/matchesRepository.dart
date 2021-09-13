@@ -91,14 +91,14 @@ class MatchesRepository{
     doc(currentUserId).
     collection("matchedList").
     doc(selectedUserId).set({
-      "name":selectedUserId,
+      "name":selectUserName,
       "photourl":selectUserPhotoUrl,
     });
     return await _firestore.
     collection("users").
-    doc(currentUserId).
+    doc(selectedUserId).
     collection("matchedList").
-    doc(selectedUserId).set({
+    doc(currentUserId).set({
       "name":currentUserName,
       "photourl":currentUserPhotoUrl,
     });
