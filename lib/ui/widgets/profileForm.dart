@@ -121,7 +121,7 @@ class _ProfileFormState extends State<ProfileForm> {
                     backgroundColor: Colors.transparent,
                     child: photo==null ?GestureDetector(
                       onTap: ()async{
-                        FilePickerResult result = await FilePicker.platform.pickFiles();
+                        FilePickerResult result = await FilePicker.platform.pickFiles(type: FileType.image);
 
                         if(result != null) {
                           setState(() {

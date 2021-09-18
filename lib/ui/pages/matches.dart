@@ -72,7 +72,7 @@ class _MatchesState extends State<Matches> {
 
                   if(!snapshot.hasData)
                     return SliverToBoxAdapter(
-                      child: Container(),
+                      child: Container(height: size.height*0.2,),
                     );
                   if((snapshot.data.docs!=null)&&(snapshot.data.docs.length!=0)){
                     final user=snapshot.data.docs;
@@ -164,7 +164,7 @@ class _MatchesState extends State<Matches> {
                   }
                   else{
                     return SliverToBoxAdapter(
-                      child: Container()
+                      child: Container(height: size.height*0.2)
                     );
                   }
               },
@@ -245,8 +245,8 @@ class _MatchesState extends State<Matches> {
                                                   padding: EdgeInsets.all(size.height*0.02),
                                                   child: iconWidget(Icons.clear , (){
                                                     _matchesBloc.add(DeleteUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid));
-                                                    pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
-                                                  }, size.height*0.08, Colors.blue),
+                                                    Navigator.of(context).pop();
+                                                    }, size.height*0.08, Colors.blue),
 
                                                 ),
                                                 SizedBox(
@@ -258,6 +258,9 @@ class _MatchesState extends State<Matches> {
                                                     _matchesBloc.add(AcceptUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid,
                                                         currentUserName: currentUser.name,currentUserPhotoUrl: currentUser.photo,
                                                         selectedUserName: selectUser.name,selectedUserPhotoUrl: selectUser.photo));
+                                                    Navigator.of(context).pop();
+
+                                                    pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
 
                                                   }, size.height*0.08, Colors.red),
 
