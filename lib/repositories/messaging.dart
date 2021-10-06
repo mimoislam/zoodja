@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zoodja/models/message.dart';
+import 'package:http/http.dart' as http;
+import 'package:zoodja/ui/constats.dart';
+
 
 class MessagingRepository{
   final FirebaseStorage _firebaseStorage;
@@ -46,6 +51,7 @@ class MessagingRepository{
             "text":null,
             "photoUrl":value,
             "timestamp":DateTime.now(),
+            "viewed":false,
           });
         });
       });
@@ -72,6 +78,7 @@ class MessagingRepository{
         "text":message.text,
         "photoUrl":null,
         "timestamp":DateTime.now(),
+        "viewed":false,
       });
       senderRef.doc(messageRef.id).set({
         "timestamp":DateTime.now(),
@@ -86,6 +93,38 @@ class MessagingRepository{
      await  _firestore.collection("users").doc(message.selectedUserId).collection("chats").doc(message.senderId).update({
         "timestamp":DateTime.now(),
       });
+    }
+    String token;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(message.selectedUserId)
+        .get().then((value) {
+
+      token=value["tokens"];
+
+    });
+
+    await sendPushMessage(token);
+
+  }
+
+  Future<void> sendPushMessage(token) async {
+    if (token == null) {
+      print('Unable to send FCM message, no token exists.');
+      return;
+    }
+
+    try {
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':"key=AAAAzsv-U_o:APA91bHzogfxjbR4gS_5TvlIAqWnupWfRamYjKWshe3zEkheaVWjZdP9jJO1s4mn7Qj-xDpfSxQDQ7q3O7ShJJtKpbKAO4jPA-0jjeF3tHo3_eq1yIL27OCn9ssMhXZ4UrC0zMBA3aLa"
+        },
+        body: constructForMessage(token),
+      );
+    } catch (e) {
+      print(e);
     }
   }
   Stream<QuerySnapshot>getMessages({currentUserId,selectedUserId}){

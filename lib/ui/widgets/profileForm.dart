@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/login/login_bloc.dart';
 import 'package:zoodja/bloc/profile/profile_bloc.dart';
@@ -26,6 +27,7 @@ class ProfileForm extends StatefulWidget {
 
 class _ProfileFormState extends State<ProfileForm> {
   final TextEditingController _nameController=TextEditingController();
+  final TextEditingController _ageController=TextEditingController();
   UserRepository get _userRepository=>widget._userRepository;
 
 
@@ -111,68 +113,108 @@ class _ProfileFormState extends State<ProfileForm> {
           scrollDirection: Axis.vertical,
           child:  Container(
           width:  size.width,
+
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: size.width,
-                  child: CircleAvatar(
-                    radius: size.width*0.3,
-                    backgroundColor: Colors.transparent,
-                    child: photo==null ?GestureDetector(
-                      onTap: ()async{
-                        FilePickerResult result = await FilePicker.platform.pickFiles(type: FileType.image);
+                GestureDetector(
+                  onTap: (){
+                    BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
 
-                        if(result != null) {
-                          setState(() {
-                            photo = File(result.files.single.path);
-                          });
-                        } else {
-                          // User canceled the picker
-                        }
-                      },
-                      child:  Image.asset("assets/default.jpg"),
-                    ):GestureDetector(
-                      onTap: () async{
-                        FilePickerResult result = await FilePicker.platform.pickFiles();
+                    // Navigator.pop(context);
+                  },
+                  child: Icon(Icons.clear,color: Colors.black,),
+                ),
+                ClipRRect(
+                 borderRadius: BorderRadius.circular(size.height*0.1),
+                  child: Container(
+                    width: size.width,
+                    child: CircleAvatar(
+                      radius: size.width*0.3,
+                      backgroundColor: Colors.transparent,
+                      child: photo==null ?GestureDetector(
+                        onTap: ()async{
+                          FilePickerResult result = await FilePicker.platform.pickFiles(type: FileType.image);
 
-                        if(result != null) {
-                          setState(() {
-                            photo = File(result.files.single.path);
-                          });                        } else {
-                          // User canceled the picker
-                        }
-                      },
-                      child:  CircleAvatar(
-                        radius:  size.width*0.3,backgroundImage: FileImage(photo),
+                          if(result != null) {
+                            setState(() {
+                              photo = File(result.files.single.path);
+                            });
+                          } else {
+                            // User canceled the picker
+                          }
+                        },
+                        child:  ClipRRect(
+                            borderRadius: BorderRadius.circular(200),child: Image.asset("assets/default.jpg",height: 200,)),
+                      ):GestureDetector(
+                        onTap: () async{
+                          FilePickerResult result = await FilePicker.platform.pickFiles();
+
+                          if(result != null) {
+                            setState(() {
+                              photo = File(result.files.single.path);
+                            });                        } else {
+                            // User canceled the picker
+                          }
+                        },
+                        child:  CircleAvatar(
+                          radius:  size.width*0.3,backgroundImage: FileImage(photo),
+                        ),
+
                       ),
-
                     ),
                   ),
                 ),
-                textFieldWidget(_nameController, "Name", size),
-                GestureDetector(
-                  onTap: (){
-                    DatePicker.showDatePicker(context,showTitleActions: true,
-                        minTime: DateTime(1900,1,1),maxTime: DateTime(DateTime.now().year-19,1,1),
-                      onConfirm: (time) {
-                        setState(() {
-                          age=time;
-                        });
-                        print(age);
-                      },
-                    );
-                    },
-                  child: Text("Enter Birthday",style: TextStyle(color: Colors.black,fontSize: size.width*0.09),),
+                textFieldWidget(_nameController, "User Name", size),
+
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text("Birthday",style: TextStyle(color: Colors.black,fontSize: 20),),
                 ),
-                Text(age.toString()),
+                GestureDetector(
+                    onTap: (){
+                      DatePicker.showDatePicker(context,showTitleActions: true,
+                        minTime: DateTime(1900,1,1),maxTime: DateTime(DateTime.now().year-19,1,1),
+                        onConfirm: (time) {
+                          setState(() {
+                            age=time;
+                            _ageController.text=age.year.toString()+"/"+age.month.toString()+"/"+age.day.toString();
+                          });
+
+                          print(age);
+                        },
+                      );
+                    },
+                    child:  Padding(
+                      padding: EdgeInsets.all(size.height*0.02),
+                      child:  Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                        color: text_color2.withOpacity(0.4),
+                        child: TextField(
+                          enabled: false,
+                          controller: _ageController,
+                          decoration: InputDecoration(
+
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                          ),
+
+                        ),
+                      ),
+                    )
+                ),
+
+
                 SizedBox(height: 10,),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
-                      child: Text("You are " ,style:TextStyle(color: Colors.black,fontSize: size.width*0.09)),
+                      padding: EdgeInsets.symmetric(horizontal:10),
+                      child: Text("Gender" ,style:TextStyle(color: Colors.black,fontSize: size.width*0.09)),
                     ),
                     Row(
                       mainAxisAlignment:  MainAxisAlignment.spaceAround,
@@ -192,25 +234,27 @@ class _ProfileFormState extends State<ProfileForm> {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: size.height*0.02),
+                  padding: EdgeInsets.symmetric(vertical: 10),
                   child: GestureDetector(
                     onTap: (){
                       if(isButtonEnabled(state)){
                         _onSubmitted();
                       }
                     },
-                    child: Container(
-                      width: size.width*0.8,
-                      height: size.height*0.06,
-                      decoration: BoxDecoration(
-                        color: isButtonEnabled(state)?Colors.white:Colors.grey,
-                        borderRadius: BorderRadius.circular(size.height*0.05)
-                      ),
-                      child: Center(
-                        child: Text("Save",style: TextStyle(
-                          fontSize: size.height*0.025,
-                          color: Colors.blue,
-                        ),),
+                    child: Center(
+                      child: Container(
+                        width: size.width*0.8,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: isButtonEnabled(state)?Color(0xff3B5998):Colors.grey,
+                          borderRadius: BorderRadius.circular(size.height*0.05)
+                        ),
+                        child: Center(
+                          child: Text("Get Started",style: TextStyle(
+                            fontSize: 20,
+                            color: isButtonEnabled(state)?Colors.black:Colors.white,
+                          ),),
+                        ),
                       ),
                     ),
                   ),
@@ -234,18 +278,25 @@ class _ProfileFormState extends State<ProfileForm> {
 Widget textFieldWidget(controller,text,size){
   return Padding(
       padding: EdgeInsets.all(size.height*0.02),
-      child:  TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: text,
-          labelStyle: TextStyle(color: Colors.white,fontSize: size.height*0.03),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white,width: 1),
+      child:  Container(
+        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+        color: text_color2.withOpacity(0.4),
+        child: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: text,
+            labelStyle: GoogleFonts.openSans(
+                color: text_color2,
+                fontSize: size.height*0.03
+            ),
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
           ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white,width: 1),
-          ),
-        ),
-                      ),
+
+                        ),
+      ),
   );
 }

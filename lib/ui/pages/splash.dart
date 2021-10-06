@@ -19,12 +19,13 @@ class Splash extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                       colors: [
-                        const Color(0xffF77931),
+                        const Color(0xffF77931).withOpacity(0.8),
+                        const Color(0xFFF84268).withOpacity(0.8),
                         const Color(0xFFF84268),
                       ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                      stops: [0.0, 1.0],
+                      stops: [0.0, 0.6,1.0],
                       ),
                 ),
 
@@ -42,7 +43,7 @@ class Splash extends StatelessWidget {
                     width: size.width,
                     child: Center(
                       child: Text(
-                              'ZOODJA',
+                              'ZOOIDJA',
                               style: GoogleFonts.poppins(color: Colors.white,fontSize: size.width*0.15),
                       ),
                     ),

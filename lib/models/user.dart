@@ -7,6 +7,7 @@ class User{
   String interestedIn;
   String photo;
   Timestamp age;
+  int filter;
   GeoPoint location ;
   User(
       {this.uid,
@@ -15,5 +16,5 @@ class User{
       this.interestedIn,
       this.photo,
       this.age,
-      this.location});
+      this.location,this.filter});
 }

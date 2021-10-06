@@ -46,7 +46,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       }
     }catch(e){
       yield UnAuthenticated();
-
     }
  }
 

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:zoodja/models/user.dart';
 
 class SearchRepository {
@@ -59,6 +60,7 @@ class SearchRepository {
       currentUser.photo = user['photourl'];
       currentUser.gender = user['gender'];
       currentUser.interestedIn = user['interestedIn'];
+      currentUser.filter = user['filter'];
     });
     return currentUser;
   }
@@ -95,20 +97,27 @@ class SearchRepository {
     });
     return chosenList;
   }
+  getDifference(GeoPoint userLocation)async{
+    Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    double location= Geolocator.distanceBetween(
+        userLocation.latitude, userLocation.longitude, position.latitude, position.longitude
+    );
+    return location.toInt();
 
+  }
   Future<User> getUser(userId) async {
     User _user = User();
     List<String> chosenList = await getChosenList(userId);
     List<String> matchedList = await getMatchedList(userId);
     User currentUser = await getUserInterests(userId);
-
-    await _firestore.collection('users').get().then((users) {
+    await _firestore.collection('users').get().then((users) async{
       for (var user in users.docs) {
+        int dif=await getDifference(user['location']);
         if ((!chosenList.contains(user.id)) &&
             (!matchedList.contains(user.id)) &&
             (user.id != userId) &&
             (currentUser.interestedIn == user['gender']) &&
-            (user['interestedIn'] == currentUser.gender)) {
+            (user['interestedIn'] == currentUser.gender)&&(currentUser.filter.toInt()>=dif)) {
           _user.uid = user.id;
           _user.name = user['name'];
           _user.photo = user['photourl'];

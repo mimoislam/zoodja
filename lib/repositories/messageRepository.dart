@@ -57,6 +57,8 @@ class MessageRepository{
        _message.text = message['text'];
        _message.photoUrl = message['photoUrl'];
        _message.timestamp = message['timestamp'];
+       _message.viewed = message['viewed'];
+       _message.selectedUserId = message['senderId'];
        });
    });
   return _message;

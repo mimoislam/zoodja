@@ -27,7 +27,7 @@ class _MessageWidgetState extends State<MessageWidget> {
     print(_message);
     return _message;
   }
-
+bool show=false;
   @override
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;
@@ -48,43 +48,57 @@ class _MessageWidgetState extends State<MessageWidget> {
                 crossAxisAlignment: WrapCrossAlignment.start,
                 direction: Axis.horizontal,
                 children: [
-                  _message.senderId==widget.currentUserId?Padding(
-                    padding: EdgeInsets.symmetric(vertical: size.height*0.01),
-                    child:Text(timeAgo.format(_message.timestamp.toDate()),style: GoogleFonts.openSans(),) ,
-                  ):Container(),
-                  Padding(
-                    padding: EdgeInsets.all(size.height*0.01),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: size.width*0.7,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: _message.senderId==widget.currentUserId?backgroundColor:Colors.grey[200],
-                          borderRadius: _message.senderId==widget.currentUserId?BorderRadius.only(
-                            topLeft: Radius.circular(size.height*0.02),
-                            topRight: Radius.circular(size.height*0.02),
-                            bottomLeft: Radius.circular(size.height*0.02),
-                          ):
-                          BorderRadius.only(
-                            topLeft: Radius.circular(size.height*0.02),
-                            topRight: Radius.circular(size.height*0.02),
-                            bottomRight : Radius.circular(size.height*0.02),
-                          )
-                        ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: _message.senderId==widget.currentUserId?CrossAxisAlignment.end:CrossAxisAlignment.start,
+                    children: [
+                      Padding(
                         padding: EdgeInsets.all(size.height*0.01),
-                        child: Text(_message.text,style: GoogleFonts.openSans(color:
-                        _message.senderId==widget.currentUserId?Colors.white
-                            :Colors.black),),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: size.width*0.7,
+                          ),
+                          child: GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                show=!show;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: _message.senderId==widget.currentUserId?Color(0xffFE3C72):Color(0xffE6DEEF),
+                                borderRadius: _message.senderId==widget.currentUserId?BorderRadius.only(
+                                  topLeft: Radius.circular(size.height*0.02),
+                                  bottomRight: Radius.circular(size.height*0.02),
+                                  bottomLeft: Radius.circular(size.height*0.02),
+                                ):
+                                BorderRadius.only(
+                                  bottomLeft: Radius.circular(size.height*0.02),
+                                  topRight: Radius.circular(size.height*0.02),
+                                  bottomRight : Radius.circular(size.height*0.02),
+                                )
+                              ),
+                              padding: EdgeInsets.all(size.height*0.015),
+                              child: Text(_message.text,style: GoogleFonts.openSans(color:
+                              _message.senderId==widget.currentUserId?Colors.white
+                                  :Color(0xff18516E)),),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      _message.senderId==widget.currentUserId?
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                          height: show==true?20:0,
+                          child: Text(timeAgo.format(_message.timestamp.toDate()),style: GoogleFonts.openSans(fontSize: 12),))
+                          : AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          height: show==true?20:0,
+                          child: Text(timeAgo.format(_message.timestamp.toDate()),style: GoogleFonts.openSans(fontSize: 12),))
+
+                    ],
                   ),
-                  _message.senderId==widget.currentUserId?
-                      SizedBox()
-                      :Padding(
-                    padding: EdgeInsets.symmetric(vertical: size.height*0.01),
-                    child: Text(timeAgo.format(_message.timestamp.toDate()),style: GoogleFonts.openSans(),),
-                  )
+
                 ],
               )
                   :Wrap(
@@ -114,13 +128,15 @@ class _MessageWidgetState extends State<MessageWidget> {
                       ),
                     ),
                   ),
-                  _message.senderId==widget.currentUserId?   SizedBox()
+                  _message.senderId==widget.currentUserId
+                      ?SizedBox()
                       :Padding(
                     padding: EdgeInsets.symmetric(vertical: size.height*0.01),
                     child: Text(timeAgo.format(_message.timestamp.toDate()),style: GoogleFonts.openSans(),),
                   )
                 ],
-              )
+              ),
+                SizedBox(height: 10,)
               ],
             );
           }

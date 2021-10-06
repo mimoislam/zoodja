@@ -13,12 +13,7 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login In',style: TextStyle(fontSize: 36),),
-        centerTitle: true,
-        backgroundColor: backgroundColor,
-        elevation: 0,
-      ),
+
       body: BlocProvider<LoginBloc>(
         create: (context)=>LoginBloc(userRepository: _userRepository),
         child: LoginForm(userRepository: _userRepository,),

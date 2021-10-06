@@ -39,8 +39,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     if(event is LoadUserEvent){
     yield* _mapLoadUserToState(currentUserId:event.userId,);
 }
-
-
   }
 
  Stream<SearchState> _mapSelectToState({String currentUserId, String selectedUserId, String name, String photoUrl}) async*{

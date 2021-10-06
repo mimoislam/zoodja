@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:zoodja/ui/constats.dart';
 Widget genderWidget(icon,text,size,selected,onTap){
   return GestureDetector(
     onTap: onTap,
     child:  Column(
       children: [
-        Icon(
-          icon,
-          size: size.height*0.11,
-          color:selected ==text?Colors.white:Colors.black,
 
-        ),
-        SizedBox(height: size.height*0.02,),
-        Text(text,style: TextStyle(          color:selected ==text?Colors.white:Colors.black),)
+        Container(
+            padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
+
+            decoration: BoxDecoration(
+              color: text_color2.withOpacity(0.4),
+            ),
+            child: Text(text,style: TextStyle(          color:selected ==text?Colors.white:Color(0xff8969AE)),))
       ],
     ),
   );

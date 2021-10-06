@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class UserRepository{
@@ -12,8 +13,25 @@ class UserRepository{
        _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
   _firestore = fireStore ?? FirebaseFirestore.instance;
 
-  Future <void>signInWithEmail(String email, String password) {
-      return _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+  Future <void>signInWithEmail(String email, String password)async {
+      await  _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      String token = await FirebaseMessaging.instance.getToken();
+      print(token);
+
+      // Save the initial token to the database
+      await saveTokenToDatabase(token);
+  }
+
+  Future<void> saveTokenToDatabase(String token) async {
+    // Assume user is logged in for this example
+    String userId = FirebaseAuth.instance.currentUser.uid;
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .update({
+      'tokens':token,
+    });
   }
   Future<bool>isFirstTime(String userId)async{
     bool exist;
@@ -53,10 +71,33 @@ class UserRepository{
         'location':location,
         'gender':gender,
         'interestedIn':interestedIn,
-        'age':age
+        'age':age,
+        "filter":100
+      });
+      });
+    });
 
+  }
+  Future <void>profileUpdate(
+      File photo,
+      String userId,
+      String name,
+      int filter,
+      )async{
+    UploadTask uploadTask;
+    if(photo!=null)
+    uploadTask=FirebaseStorage.instance.ref().child('userPhotos').child(userId).child(userId).putFile(photo);
+    return photo!=null?await uploadTask.then((ref) async {
+      await ref.ref.getDownloadURL().then((url) async {
+        await _firestore.collection('users').doc(userId).update({
+          'photourl':url,
+          'name':name,
+          "filter":filter
+        });
       });
-      });
+    }): await _firestore.collection('users').doc(userId).update({
+      'name':name,
+      "filter":filter
     });
 
   }

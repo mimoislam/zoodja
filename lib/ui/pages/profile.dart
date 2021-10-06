@@ -14,7 +14,6 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
     body: SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(top:8.0),

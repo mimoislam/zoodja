@@ -71,24 +71,7 @@ class _MessagingState extends State<Messaging> {
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: backgroundColor,
-        elevation: size.height*0.02,
-        title: Row(
-         mainAxisAlignment: MainAxisAlignment.start,
-         children: [
-           ClipOval(
-             child: Container(
-               height: size.height*0.06,
-               width: size.height*0.06,
-               child: PhotoWidget(photoLink:widget.selectedUser.photo ,),
-             ),
-           ),
-           SizedBox(width: size.width*0.03,),
-           Expanded(child: Text(widget.selectedUser.name,style: GoogleFonts.openSans(),))
-         ],
-        ),
-      ),
+
       body: BlocBuilder<MessagingBloc,MessagingState>(
         bloc: _messagingBloc,
         builder: (context, state) {
@@ -106,6 +89,27 @@ class _MessagingState extends State<Messaging> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                SizedBox(height: size.height*0.06,),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ClipOval(
+                      child: Container(
+                        height: 75,
+                        width: 75,
+                        child: PhotoWidget(photoLink:widget.selectedUser.photo ,),
+                      ),
+                    ),
+                    SizedBox(width: size.width*0.03,),
+                    Expanded(child: Text(widget.selectedUser.name,style: GoogleFonts.openSans(fontSize: 18,fontWeight: FontWeight.bold),))
+                  ],
+                ),
+                SizedBox(height: size.height*0.03,),
+
+                Container(width: size.width,height: 1,color: Colors.grey,),
+                SizedBox(height: size.height*0.03,),
+
                 StreamBuilder<QuerySnapshot>(
                   stream: messageStream,
                   builder:(context, snapshot) {
@@ -132,9 +136,13 @@ class _MessagingState extends State<Messaging> {
                     }
                 }, ),
                 Container(
+                  margin: EdgeInsets.only(bottom: 5,left: 5,right: 5),
+                  padding: EdgeInsets.only(right: 10,left: 10),
                   width: size.width,
-                  height: size.height*0.06,
-                  color: backgroundColor,
+                  decoration: BoxDecoration(
+                    color: Color(0xff18516E),
+                    borderRadius: BorderRadius.circular(30)
+                  ),
                   child: Row(
                     children: [
                       GestureDetector(
@@ -164,22 +172,26 @@ class _MessagingState extends State<Messaging> {
                       ),
                       Expanded(
                           child: Container(
-                            height: size.height*0.05,
-                            padding: EdgeInsets.all(size.height*0.01),
+                            height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Color(0xff18516E),
                               borderRadius: BorderRadius.circular(size.height*0.04),
                             ),
-                            child: Center(
-                              child: TextField(
-                                controller: _messageTextController,
-                                textInputAction: TextInputAction.send,
-                                maxLines: null,
-                                decoration:null,
-                                textAlignVertical: TextAlignVertical.center,
-                                cursorColor:backgroundColor,
-                                textCapitalization: TextCapitalization.sentences,
+                            child: TextField(
+
+                              controller: _messageTextController,
+                              textInputAction: TextInputAction.send,
+                              maxLines: null,
+                              style:GoogleFonts.openSans(color: Colors.white,fontWeight: FontWeight.w600) ,
+                              decoration:InputDecoration(
+
+                                  border: InputBorder.none,
+                                hintText: "Message ....",
+                                hintStyle: GoogleFonts.openSans(color: Colors.white,fontWeight: FontWeight.w600),
                               ),
+                              textAlignVertical: TextAlignVertical.center,
+                              cursorColor:Colors.white,
+                              textCapitalization: TextCapitalization.sentences,
                             ),
                           )
                       ),

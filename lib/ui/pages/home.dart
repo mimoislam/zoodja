@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/pages/login.dart';
+import 'package:zoodja/ui/pages/onBording.dart';
 import 'package:zoodja/ui/pages/profile.dart';
 import 'package:zoodja/ui/pages/splash.dart';
 import 'package:zoodja/ui/widgets/tabs.dart';
@@ -15,10 +16,12 @@ class Home extends StatelessWidget {
         _userRepository=userRepository ;
 
 
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home:BlocBuilder<AuthenticationBloc,AuthenticationState>(
-builder: (context,state){
+    return MaterialApp(
+      home:BlocBuilder<AuthenticationBloc,AuthenticationState>(
+        builder: (context,state){
   if (state is Uninitialised){
     return Splash();
   }if(state is Authenticated){
@@ -27,7 +30,7 @@ builder: (context,state){
     return Profile(userRepository: _userRepository,userId: state.userId,);
   }
   if(state is UnAuthenticated) {
-    return Login(userRepository: _userRepository);
+    return OnBoardingScreen(userRepository: _userRepository);
   }else
     return Container();
 

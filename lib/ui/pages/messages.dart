@@ -8,8 +8,9 @@ import 'package:zoodja/ui/widgets/chat.dart';
 
 class Messages extends StatefulWidget {
   final String userId;
-
-  const Messages({ this.userId}) ;
+  final MessageRepository messageRepository;
+  final MessageBloc messageBloc;
+  const Messages({ this.userId,this.messageBloc,this.messageRepository}) ;
 
   @override
   _MessagesState createState() => _MessagesState();
@@ -21,6 +22,7 @@ class _MessagesState extends State<Messages> {
 
   @override
   void initState() {
+    messageRepository=widget.messageRepository;
     _messageBloc=MessageBloc(messageRepository: messageRepository);
 
     super.initState();
@@ -42,12 +44,14 @@ class _MessagesState extends State<Messages> {
         );
       }
       if(state is ChatLoadedState){
+
         Stream <QuerySnapshot> chatStream=state.chatStream;
         return StreamBuilder(
-          stream: chatStream,
+          stream: state.chatStream,
           builder: (context, snapshot) {
+
             if(!snapshot.hasData){
-              return Text("No data");
+              return Center(child: Text("No data"));
             }
             if((snapshot.data.docs.isNotEmpty)){
               if(snapshot.connectionState==ConnectionState.waiting){
@@ -56,20 +60,26 @@ class _MessagesState extends State<Messages> {
 
               );}
               else{
-                return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: snapshot.data.docs.length,
-                  itemBuilder: (context, index) {
-                    return ChatWidget(userId: widget.userId,
-                      creationTime: snapshot.data.docs[index].get("timestamp"),
-                      selectedUserId:  snapshot.data.docs[index].id,);
-                  },
+                return Container(
+                  margin: EdgeInsets.only(top: 20),
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (context, index) {
+
+                      return ChatWidget(userId: widget.userId,
+                        creationTime: snapshot.data.docs[index].get("timestamp"),
+                        selectedUserId:  snapshot.data.docs[index].id,);
+                    },
+                  ),
                 );
               }
-            }else{
-              return Text("You don't have any conversations",style: GoogleFonts.openSans(
-                fontSize: 16,fontWeight: FontWeight.bold
-              ),);
+             }else{
+              return Center(
+                child: Text("You don't have any conversations",style: GoogleFonts.openSans(
+                  fontSize: 16,fontWeight: FontWeight.bold
+                ),),
+              );
             }
           } ,
 

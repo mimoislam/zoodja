@@ -20,15 +20,16 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _emailController=TextEditingController();
   final TextEditingController _passwordController=TextEditingController();
+  final TextEditingController _validPasswordController=TextEditingController();
   final TextEditingController _userNameController=TextEditingController();
   SignUpBloc _signUpBloc;
   UserRepository get _userRepository=>widget._userRepository;
 
-  bool  get isPopulated=> _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+  bool  get isPopulated=> _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty&&_validPasswordController.text.isNotEmpty;
 
   bool isSignUpButtonEnabled(SignUpState state){
 
-    return isPopulated && !state.isSubmitting;
+    return isPopulated && !state.isSubmitting &&_passwordController.text==_validPasswordController.text;
   }
 
   @override
@@ -37,6 +38,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
     _emailController.addListener( _onEmailChanged);
     _passwordController.addListener(onPasswordChanged);
+    _validPasswordController.addListener(onPasswordChanged);
     super.initState();
   }
    _onFormSubmitted(){
@@ -139,35 +141,11 @@ class _SignUpFormState extends State<SignUpForm> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(size.height*0.02),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                        color: text_color2.withOpacity(0.4),
-                        child: TextFormField(
-                          controller: _userNameController,
-
-                          decoration: InputDecoration(
-                            labelText: 'User Name',
-                            labelStyle: GoogleFonts.openSans(
-                                color: text_color2,
-                                fontSize: size.height*0.03
-                            ),
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ),
-                        ),
-                      ),
-
-                    ),
 
                     Padding(
                       padding: EdgeInsets.all(size.height*0.02),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                        padding: EdgeInsets.symmetric(horizontal: 8),
                         color: text_color2.withOpacity(0.4),
 
                         child: TextFormField(
@@ -180,7 +158,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             labelText: 'Email',
                             labelStyle: GoogleFonts.openSans(
                               color: text_color2,
-                              fontSize: size.height*0.03
+                              fontSize: size.height*0.02
                             ),
                             focusedBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,
@@ -223,6 +201,39 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
 
                     ),
+                    Padding(
+                      padding: EdgeInsets.all(size.height*0.02),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                        color: text_color2.withOpacity(0.4),
+                        child: TextFormField(
+                          controller: _validPasswordController,
+                          autocorrect: false,
+                          obscureText: true,
+
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (_) {
+                            return !state.isPasswordValid
+                                ? "Invalid Validation"
+                                : null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: ' Confirm Password',
+                            labelStyle: GoogleFonts.openSans(
+                                color: text_color2,
+                                fontSize: size.height*0.03
+                            ),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                          ),
+                        ),
+                      ),
+
+                    ),
+
                     Padding(
                       padding: EdgeInsets.all(size.height*0.02),
                       child: GestureDetector(
@@ -273,6 +284,7 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   void dispose() {
     _passwordController.dispose();
+    _validPasswordController.dispose();
     _emailController.dispose();
     super.dispose();
   }

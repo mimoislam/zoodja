@@ -9,54 +9,55 @@ Widget profileWidget({
   photo,
   containerHeight,
   containerWidth,
-  child
+  child,child2
 }){
 return Padding(
   padding: EdgeInsets.all(padding),
   child: Container(
     decoration: BoxDecoration(
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black54,
-          spreadRadius: 2,
-          blurRadius: 5,
-          offset: Offset(10,10)
-        )
-      ],
       borderRadius: BorderRadius.circular(clipRadius),
     ),
-    child:Stack(
-      alignment: Alignment.bottomCenter,
+    child:Column(
       children: [
-        Container(
-          width: photoWidth,
-          height: photoHeight,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(clipRadius),
-            child: PhotoWidget( photoLink: photo,),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            gradient:  LinearGradient(
-              colors: [
-                Colors.transparent,
-                Colors.black54,
-                Colors.black87,
-                Colors.black
-              ],
-              stops: [0.1,0.2,0.4,0.9],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter
+        Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Container(
+              width: photoWidth,
+              height: photoHeight,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(clipRadius),
+                child: PhotoWidget( photoLink: photo,),
+              ),
             ),
-            color: Colors.black45,
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(clipRadius),bottomRight: Radius.circular(clipRadius)),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient:  LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      Colors.black54,
+                      Colors.black87,
+                      Colors.black
+                    ],
+                    stops: [0.1,0.2,0.4,0.9],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter
+                  ),
+                  color: Colors.black45,
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(clipRadius),bottomRight: Radius.circular(clipRadius)),
 
-          ),
-          width: containerWidth,
-          height:containerHeight,
-          child: child,
-        )
+                ),
+                width: photoWidth,
+                height:photoHeight*0.25,
+                child: child,
+              ),
+            ),
+
+          ],
+        ),
+        child2==null?Container():child2
       ],
     ),
   ),

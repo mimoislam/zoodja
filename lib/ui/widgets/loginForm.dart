@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/login/login_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
@@ -90,14 +91,44 @@ class _LoginFormState extends State<LoginForm> {
           bloc: _loginBloc,
           builder: (BuildContext context,LoginState state){
             return SingleChildScrollView(
-              child: Container(
-                color: backgroundColor,
-                width: size.width,
-                height: size.height,
+
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  SizedBox(height: 20,),
+                  Center(
+                    child: Text('True Love Stories never          have endings',textAlign: TextAlign.center,
+                      style: GoogleFonts.openSans(fontSize: size.width*0.06, color: text_color, fontWeight: FontWeight.bold),),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: size.width*0.3,
+                          child: Divider(height: size.height*0.03,
+                            color: text_color,
+
+
+                          ),
+                        ),
+                        Container(
+                          width: size.width*0.3,
+                          child: Text('Sign In',textAlign: TextAlign.center,
+                            style: GoogleFonts.openSans(fontSize: size.width*0.07, color: text_color,fontWeight: FontWeight.w300 ),),
+
+                        ),
+                        Container(
+                          width: size.width*0.3,
+                          child: Divider(height: size.height*0.05,
+                            color: text_color,
+
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   Center(
                     child: Text('Chill',
                       style: TextStyle(fontSize: size.width*0.2, color: Colors.white,),),
@@ -111,50 +142,57 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   Padding(
                     padding: EdgeInsets.all(size.height*0.02),
-                    child: TextFormField(
-                      controller: _emailController,
-                      autovalidateMode: AutovalidateMode.always,
-                      validator: (_){
-                        return !state.isEmailValid?'Invalid Email':null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: size.height*0.03
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white,width: 1),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white,width: 1),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      color: text_color2.withOpacity(0.4),
+
+                      child: TextFormField(
+                        controller: _emailController,
+                        autovalidateMode: AutovalidateMode.always,
+                        validator: (_){
+                          return !state.isEmailValid?'Invalid Email':null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: GoogleFonts.openSans(
+                              color: text_color2,
+                              fontSize: size.height*0.02
+                          ),
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
                         ),
                       ),
                     ),
 
                   ),
+
+
                   Padding(
                     padding: EdgeInsets.all(size.height*0.02),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      autocorrect: false,
-                      obscureText: true,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      color: text_color2.withOpacity(0.4),
+                      child: TextFormField(
+                        controller: _passwordController,
+                        autocorrect: false,
+                        obscureText: true,
 
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (_){
-                        return !state.isPasswordValid?'Invalid Password':null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: size.height*0.03
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white,width: 1),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white,width: 1),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (_){
+                          return !state.isPasswordValid?'Invalid Password':null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: GoogleFonts.openSans(
+                              color: text_color2,
+                              fontSize: size.height*0.02
+                          ),
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
                         ),
                       ),
                     ),
@@ -170,9 +208,9 @@ class _LoginFormState extends State<LoginForm> {
                               :null,
                           child: Container(
                             width: size.width*0.7,
-                            height: size.height*0.05,
+                            height: size.height*0.1,
                             decoration: BoxDecoration(
-                              color: isLoggedInButtonEnabled(state)?Colors.white:
+                              color: isLoggedInButtonEnabled(state)?Color(0xff3B5998):
                               Colors.grey,
                               borderRadius: BorderRadius.circular(size.height*0.04),
 
@@ -182,14 +220,14 @@ class _LoginFormState extends State<LoginForm> {
                                 "Login",
                                 style: TextStyle(
                                   fontSize: size.height*0.025,
-                                  color: Colors.blue,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
 
                           ),
                         ),
-                        SizedBox(height: size.height*0.02,),
+                        SizedBox(height: size.height*0.1,),
                         GestureDetector(
                           onTap: (){
                             Navigator.push(context,
@@ -218,7 +256,7 @@ class _LoginFormState extends State<LoginForm> {
 
 
                 ]),
-              ),
+
             );
           }
       ),

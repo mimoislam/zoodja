@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zoodja/models/user.dart';
+import 'package:http/http.dart' as http;
+import 'package:zoodja/ui/constats.dart';
 
 class MatchesRepository{
   final FirebaseFirestore _firestore;
@@ -74,8 +76,14 @@ class MatchesRepository{
     await _firestore.
     collection("users").
     doc(selectedUserId).
-    collection("matchedList").
+    collection("matchedmatchedList").
     doc(currentUserId).
+    delete();
+    await _firestore.
+    collection("users").
+    doc(currentUserId).
+    collection("selectedList").
+    doc(selectedUserId).
     delete();
   }
 
@@ -94,6 +102,17 @@ class MatchesRepository{
       "name":selectUserName,
       "photourl":selectUserPhotoUrl,
     });
+    String token;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(selectedUserId)
+        .get().then((value) {
+
+      token=value["tokens"];
+
+    });
+
+    await sendLikedNotification(token);
     return await _firestore.
     collection("users").
     doc(selectedUserId).
@@ -104,5 +123,25 @@ class MatchesRepository{
     });
 
 
+  }
+
+  sendLikedNotification(String token)async {
+    if (token == null) {
+      print('Unable to send FCM message, no token exists.');
+      return;
+    }
+
+    try {
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':"key=AAAAzsv-U_o:APA91bHzogfxjbR4gS_5TvlIAqWnupWfRamYjKWshe3zEkheaVWjZdP9jJO1s4mn7Qj-xDpfSxQDQ7q3O7ShJJtKpbKAO4jPA-0jjeF3tHo3_eq1yIL27OCn9ssMhXZ4UrC0zMBA3aLa"
+        },
+        body: constructForMatch(token),
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 }

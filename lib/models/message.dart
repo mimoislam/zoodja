@@ -6,7 +6,7 @@ class Message {
   String senderName, senderId, selectedUserId, text, photoUrl;
   File photo;
   Timestamp timestamp;
-
+  bool viewed;
   Message(
       {this.senderName,
         this.senderId,
@@ -14,5 +14,5 @@ class Message {
         this.text,
         this.photoUrl,
         this.photo,
-        this.timestamp});
+        this.timestamp,this.viewed});
 }

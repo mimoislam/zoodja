@@ -14,15 +14,16 @@ import 'package:zoodja/ui/widgets/profile.dart';
 import 'package:zoodja/ui/widgets/userGender.dart';
 class Matches extends StatefulWidget {
   final String userId;
-
-  const Matches({this.userId}) ;
+  final MatchesBloc matchesBloc;
+  final MatchesRepository  matchesRepository;
+  const Matches({this.userId,this.matchesBloc,this.matchesRepository}) ;
 
   @override
   _MatchesState createState() => _MatchesState();
 }
 
 class _MatchesState extends State<Matches> {
-  MatchesRepository  matchesRepository=MatchesRepository();
+  MatchesRepository  matchesRepository;
   MatchesBloc _matchesBloc;
 
   int difference;
@@ -37,6 +38,8 @@ class _MatchesState extends State<Matches> {
 
   @override
   void initState() {
+    // _matchesBloc=widget.matchesBloc;
+    matchesRepository=widget.matchesRepository;
     _matchesBloc=MatchesBloc(matchesRepository: matchesRepository);
     super.initState();
   }
@@ -44,6 +47,7 @@ class _MatchesState extends State<Matches> {
   @override
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;
+
     return BlocBuilder<MatchesBloc,MatchesState>(
       bloc: _matchesBloc,
       builder: (context, state) {
@@ -61,7 +65,7 @@ class _MatchesState extends State<Matches> {
                   "Matched Users",
                   style: GoogleFonts.openSans(
                     color: Colors.black,
-                    fontSize: 30.0
+                    fontSize: 20.0
                   ),
 
                 ),
@@ -78,7 +82,9 @@ class _MatchesState extends State<Matches> {
                     final user=snapshot.data.docs;
                     return SliverGrid(delegate: SliverChildBuilderDelegate(
                       (BuildContext context,int index)
-                    {return GestureDetector(
+                    {
+                      print(index);
+                      return GestureDetector(
                     onTap:()async{
                       User selectUser=await matchesRepository.getUserDetails(user[index].id);
                       User currentUser=await matchesRepository.getUserDetails(widget.userId);
@@ -88,7 +94,7 @@ class _MatchesState extends State<Matches> {
                           backgroundColor: Colors.transparent,
                           child: profileWidget(
                             photo: selectUser.photo,
-                            photoHeight: size.height,
+                            photoHeight: size.height*0.8,
                             padding: size.height*0.01,
                             photoWidth: size.width,
                             clipRadius: size.height*0.01,
@@ -96,31 +102,32 @@ class _MatchesState extends State<Matches> {
                             containerHeight: size.height*0.2,
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
-                              child: ListView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   SizedBox(
                                     height: size.height*0.02,
                                   ),
-                                  Row(children: [
-                                      userGender(selectUser.gender),
-                                    Expanded(child: Text(" "+selectUser.name+", "+
-                                        (DateTime.now().year-selectUser.age.toDate().year).toString(),
+                                    Text(" "+selectUser.name+", "+
+                                    (DateTime.now().year-selectUser.age.toDate().year).toString(),
                                     style: GoogleFonts.openSans(
-                                      color: Colors.white,
-                                      fontSize: size.height*0.05,
+                                  color: Colors.white,
+                                  fontSize: 20,
                                     ),
-                                    ))
-                                  ],),
+                                    ),
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+
                                     children: [
                                       Icon(Icons.location_on,color: Colors.white,),
                                       Text(difference!=null?(difference/1000).floor().toString()+
-                                          "km away":"away",
+                                          " km away":"away",
                                         style: GoogleFonts.openSans(
                                           color: Colors.white,
                                         ),),
                                       SizedBox(
-                                        height: size.height*0.01,
+                                        height: 20,
                                       ),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -130,7 +137,7 @@ class _MatchesState extends State<Matches> {
                                                 child: iconWidget(Icons.message , (){
                                                   _matchesBloc.add(OpenChatEvent(currentUser: widget.userId,selectedUser: selectUser.uid));
                                                   pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
-                                                }, size.height*0.04, Colors.white),
+                                                }, size.height*0.04, Colors.transparent),
 
                                               )
                                             ],
@@ -176,7 +183,7 @@ class _MatchesState extends State<Matches> {
                   "People who liked you",
                   style: GoogleFonts.openSans(
                       color: Colors.black,
-                      fontSize: 30.0
+                      fontSize: 20.0
                   ),
 
                 ),
@@ -184,10 +191,12 @@ class _MatchesState extends State<Matches> {
               StreamBuilder<QuerySnapshot>(
                 stream: state.selectedList,
                 builder: (context, snapshot) {
+                  print(snapshot.hasData);
                   if(!snapshot.hasData)
                   return SliverToBoxAdapter(
                   child: Container(),
                   );
+
                   if((snapshot.data.docs!=null)&&(snapshot.data.docs.length!=0)){
                     final user =snapshot.data.docs;
                     print(snapshot.data.docs.length==0);
@@ -202,84 +211,69 @@ class _MatchesState extends State<Matches> {
                                 child: profileWidget(
                                   padding: size.height*0.01,
                                   photo: selectUser.photo,
-                                  photoHeight: size.height,
+                                  photoHeight: size.height*0.69,
                                   photoWidth: size.width,
                                   clipRadius: size.height*0.01,
                                   containerWidth: size.width,
-                                  containerHeight: size.height*0.25,
+                                    containerHeight: size.height*0.2,
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
                                     child: Column(
-                                      children: [
-                                        Expanded(child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment: CrossAxisAlignment.center,                                      children: [
+                                        Text(" "+selectUser.name+", "+
+                                            (DateTime.now().year-selectUser.age.toDate().year).toString(),
+                                          style: GoogleFonts.openSans(color: Colors.white,fontSize: 20),),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+
                                           children: [
-                                            SizedBox(height: size.height*0.01,),
-                                            Row(
-                                              children: [
-                                                userGender(selectUser.gender),
-                                                Expanded(child: Text(" "+selectUser.name+", "+
-                                                    (DateTime.now().year-selectUser.age.toDate().year).toString(),
-                                                  style: GoogleFonts.openSans(color: Colors.white,fontSize: size.height*0.05),)),
-
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Icon(Icons.location_on,color: Colors.white,),
-                                                Text(difference!=null?(difference/1000).floor().toString()+
-                                                    "km away":"away",
-                                                  style: GoogleFonts.openSans(
-                                                    color: Colors.white,
-                                                  ),),
-
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: size.height*0.01,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.all(size.height*0.02),
-                                                  child: iconWidget(Icons.clear , (){
-                                                    _matchesBloc.add(DeleteUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid));
-                                                    Navigator.of(context).pop();
-                                                    }, size.height*0.08, Colors.blue),
-
-                                                ),
-                                                SizedBox(
-                                                  width: size.width*0.05,
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.all(size.height*0.02),
-                                                  child: iconWidget(FontAwesomeIcons.solidHeart , (){
-                                                    _matchesBloc.add(AcceptUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid,
-                                                        currentUserName: currentUser.name,currentUserPhotoUrl: currentUser.photo,
-                                                        selectedUserName: selectUser.name,selectedUserPhotoUrl: selectUser.photo));
-                                                    Navigator.of(context).pop();
-
-                                                    pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
-
-                                                  }, size.height*0.08, Colors.red),
-
-                                                )
-                                              ],
-                                            )
-
+                                            Icon(Icons.location_on,color: Colors.white,),
+                                            Text(difference!=null?(difference/1000).floor().toString()+
+                                                "km away":"away",
+                                              style: GoogleFonts.openSans(
+                                                color: Colors.white
+                                                  ,fontSize: 20
+                                              ),),
                                           ],
-                                        ))
+                                        ),
                                       ],
                                     ),
+                                  ),
+                                  child2:  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.all(size.height*0.02),
+                                        child: iconWidget(Icons.clear , (){
+                                          _matchesBloc.add(DeleteUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid));
+                                          Navigator.of(context).pop();
+                                        }, 30.0, Colors.blue),
+
+                                      ),
+
+                                      Padding(
+                                        padding: EdgeInsets.all(size.height*0.02),
+                                        child: iconWidget(FontAwesomeIcons.solidHeart , (){
+                                          _matchesBloc.add(AcceptUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid,
+                                              currentUserName: currentUser.name,currentUserPhotoUrl: currentUser.photo,
+                                              selectedUserName: selectUser.name,selectedUserPhotoUrl: selectUser.photo));
+                                          Navigator.of(context).pop();
+
+                                          pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
+                                        }, 30.0, Colors.red),
+
+                                      )
+                                    ],
                                   )
+
                                 ),
                               ),);
                             },
                             child: profileWidget(
                               padding: size.height*0.01,
                               photo: user[index].get("photoUrl"),
-                              photoWidth: size.width*0.5,
+                              photoWidth: size.width*0.8,
                               photoHeight: size.height*0.3,
                               clipRadius: size.height*0.01,
                               containerHeight: size.height*0.03,

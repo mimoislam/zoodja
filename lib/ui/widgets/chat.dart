@@ -27,7 +27,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   User user;
 
   getUserDetail()async{
-    user=await messageRepository.getUserDetails(widget.userId);
+    user=await messageRepository.getUserDetails(widget.selectedUserId);
     Message message=await messageRepository.
     getLastMessage(currentUserId: widget.userId,selectedUserId: widget.selectedUserId).catchError((error){
       print(error);
@@ -46,7 +46,9 @@ class _ChatWidgetState extends State<ChatWidget> {
           photoUrl: user.photo,
           lastMessage: message.text,
           lastMessagePhoto: message.photoUrl,
-          timestamp: message.timestamp
+          timestamp: message.timestamp,
+          lastMessageSenderId: message.selectedUserId,
+          viewed: message.viewed
       );
     }
   }
@@ -80,7 +82,7 @@ class _ChatWidgetState extends State<ChatWidget> {
           return Container();
         }
         else{
-          Chat chat =snapshot.data;
+           chat =snapshot.data;
           return GestureDetector(
             onTap: ()async{
               await opeChat();
@@ -121,8 +123,8 @@ class _ChatWidgetState extends State<ChatWidget> {
               child: Container(
                 width: size.width,
                 decoration: BoxDecoration(
+                  color:(!chat.viewed)&&(widget.userId!=chat.lastMessageSenderId)?Colors.grey[200]:Colors.transparent,
                   borderRadius: BorderRadius.circular(size.height*0.02),
-
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,8 +134,8 @@ class _ChatWidgetState extends State<ChatWidget> {
                       children: [
                         ClipOval(
                           child: Container(
-                            height: size.height*0.06,
-                            width: size.height*0.06,
+                            height: 75,
+                            width:75,
                             child: PhotoWidget(
                               photoLink: user.photo,
                             ),
@@ -144,14 +146,21 @@ class _ChatWidgetState extends State<ChatWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(user.name,style: GoogleFonts.openSans(
-                              fontSize: size.height*0.03,
+                              color: Color(0xff18516E),
+                              fontSize: (!chat.viewed)&&(widget.userId!=chat.lastMessageSenderId)?18:15,
+                              fontWeight: (!chat.viewed)&&(widget.userId!=chat.lastMessageSenderId)?FontWeight.bold:FontWeight.w700
                             ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                             chat.lastMessage!=null?Text(chat.lastMessage,overflow: TextOverflow.fade,style: GoogleFonts.openSans(
-                              color:Colors.grey,
+                              color:Color(0xff18516E),
+                                fontWeight: (!chat.viewed)&&(widget.userId!=chat.lastMessageSenderId)?FontWeight.w500:FontWeight.w300
                             ),)
                                 :chat.lastMessagePhoto==null
-                                ?Text("Chat Room available")
+                                ?Text("Chat Room available",style: GoogleFonts.openSans(
+                                color:Colors.grey,
+                                fontSize: size.height*0.02
+                            ))
                                 :Row(children: [
                                   Icon(Icons.photo,color: Colors.grey,size: size.height*0.02,),
                                   Text("Photo",style: GoogleFonts.openSans(
