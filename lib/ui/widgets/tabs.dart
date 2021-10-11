@@ -198,7 +198,10 @@ class _TabsState extends State<Tabs> {
                                       children: [
                                         Column(
                                           children: [
-                                            Icon(Icons.people,color: Colors.white,size: 30,),
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 5.0),
+                                              child: Image.asset("assets/logo.png"),
+                                            ),
                                             index==1?Container(width: 20, height:3,color: Colors.white,):Container()
                                           ],
                                         ),

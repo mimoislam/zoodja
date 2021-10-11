@@ -28,6 +28,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size=MediaQuery.of(context).size;
     return Scaffold(
 
         body:clicked? BlocProvider<LoginBloc>(
@@ -38,7 +39,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             children: [
               SizedBox(height: 50,),
 
-              Image.asset("assets/boarding.png",height: 250,),
+              Image.asset("assets/boarding.png",height: size.height*0.6,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: RichText(text: TextSpan(
@@ -53,22 +54,26 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 ),
               ),
               SizedBox(height: 50,),
-              GestureDetector(
-                onTap: (){
-                  clicked=true;
-                  setState(() {
+              Center(
+                child: GestureDetector(
+                  onTap: (){
+                    clicked=true;
+                    setState(() {
 
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10,vertical:15),
-                  decoration: BoxDecoration(
-                      color: Color(0xffFE3C72),
-                      borderRadius: BorderRadius.circular(15)
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10,vertical:15),
+                    decoration: BoxDecoration(
+                        color: Color(0xffFE3C72),
+                        borderRadius: BorderRadius.circular(15)
+                    ),
+                    child: Text("Find your perfect match",style: GoogleFonts.openSans(color: Colors.white,fontSize: 16),),
                   ),
-                  child: Text("Find your perfect match",style: GoogleFonts.openSans(color: Colors.white,fontSize: 16),),
                 ),
-              )
+              ),
+              SizedBox(height: 50,),
+
             ],
           ),
         )

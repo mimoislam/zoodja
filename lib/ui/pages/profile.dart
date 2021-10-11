@@ -18,6 +18,7 @@ class Profile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top:8.0),
         child: BlocProvider<ProfileBloc>(
+
             create: (context) => ProfileBloc(userRepository: _userRepository),
           child: ProfileForm(userRepository: _userRepository,),
         ),

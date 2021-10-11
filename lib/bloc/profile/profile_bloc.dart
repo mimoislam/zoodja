@@ -53,7 +53,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         age:event.age,
         location:event.location,
         interestedIn:event.interestedIn,
-        
+        hijab: event.hijab,
       );
     }
 
@@ -103,13 +103,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         DateTime age,
         GeoPoint location,
         String interestedIn,
-        String gender
+        String gender,
+        String hijab
       }) async*{
         print("object");
         yield ProfileState.loading();
           try{
 
-            await _userRepository.profileSetup(photo, userId, name, gender, interestedIn, age, location);
+            await _userRepository.profileSetup(photo, userId, name, gender, interestedIn, age, location,hijab);
             yield ProfileState.success();
           }catch(_){
             yield ProfileState.failure();

@@ -112,7 +112,9 @@ class SearchRepository {
     User currentUser = await getUserInterests(userId);
     await _firestore.collection('users').get().then((users) async{
       for (var user in users.docs) {
-        int dif=await getDifference(user['location']);
+        int dif=((await getDifference(user['location']))/1000000).toInt();
+
+        print(dif);
         if ((!chosenList.contains(user.id)) &&
             (!matchedList.contains(user.id)) &&
             (user.id != userId) &&

@@ -36,7 +36,9 @@ class MessageRepository{
       _user.gender=value["gender"];
       _user.location=value["location"];
       _user.interestedIn=value["interestedIn"];
-
+      _user.filter=value["filter"];
+      _user.withHijab=value["withHijab"];
+      _user.hijab=value["hijab"];
     });
     return _user;
   }

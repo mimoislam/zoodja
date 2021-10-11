@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geolocator/geolocator.dart';
 
 class UserRepository{
   final FirebaseAuth _firebaseAuth;
@@ -38,8 +39,16 @@ class UserRepository{
     await FirebaseFirestore.instance.collection('users').doc(userId).get().then((value) =>{exist=value.exists} );
     return exist;
   }
+
   Future<void>signUpWithEmail(String email, String password)async {
-    return await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+    Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    GeoPoint location=GeoPoint(position.latitude, position.longitude);
+    await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+    String uid =await getUser();
+    await _firestore.collection('users').doc(uid).update({
+      'location':location,
+    });
+
   }
   Future <void> signout()async
   {
@@ -59,7 +68,8 @@ class UserRepository{
       String gender,
       String interestedIn,
       DateTime age,
-      GeoPoint location)async{
+      GeoPoint location,String hijab)async{
+    print(hijab);
     UploadTask uploadTask;
     uploadTask=FirebaseStorage.instance.ref().child('userPhotos').child(userId).child(userId).putFile(photo);
     return await uploadTask.then((ref) async {
@@ -72,7 +82,9 @@ class UserRepository{
         'gender':gender,
         'interestedIn':interestedIn,
         'age':age,
-        "filter":100
+        "filter":500,
+        "hijab":hijab,
+
       });
       });
     });

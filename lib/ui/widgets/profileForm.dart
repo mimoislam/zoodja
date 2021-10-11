@@ -31,7 +31,7 @@ class _ProfileFormState extends State<ProfileForm> {
   UserRepository get _userRepository=>widget._userRepository;
 
 
-  String gender,interestedIn;
+  String gender,interestedIn,hijab;
   DateTime age;
   File photo;
   GeoPoint location;
@@ -49,18 +49,23 @@ class _ProfileFormState extends State<ProfileForm> {
     await _getLocation();
     if(gender=="Female"){
       interestedIn="Male";
+      _profileBloc.add(Submitting(name: _nameController.text, gender: gender, interestedIn: interestedIn, age: age, location: location, photo: photo)
+      );
     }else
       {
         interestedIn="Female";
+        _profileBloc.add(Submitting(name: _nameController.text, gender: gender, interestedIn: interestedIn, age: age, location: location, photo: photo,hijab:hijab)
+        );
       }
-    _profileBloc.add(Submitting(name: _nameController.text, gender: gender, interestedIn: interestedIn, age: age, location: location, photo: photo)
-    );
+
+
 
   }
 
   @override
   void initState() {
    _getLocation();
+   hijab="Veiled";
    _profileBloc=BlocProvider.of<ProfileBloc>(context);
     super.initState();
   }
@@ -105,10 +110,17 @@ class _ProfileFormState extends State<ProfileForm> {
             print('isSuccess');
             BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
           }
+
         },
     child: BlocBuilder<ProfileBloc,ProfileState>(
       builder: (context, state) {
-
+        print("state");
+        if(       state.isSubmitting)
+          return Center(
+            child: Container(
+              child: CircularProgressIndicator(),
+            ),
+          );
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child:  Container(
@@ -233,6 +245,58 @@ class _ProfileFormState extends State<ProfileForm> {
                     ),
                   ],
                 ),
+                SizedBox(height: 30,),
+                gender=="Female"?Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          hijab="Veiled";
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+
+                        decoration: BoxDecoration(
+                          color: text_color2.withOpacity(0.4)
+                        ),
+                        child: Text("Veiled",style: GoogleFonts.assistant(          color:hijab=="Veiled"?Colors.white:Color(0xff8969AE)),),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          hijab="Unveiled";
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+
+                        decoration: BoxDecoration(
+                            color: text_color2.withOpacity(0.4)
+                        ),
+                        child: Text("Unveiled",style: GoogleFonts.assistant(          color:hijab=="Unveiled"?Colors.white:Color(0xff8969AE)),),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          hijab="Can't say";
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+
+                        decoration: BoxDecoration(
+                            color: text_color2.withOpacity(0.4)
+                        ),
+                        child: Text("Can't say",style: GoogleFonts.assistant(          color:hijab=="Can't say"?Colors.white:Color(0xff8969AE)),),
+                      ),
+                    )
+                  ],
+                ):Container(),
+
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: GestureDetector(
@@ -252,7 +316,7 @@ class _ProfileFormState extends State<ProfileForm> {
                         child: Center(
                           child: Text("Get Started",style: TextStyle(
                             fontSize: 20,
-                            color: isButtonEnabled(state)?Colors.black:Colors.white,
+                            color: isButtonEnabled(state)?Colors.white:Colors.black,
                           ),),
                         ),
                       ),

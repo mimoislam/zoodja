@@ -96,7 +96,7 @@ class _LoginFormState extends State<LoginForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20,),
+                  SizedBox(height: size.height*0.15,),
                   Center(
                     child: Text('True Love Stories never          have endings',textAlign: TextAlign.center,
                       style: GoogleFonts.openSans(fontSize: size.width*0.06, color: text_color, fontWeight: FontWeight.bold),),
@@ -129,10 +129,7 @@ class _LoginFormState extends State<LoginForm> {
                       ],
                     ),
                   ),
-                  Center(
-                    child: Text('Chill',
-                      style: TextStyle(fontSize: size.width*0.2, color: Colors.white,),),
-                  ),
+                  SizedBox(height: size.height*0.05,),
                   Container(
                     width: size.width*0.8,
                     child: Divider(height: size.height*0.05,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -26,18 +27,17 @@ class _ProfileMenuState extends State<ProfileMenu> {
   double _currentSliderValue = 20;
   File photo;
   TextEditingController controller=TextEditingController();
+  bool saving=false;
+  String hijab;
+  User user;
 
   @override
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;
-    return  FutureBuilder<User>(
-      future: getUser(),
-      builder: (context, snapshot) {
-        if(snapshot.hasData) {
-          User user =snapshot.data;
-          controller.text=user.name;
+    return
 
-          return Container(
+      ((saving==false)&&(user!=null))
+        ?Container(
               child: SingleChildScrollView(
                   child: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -60,9 +60,19 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       textAlign: TextAlign.start,
                     )),
                     GestureDetector(
-                      onTap: (){
-                        userRepository.profileUpdate(photo, widget.userId, controller.text, _currentSliderValue.toInt());
-                      },
+                      onTap: ()async{
+                        saving=true;
+                        setState(() {
+
+                        });
+                        print(saving);
+                       await  userRepository.profileUpdate(photo, widget.userId, controller.text, _currentSliderValue.toInt());
+
+                          saving=false;
+                        setState(() {
+
+                        });
+                       },
                       child: Container(
                         width: size.width*0.3,
                         padding: EdgeInsets.symmetric(vertical: 5),
@@ -99,11 +109,11 @@ class _ProfileMenuState extends State<ProfileMenu> {
                               }
                             },
                             child:  Container(constraints: BoxConstraints(
-                              maxHeight:                       100,
-                              maxWidth:                       100,
-
+                              maxHeight:100,
+                              maxWidth:100,
                             ),
-                              child: Image.network(user.photo,fit: BoxFit.fill,
+                              child: Image.network(user.photo,
+                                fit: BoxFit.fill,
                                   loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
                                     if (loadingProgress == null) return child;
                                     return Center(
@@ -161,6 +171,56 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     ),
                   ),
                 ),
+                user.gender=="Female"?Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          hijab="Veiled";
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+
+                        decoration: BoxDecoration(
+                            color: text_color2.withOpacity(0.4)
+                        ),
+                        child: Text("Veiled",style: GoogleFonts.assistant(          color:hijab=="Veiled"?Colors.white:Color(0xff8969AE)),),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          hijab="Unveiled";
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+
+                        decoration: BoxDecoration(
+                            color: text_color2.withOpacity(0.4)
+                        ),
+                        child: Text("Unveiled",style: GoogleFonts.assistant(          color:hijab=="Unveiled"?Colors.white:Color(0xff8969AE)),),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          hijab="Can't say";
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+
+                        decoration: BoxDecoration(
+                            color: text_color2.withOpacity(0.4)
+                        ),
+                        child: Text("Can't say",style: GoogleFonts.assistant(          color:hijab=="Can't say"?Colors.white:Color(0xff8969AE)),),
+                      ),
+                    )
+                  ],
+                ):Container(),
                 Text("Filters", style: GoogleFonts.openSans(fontWeight: FontWeight.w300,fontSize: 17,color:Color(0xff18516E) ),),
                 SizedBox(height:10 ,),
                 Row(
@@ -175,8 +235,8 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   inactiveColor: Color(0xffE6DEEF),
                   value: _currentSliderValue,
                   min: 1,
-                  max: 100,
-                  divisions: 100,
+                  max: 500,
+                  divisions: 500,
                   label: _currentSliderValue.round().toString(),
                   onChanged: (double value) {
                     setState(() {
@@ -235,20 +295,25 @@ class _ProfileMenuState extends State<ProfileMenu> {
                 ),
               ],
             ),
-          )));
-        }
-        return Container();
-        },
+          ))):Center(child: Container(child: CircularProgressIndicator()));
 
-    );
+
   }
 
   @override
   void initState() {
     messageRepository=widget.messageRepository;
+    getUser();
     super.initState();
   }
-  Future<User>getUser()async{
-    return await messageRepository.getUserDetails(widget.userId);
+ getUser()async{
+
+     user= await messageRepository.getUserDetails(widget.userId);
+     _currentSliderValue=(user.filter).toDouble();
+     print(photo);
+    controller.text=user.name;
+    hijab=user.hijab;
+     setState(() {
+     });
   }
 }

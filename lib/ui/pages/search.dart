@@ -114,7 +114,7 @@ getDifference(GeoPoint userLocation)async{
         if(_user.location==null){
 
           return Center(
-            child: Text("No One HERE",
+            child: Text("No one in your area - Expand your area",
             style: GoogleFonts.openSans(
               fontSize: 20,
               fontWeight: FontWeight.bold,
