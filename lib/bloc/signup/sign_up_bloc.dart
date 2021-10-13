@@ -44,7 +44,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       yield*  _mapPasswordChangedToState(event.password);
     }
     else if(event is SignUpWithCredentialsPressed){
-      yield* _mapSignUpWithCredentialsPressedToState(email:event.email,password:event.password);
+      yield* _mapSignUpWithCredentialsPressedToState();
     }
 
   }
@@ -58,15 +58,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
   }
 
-  Stream<SignUpState> _mapSignUpWithCredentialsPressedToState({String email, String password})async* {
+  Stream<SignUpState> _mapSignUpWithCredentialsPressedToState()async* {
     yield SignUpState.loading();
-    print("object");
-    try{
-      ( await _userRepository.signUpWithEmail(email, password));
+    
       yield SignUpState.success();
-    }
-    catch(e){
-      SignUpState.failure();
-    }
+
   }
 }

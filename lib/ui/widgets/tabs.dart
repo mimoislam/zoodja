@@ -79,7 +79,7 @@ class _TabsState extends State<Tabs> {
                   ),
 
                 Positioned(
-                  bottom: 10,
+                  bottom: 5,
                   right: size.width*0.05,
                   left: size.width*0.05,
                   child: Padding(

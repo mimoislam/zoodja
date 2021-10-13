@@ -10,6 +10,8 @@ import 'package:geolocator/geolocator.dart';
 class UserRepository{
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
+  String verification;
+
   UserRepository({FirebaseAuth firebaseAuth, FirebaseFirestore fireStore}):
        _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
   _firestore = fireStore ?? FirebaseFirestore.instance;
@@ -40,6 +42,21 @@ class UserRepository{
     return exist;
   }
 
+  verifyPhoneNumber( String phone)async{
+    await _firebaseAuth.verifyPhoneNumber(
+      phoneNumber: phone,
+      codeSent: (String verificationId, int resendToken) async {
+        verification =verificationId;
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {  },
+      verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {  },
+      verificationFailed: (FirebaseAuthException error) {
+        verification="";
+      },
+    );
+  }
+
+
   Future<void>signUpWithEmail(String email, String password)async {
     Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     GeoPoint location=GeoPoint(position.latitude, position.longitude);
@@ -50,8 +67,45 @@ class UserRepository{
     });
 
   }
+  signInWithCredential(credential)async{
+
+   await _firebaseAuth.signInWithCredential(credential);
+  }
+
+  Future deleteUser() async {
+    try {
+     await _firebaseAuth.currentUser.delete();
+
+    } catch (e) {
+
+    }
+  }
+
+  LoginWithPhoneAndPassword(String phoneNumber, String password)async{
+    bool exist=true;
+    bool correctPassword=false;
+    try{
+      await _firebaseAuth.signInWithPhoneNumber(phoneNumber);
+      String uid=_firebaseAuth.currentUser.uid;
+      await _firestore.
+      collection("users").
+      doc(uid).
+      get().then((value) {
+        if(password==value["password"]){
+          correctPassword=true;
+        }
+      });
+    }
+    catch(e){
+      bool exist=false;
+
+    }
+
+  }
+
   Future <void> signout()async
   {
+
     return await _firebaseAuth.signOut();
   }
   Future <bool>isSignedIn()async{

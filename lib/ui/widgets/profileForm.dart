@@ -30,6 +30,9 @@ class _ProfileFormState extends State<ProfileForm> {
   final TextEditingController _ageController=TextEditingController();
   UserRepository get _userRepository=>widget._userRepository;
 
+  final TextEditingController _emailController=TextEditingController();
+  final TextEditingController _passwordController=TextEditingController();
+  final TextEditingController _validPasswordController=TextEditingController();
 
   String gender,interestedIn,hijab;
   DateTime age;
@@ -178,7 +181,87 @@ class _ProfileFormState extends State<ProfileForm> {
                   ),
                 ),
                 textFieldWidget(_nameController, "User Name", size),
+                Padding(
+                  padding: EdgeInsets.all(size.height*0.02),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    color: text_color2.withOpacity(0.4),
 
+                    child: TextFormField(
+                      controller: _emailController,
+                      autovalidateMode: AutovalidateMode.always,
+
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: GoogleFonts.openSans(
+                          color: text_color2,
+                          fontSize: size.height*0.02
+                        ),
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                    ),
+                  ),
+
+                ),
+                Padding(
+                  padding: EdgeInsets.all(size.height*0.02),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                    color: text_color2.withOpacity(0.4),
+                    child: TextFormField(
+                      controller: _passwordController,
+                      autocorrect: false,
+                      obscureText: true,
+
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: GoogleFonts.openSans(
+                            color: text_color2,
+                            fontSize: size.height*0.03
+                        ),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                    ),
+                  ),
+
+                ),
+                Padding(
+                  padding: EdgeInsets.all(size.height*0.02),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                    color: text_color2.withOpacity(0.4),
+                    child: TextFormField(
+                      controller: _validPasswordController,
+                      autocorrect: false,
+                      obscureText: true,
+
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+
+                      decoration: InputDecoration(
+                        labelText: ' Confirm Password',
+                        labelStyle: GoogleFonts.openSans(
+                            color: text_color2,
+                            fontSize: size.height*0.03
+                        ),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                    ),
+                  ),
+
+                ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Text("Birthday",style: TextStyle(color: Colors.black,fontSize: 20),),

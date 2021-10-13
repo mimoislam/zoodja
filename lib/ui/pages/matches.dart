@@ -10,7 +10,7 @@ import 'package:zoodja/repositories/matchesRepository.dart';
 import 'package:zoodja/ui/pages/messaging.dart';
 import 'package:zoodja/ui/widgets/iconWidget.dart';
 import 'package:zoodja/ui/widgets/pageTurn.dart';
-import 'package:zoodja/ui/widgets/profile.dart';
+import 'package:zoodja/ui/widgets/profileWidget.dart';
 import 'package:zoodja/ui/widgets/userGender.dart';
 class Matches extends StatefulWidget {
   final String userId;
@@ -25,7 +25,8 @@ class Matches extends StatefulWidget {
 class _MatchesState extends State<Matches> {
   MatchesRepository  matchesRepository;
   MatchesBloc _matchesBloc;
-
+  @override
+  bool get wantKeepAlive => true;
   int difference;
   getDifference(GeoPoint userLocation)async{
     Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -92,7 +93,7 @@ class _MatchesState extends State<Matches> {
                       showDialog(context: context, builder: (context) =>
                         Dialog(
                           backgroundColor: Colors.transparent,
-                          child: profileWidget(
+                          child: ProfileWidget(
                             photo: selectUser.photo,
                             photoHeight: size.height*0.8,
                             padding: size.height*0.01,
@@ -151,7 +152,7 @@ class _MatchesState extends State<Matches> {
                         ),);
                     },
                     child:
-                    profileWidget(
+                    ProfileWidget(
                       padding: size.height*0.01,
                       photo: user[index]['photourl'],
                       photoWidth: size.width*0.5,
@@ -208,7 +209,7 @@ class _MatchesState extends State<Matches> {
                               User currentUser=await matchesRepository.getUserDetails(widget.userId);
                               await getDifference(selectUser.location);
                               showDialog(context: context, builder: (context) => Dialog(
-                                child: profileWidget(
+                                child: ProfileWidget(
                                   padding: size.height*0.01,
                                   photo: selectUser.photo,
                                   photoHeight: size.height*0.69,
@@ -270,7 +271,7 @@ class _MatchesState extends State<Matches> {
                                 ),
                               ),);
                             },
-                            child: profileWidget(
+                            child: ProfileWidget(
                               padding: size.height*0.01,
                               photo: user[index].get("photoUrl"),
                               photoWidth: size.width*0.8,

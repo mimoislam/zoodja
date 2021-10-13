@@ -30,7 +30,8 @@ class _ProfileMenuState extends State<ProfileMenu> {
   bool saving=false;
   String hijab;
   User user;
-
+  @override
+  bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;

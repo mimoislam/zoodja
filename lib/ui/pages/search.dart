@@ -12,7 +12,7 @@ import 'package:zoodja/bloc/search/search_bloc.dart';
 import 'package:zoodja/models/user.dart';
 import 'package:zoodja/repositories/searchRepository.dart';
 import 'package:zoodja/ui/widgets/iconWidget.dart';
-import 'package:zoodja/ui/widgets/profile.dart';
+import 'package:zoodja/ui/widgets/profileWidget.dart';
 import 'package:zoodja/ui/widgets/userGender.dart';
 
 class Search extends StatefulWidget {
@@ -31,6 +31,7 @@ class _SearchState extends State<Search> {
   User _user,_currentUser;
   int difference;
  String animation="";
+ double opacity=0;
 getDifference(GeoPoint userLocation)async{
   Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   double location= Geolocator.distanceBetween(
@@ -39,7 +40,8 @@ getDifference(GeoPoint userLocation)async{
   difference=location.toInt();
 
 }
-
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
   _searchBloc=SearchBloc(searchRepository: _searchRepository);
@@ -125,106 +127,188 @@ getDifference(GeoPoint userLocation)async{
         }else
           getDifference(_user.location);
 
-        return Container(
-          margin: EdgeInsets.only(top: size.height*0.03),
-          alignment: Alignment.topCenter,
-          child: Stack(
-            children: [
-              profileWidget(
-                padding: size.height*0.035,
-                  photoHeight: size.height*0.7,
-                  photoWidth: size.width*0.7,
-                  photo: _user.photo,
-                  clipRadius: size.height*0.05,
-
-                  child:
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-
-                              children: [
-                               Expanded(child: Text(" "+_user.name +", "
-                                +(DateTime.now().year-_user.age.toDate().year)    .toString(),
-                                style: GoogleFonts.openSans(color: Colors.white,fontSize: size.height*0.05),
-                                 textAlign: TextAlign.center,
-                                ))
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.location_on,color: Colors.white,),
-                                Text(difference!=null?(difference/1000).floor().toString()+
-                                    "km away":"away",
-                                style: GoogleFonts.openSans(
-                                  color: Colors.white,
-                                ),
-
-                                ),
-                                SizedBox(
-                                  height: size.height*0.05,
-                                ),
+        return Draggable(
+          onDragEnd: (details) {
+            if(details.offset.dx>=75){
+              animation="love";
+              Timer(Duration(seconds: 2), () {
+               // _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
+              });
+            }
+            if(details.offset.dx<=(-75)){
+              animation="dislove";
+              Timer(Duration(seconds: 2), () {
+               // _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
+              });
+            }
+            setState(() {
+            });
+            Timer(Duration(seconds: 1), () {
+              animation="";
+              setState(() {
+              });});
+          },
+          childWhenDragging: Container(),
+          feedback: Container(
+            margin: EdgeInsets.only(top: size.height*0.03),
+            alignment: Alignment.topCenter,
+            child: Stack(
+              children: [
+                ProfileWidget(
+                    padding: size.height*0.035,
+                    photoHeight: size.height*0.8,
+                    photoWidth: size.width*0.8,
+                    photo: _user.photo,
+                    clipRadius: size.height*0.05,
 
 
-                              ],
-                            )
-                          ],
+                ),
+                animation==""?Container():Container(
+                  padding: EdgeInsets.all(size.height*0.035),
+                  alignment: Alignment.topCenter,
+                  child: animation=="love"
+                      ?love( photoHeight: size.height*0.8,photoWidth: size.width*0.9,clipRadius: size.height*0.05,)
+                      :dislove(photoHeight: size.height*0.8,photoWidth: size.width*0.9,clipRadius: size.height*0.05,),
+                )
+              ],
+            ),
+          ),
+          child: Container(
+            margin: EdgeInsets.only(top: size.height*0.03),
+            alignment: Alignment.topCenter,
+            child: Stack(
+              children: [
+                ProfileWidget(
+                  padding: size.height*0.035,
+                    photoHeight: size.height*0.8,
+                    photoWidth: size.width*0.9,
+                    photo: _user.photo,
+                    clipRadius: size.height*0.05,
+
+                    child:
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+
+                                children: [
+                                 Container(
+                                   constraints: BoxConstraints(
+                                     maxWidth: size.width*0.7
+                                   ),
+                                   child: Text(" "+_user.name +" , "
+                                    +(DateTime.now().year-_user.age.toDate().year)    .toString(),
+                                    style: GoogleFonts.openSans(color: Colors.white,fontSize: 16),
+                                     textAlign: TextAlign.start,
+                                    ),
+                                 ),
+                                  SizedBox(width: 10,),
+                                  GestureDetector(
+                                    onTap: (){},
+                                    child: Icon(Icons.info_outline,color: Colors.white,),)
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.location_on,color: Colors.white,),
+                                  Text(difference!=null?(difference/1000000).floor().toString()+
+                                      "km away":"away",
+                                  style: GoogleFonts.openSans(
+                                    color: Colors.white,
+                                  ),
+
+                                  ),
+
+
+
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.location_on,color: Colors.white,),
+                                  Text(difference!=null?(difference/1000000).floor().toString()+
+                                      "km away":"away",
+                                    style: GoogleFonts.openSans(
+                                      color: Colors.white,
+                                    ),
+
+                                  ),
+
+
+
+                                ],
+                              )
+                            ],
+                          ),
+
                         ),
 
-                      ),
 
+                  child2: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      iconWidget(Icons.clear_sharp,(){
+                        animation="dislove";
+                        setState(() {
 
-                child2: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    iconWidget(Icons.clear_sharp,(){
-                      animation="dislove";
-                      setState(() {
+                        });
+                        Timer(Duration(seconds: 2), () {
+                          animation="";
+                          setState(() {
 
-                      });
-                      Timer(Duration(seconds: 1), () {
-                         _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
-                      });
-                      animation="";
-                      setState(() {
+                          });
+                        });
+                        Timer(Duration(seconds: 2), () {
+                           // _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
+                        });
+                        setState(() {
 
-                      });
-                    },size.height*0.05,Color(0xff20A39E)),
-                    iconWidget(EvaIcons.star, (){}, size.height*0.03, Color(0xffFFBA49)),
+                        });
+                      },size.height*0.05,Color(0xff20A39E)),
+                      iconWidget(EvaIcons.star, (){}, size.height*0.03, Color(0xffFFBA49)),
 
-                    iconWidget(FontAwesomeIcons.solidHeart, ()
-                    {
-                      animation="love";
-                      setState(() {
+                      iconWidget(FontAwesomeIcons.solidHeart, ()
+                      {
+                        animation="love";
+                        setState(() {
 
-                      });
-                      Timer(Duration(seconds: 1), () {
-                        _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
-                      });
-                      animation="";
-                      setState(() {
+                        });
+                        Timer(Duration(seconds: 2), () {
+                          animation="";
+                          setState(() {
 
-                      });
+                          });
+                        });
+                        Timer(Duration(seconds: 2), () {
+                          // _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
+                        });
+                        setState(() {
 
-                    }, size.height*0.05, Colors.red),
-                  ],
+                        });
+
+                      }, size.height*0.05, Colors.red),
+                    ],
+                  )
+                  ),
+                animation==""?Container():Container(
+                  padding: EdgeInsets.all(size.height*0.035),
+                  alignment: Alignment.topCenter,
+                  child: animation=="love"
+                      ?love( photoHeight: size.height*0.8,photoWidth: size.width*0.9,clipRadius: size.height*0.05,)
+                      :dislove(photoHeight: size.height*0.8,photoWidth: size.width*0.9,clipRadius: size.height*0.05,),
                 )
-                ),
-              animation==""?Container():Container(
-                padding: EdgeInsets.all(size.height*0.035),
-                alignment: Alignment.topCenter,
-                child: animation=="love"
-                    ?love( photoHeight: size.height*0.7,photoWidth: size.width*0.7,clipRadius: size.height*0.05,)
-                    :dislove(photoHeight: size.height*0.7,photoWidth: size.width*0.7,clipRadius: size.height*0.05,),
-              )
-            ],
+              ],
+            ),
           ),
         );
       }else return Container();

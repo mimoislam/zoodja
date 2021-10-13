@@ -41,11 +41,10 @@ class Submitted extends SignUpEvent{
   List <Object> get props=>[email,password];
 }
 class SignUpWithCredentialsPressed extends SignUpEvent{
-  final String email;
-  final String password;
+  final String phone;
 
-  SignUpWithCredentialsPressed({@required this.email,@required this.password});
+  SignUpWithCredentialsPressed({@required this.phone});
   @override
-  List <Object> get props=>[email,password];
+  List <Object> get props=>[phone];
 }
 

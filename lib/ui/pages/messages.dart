@@ -19,7 +19,8 @@ class Messages extends StatefulWidget {
 class _MessagesState extends State<Messages> {
   MessageRepository messageRepository=MessageRepository();
   MessageBloc _messageBloc;
-
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     messageRepository=widget.messageRepository;

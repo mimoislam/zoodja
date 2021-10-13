@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,38 +19,33 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  final TextEditingController _emailController=TextEditingController();
-  final TextEditingController _passwordController=TextEditingController();
-  final TextEditingController _validPasswordController=TextEditingController();
-  final TextEditingController _userNameController=TextEditingController();
+
+  final TextEditingController _phoneController=TextEditingController();
+  final TextEditingController _verificationController=TextEditingController();
   SignUpBloc _signUpBloc;
   UserRepository get _userRepository=>widget._userRepository;
 
-  bool  get isPopulated=> _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty&&_validPasswordController.text.isNotEmpty;
-
+bool show=false;
   bool isSignUpButtonEnabled(SignUpState state){
 
-    return isPopulated && !state.isSubmitting &&_passwordController.text==_validPasswordController.text;
   }
 
   @override
   void initState() {
     _signUpBloc=BlocProvider.of<SignUpBloc>(context);
 
-    _emailController.addListener( _onEmailChanged);
-    _passwordController.addListener(onPasswordChanged);
-    _validPasswordController.addListener(onPasswordChanged);
     super.initState();
   }
-   _onFormSubmitted(){
-    _signUpBloc.add(
-        SignUpWithCredentialsPressed
-          (
-          email: _emailController.text,
-          password: _passwordController.text
-          )
-    );
+   _onFormSubmitted()async{
+    await _userRepository.verifyPhoneNumber("+213"+_phoneController.text);
+    if(_userRepository.verification==""){
 
+      return ;
+    }
+    show=true;
+    setState(() {
+    });
+    print(_userRepository.verification);
   }
 
   @override
@@ -88,7 +84,7 @@ class _SignUpFormState extends State<SignUpForm> {
               );
             }
             if (state.isSuccess){
-              print('isSuccess');
+
               BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
               Navigator.of(context).pop();
 
@@ -106,7 +102,6 @@ class _SignUpFormState extends State<SignUpForm> {
                 width: size.width,
                 height: size.height,
                 child: ListView(
-
                   children: [
                     SizedBox(height: 20,),
                     Center(
@@ -141,7 +136,35 @@ class _SignUpFormState extends State<SignUpForm> {
                         ],
                       ),
                     ),
+                    SizedBox(height:30,),
 
+                    show==false?Padding(
+                      padding: EdgeInsets.all(size.height*0.02),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        color: text_color2.withOpacity(0.4),
+
+                        child: TextFormField(
+
+                          controller: _phoneController,
+                          autovalidateMode: AutovalidateMode.always,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            prefix: Text("+213"),
+                            labelText: 'Phone Number',
+                            labelStyle: GoogleFonts.openSans(
+                              color: text_color2,
+                              fontSize: size.height*0.02
+                            ),
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                          ),
+                        ),
+                      ),
+
+                    ):
                     Padding(
                       padding: EdgeInsets.all(size.height*0.02),
                       child: Container(
@@ -149,13 +172,11 @@ class _SignUpFormState extends State<SignUpForm> {
                         color: text_color2.withOpacity(0.4),
 
                         child: TextFormField(
-                          controller: _emailController,
+                          controller: _verificationController,
                           autovalidateMode: AutovalidateMode.always,
-                          validator: (_){
-                            return !state.isEmailValid?'Invalid Email':null;
-                          },
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            labelText: 'Email',
+                            labelText: 'Verification Code',
                             labelStyle: GoogleFonts.openSans(
                               color: text_color2,
                               fontSize: size.height*0.02
@@ -169,89 +190,66 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
 
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(size.height*0.02),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                        color: text_color2.withOpacity(0.4),
-                        child: TextFormField(
-                          controller: _passwordController,
-                          autocorrect: false,
-                          obscureText: true,
 
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                            validator: (_) {
-                              return !state.isPasswordValid
-                                  ? "Invalid Password"
-                                  : null;
-                            },
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            labelStyle: GoogleFonts.openSans(
-                                color: text_color2,
-                                fontSize: size.height*0.03
-                            ),
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ),
-                        ),
-                      ),
-
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(size.height*0.02),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                        color: text_color2.withOpacity(0.4),
-                        child: TextFormField(
-                          controller: _validPasswordController,
-                          autocorrect: false,
-                          obscureText: true,
-
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (_) {
-                            return !state.isPasswordValid
-                                ? "Invalid Validation"
-                                : null;
-                          },
-                          decoration: InputDecoration(
-                            labelText: ' Confirm Password',
-                            labelStyle: GoogleFonts.openSans(
-                                color: text_color2,
-                                fontSize: size.height*0.03
-                            ),
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ),
-                        ),
-                      ),
-
-                    ),
-
-                    Padding(
+                    SizedBox(height: 100,),
+                    show==false?Padding(
                       padding: EdgeInsets.all(size.height*0.02),
                       child: GestureDetector(
-                        onTap: isSignUpButtonEnabled(state)
-                            ?_onFormSubmitted
-                            :null,
+                        onTap:
+                            _onFormSubmitted
+                            ,
                         child: Container(
                           width: size.width*0.7,
                           height: size.height*0.1,
                           decoration: BoxDecoration(
-                            color: isSignUpButtonEnabled(state)?Colors.red:
-                                Colors.blue,
+                            color: Colors.red
+                               ,
                             borderRadius: BorderRadius.circular(size.height*0.04),
 
                           ),
                           child: Center(
                             child: Text(
                               "Sign Up",
+                              style: GoogleFonts.openSans(
+                                fontSize: size.height*0.025,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+
+                        ),
+                      ),
+                    )
+                        : Padding(
+                      padding: EdgeInsets.all(size.height*0.02),
+                      child: GestureDetector(
+                        onTap:
+                        ()async{
+                          PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: _userRepository.verification, smsCode: _verificationController.text);
+                          print(credential);
+                         await _userRepository.signInWithCredential(credential);
+                          _signUpBloc.add(
+
+                              SignUpWithCredentialsPressed
+                                (
+                                  phone: "+213"+_phoneController.text
+                              )
+                          );
+
+                         }
+                            ,
+                        child: Container(
+                          width: size.width*0.7,
+                          height: size.height*0.1,
+                          decoration: BoxDecoration(
+                            color: Colors.red
+                               ,
+                            borderRadius: BorderRadius.circular(size.height*0.04),
+
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Verifie",
                               style: GoogleFonts.openSans(
                                 fontSize: size.height*0.025,
                                 color: Colors.white,
@@ -271,21 +269,4 @@ class _SignUpFormState extends State<SignUpForm> {
         );
   }
 
-  void _onEmailChanged() {
-    _signUpBloc.add(EmailChanged(email: _emailController.text));
-
-  }
-
-  void onPasswordChanged() {
-    _signUpBloc.add(PasswordChanged(password: _passwordController.text));
-
-  }
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _validPasswordController.dispose();
-    _emailController.dispose();
-    super.dispose();
-  }
 }
