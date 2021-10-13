@@ -12,6 +12,7 @@ class User{
   String photo;
   String profession;
   String line;
+  String love;
   String ville;
   String email;
   String eyesColor;
@@ -37,5 +38,5 @@ class User{
         this.eyesColor,
         this.email,
         this.profession,
-      this.line});
+      this.line,this.love});
 }

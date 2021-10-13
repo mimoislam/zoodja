@@ -142,6 +142,8 @@ class UserRepository{
         "eyesColor":user.eyesColor,
         "email":user.email,
         "ville":user.ville,
+        "line":user.line,
+        "love":user.love,
         "withHijab":null,
       });
       });

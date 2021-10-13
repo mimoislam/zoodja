@@ -24,6 +24,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
   TextEditingController _lineEditingController=TextEditingController();
   String hijab;
   String dropdownValue = 'Brown';
+  String dropdownValue2 = "Film";
   ProfileBloc _profileBloc;
 
   List<String> eyesColor=[
@@ -33,6 +34,9 @@ class _ProfileForm2State extends State<ProfileForm2> {
     'Amber',
     'Gray',
     'Green'
+  ];
+  List<String> love=[
+    "Film", 'voyages', 'sport', 'TV', 'Cuisine'
   ];
   @override
   Widget build(BuildContext context) {
@@ -138,6 +142,33 @@ class _ProfileForm2State extends State<ProfileForm2> {
                   ),
                   SizedBox(height: 30,),
                   Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20)
+                      ),
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: dropdownValue2,
+                        elevation: 16,
+
+                        onChanged: (String newValue) {
+                          setState(() {
+                            dropdownValue2 = newValue;
+                          });
+                        },
+                        items:love
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      )
+                  ),
+                  SizedBox(height: 30,),
+                  Container(
 
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.black),
@@ -229,20 +260,16 @@ class _ProfileForm2State extends State<ProfileForm2> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: GestureDetector(
-                      onTap: isFilled?(){ User user;
+                      onTap: isFilled?(){ User user1;
                       if(widget.user.gender=="Female"){
-                        user=User(name: widget.user.name, email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,hijab: hijab,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
+                        user1=User(name: widget.user.name,love:dropdownValue2,ville: _villeEditingController.text, email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,hijab: hijab,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
 
-                        // _profileBloc.add(Submitting(name: _nameController.text, gender: gender, interestedIn: interestedIn, age: age, location: location, photo: photo,hijab:hijab)
-                        //
-                        // );
                       }else
                       {
-                        user=User(name: widget.user.name,  email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
-
+                        user1=User(name: widget.user.name,ville: _villeEditingController.text,love:dropdownValue2,  email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
                       }
 
-                      _profileBloc.add(Submitting(user:user));
+                      _profileBloc.add(Submitting(user:user1));
                       Navigator.pop(context);
                       }:null,
                       child: Center(

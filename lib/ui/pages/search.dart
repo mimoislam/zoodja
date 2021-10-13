@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:zoodja/bloc/search/search_bloc.dart';
 import 'package:zoodja/models/user.dart';
 import 'package:zoodja/repositories/searchRepository.dart';
+import 'package:zoodja/ui/pages/profileItem.dart';
 import 'package:zoodja/ui/widgets/iconWidget.dart';
 import 'package:zoodja/ui/widgets/profileWidget.dart';
 import 'package:zoodja/ui/widgets/userGender.dart';
@@ -113,6 +114,9 @@ getDifference(GeoPoint userLocation)async{
       if(state is LoadUserState){
         _user=state.user;
         _currentUser=state.currentUser;
+        List<User> list=[
+          _user,
+        ];
         if(_user.location==null){
 
           return Center(
@@ -122,6 +126,7 @@ getDifference(GeoPoint userLocation)async{
               fontWeight: FontWeight.bold,
               color: Colors.black
             ),
+              textAlign: TextAlign.center,
             ),
           );
         }else
@@ -131,14 +136,16 @@ getDifference(GeoPoint userLocation)async{
           onDragEnd: (details) {
             if(details.offset.dx>=75){
               animation="love";
-              Timer(Duration(seconds: 2), () {
-               // _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
+              Timer(Duration(seconds: 2), () async{
+
+                _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
               });
             }
             if(details.offset.dx<=(-75)){
               animation="dislove";
-              Timer(Duration(seconds: 2), () {
-               // _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
+              Timer(Duration(seconds: 2), ()async {
+
+                _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
               });
             }
             setState(() {
@@ -184,7 +191,6 @@ getDifference(GeoPoint userLocation)async{
                     photoWidth: size.width*0.9,
                     photo: _user.photo,
                     clipRadius: size.height*0.05,
-
                     child:
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
@@ -208,26 +214,23 @@ getDifference(GeoPoint userLocation)async{
                                  ),
                                   SizedBox(width: 10,),
                                   GestureDetector(
-                                    onTap: (){},
+                                    onTap: (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileItem(user: _user,difference:difference),));
+                                    },
                                     child: Icon(Icons.info_outline,color: Colors.white,),)
                                 ],
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(Icons.location_on,color: Colors.white,),
                                   Text(difference!=null?(difference/1000000).floor().toString()+
-                                      "km away":"away",
+                                      " km ":"away" +", "+_user.love+", "+_user.ville,
                                   style: GoogleFonts.openSans(
                                     color: Colors.white,
                                   ),
-
                                   ),
-
-
-
                                 ],
                               ),
                               Row(
@@ -236,11 +239,11 @@ getDifference(GeoPoint userLocation)async{
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(Icons.location_on,color: Colors.white,),
-                                  Text(difference!=null?(difference/1000000).floor().toString()+
-                                      "km away":"away",
+                                  Text(_user.line,
                                     style: GoogleFonts.openSans(
                                       color: Colors.white,
                                     ),
+                                    overflow: TextOverflow.ellipsis,
 
                                   ),
 
@@ -269,7 +272,7 @@ getDifference(GeoPoint userLocation)async{
                           });
                         });
                         Timer(Duration(seconds: 2), () {
-                           // _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
+                            _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
                         });
                         setState(() {
 
@@ -290,7 +293,7 @@ getDifference(GeoPoint userLocation)async{
                           });
                         });
                         Timer(Duration(seconds: 2), () {
-                          // _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
+                           _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
                         });
                         setState(() {
 

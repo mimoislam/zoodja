@@ -53,7 +53,7 @@ class _ProfileFormState extends State<ProfileForm> {
     User user;
     if(gender=="Female"){
       interestedIn="Male";
-      user=User(name: _nameController.text, gender: gender, interestedIn: interestedIn, ages: age, location: location, photoFile: photo);
+      user=User(name: _nameController.text, gender: gender, interestedIn: interestedIn, ages: age, location: location, photoFile: photo,email: _emailController.text);
 
       // _profileBloc.add(Submitting(name: _nameController.text, gender: gender, interestedIn: interestedIn, age: age, location: location, photo: photo,hijab:hijab)
       //

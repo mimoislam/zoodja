@@ -172,34 +172,7 @@ class _LoginFormState extends State<LoginForm> {
 
                       ),
 
-                      Padding(
-                        padding: EdgeInsets.all(size.height*0.02),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          color: text_color2.withOpacity(0.4),
-                          child: TextFormField(
-                            autocorrect: false,
-                            obscureText: true,
 
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            validator: (_){
-                              return !state.isPasswordValid?'Invalid Password':null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: GoogleFonts.openSans(
-                                  color: text_color2,
-                                  fontSize: size.height*0.02
-                              ),
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                            ),
-                          ),
-                        ),
-
-                      ),
                     ],
                   ):Padding(
                     padding: EdgeInsets.all(size.height*0.02),
