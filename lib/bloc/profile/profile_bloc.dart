@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:zoodja/models/user.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 
 part 'profile_event.dart';
@@ -46,14 +47,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final uid=await _userRepository.getUser();
 
       yield* _mapSubmittedToState(
-        gender:event.gender,
-        photo:event.photo,
-        name:event.name,
+
         userId:uid,
-        age:event.age,
-        location:event.location,
-        interestedIn:event.interestedIn,
-        hijab: event.hijab,
+      user:event.user
       );
     }
 
@@ -97,20 +93,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Stream<ProfileState> _mapSubmittedToState(
       {
-        File photo,
-        String name,
+       User user,
         String userId,
-        DateTime age,
-        GeoPoint location,
-        String interestedIn,
-        String gender,
-        String hijab
+
       }) async*{
         print("object");
         yield ProfileState.loading();
           try{
 
-            await _userRepository.profileSetup(photo, userId, name, gender, interestedIn, age, location,hijab);
+            await _userRepository.profileSetup(user:user,userId: userId);
             yield ProfileState.success();
           }catch(_){
             yield ProfileState.failure();

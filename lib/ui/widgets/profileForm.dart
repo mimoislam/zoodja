@@ -11,9 +11,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/login/login_bloc.dart';
 import 'package:zoodja/bloc/profile/profile_bloc.dart';
+import 'package:zoodja/models/user.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
 import 'package:zoodja/ui/widgets/gender.dart';
+import 'package:zoodja/ui/widgets/profileForm2.dart';
 
 class ProfileForm extends StatefulWidget {
   final UserRepository _userRepository;
@@ -31,10 +33,8 @@ class _ProfileFormState extends State<ProfileForm> {
   UserRepository get _userRepository=>widget._userRepository;
 
   final TextEditingController _emailController=TextEditingController();
-  final TextEditingController _passwordController=TextEditingController();
-  final TextEditingController _validPasswordController=TextEditingController();
 
-  String gender,interestedIn,hijab;
+  String gender,interestedIn;
   DateTime age;
   File photo;
   GeoPoint location;
@@ -42,7 +42,7 @@ class _ProfileFormState extends State<ProfileForm> {
   bool get isFilled=>  _nameController.text.isNotEmpty&& gender !=null
   &&photo!=null&&age!=null;
  bool isButtonEnabled(ProfileState state){
-   return isFilled &&!state.isSubmitting;
+   return isFilled ;
  }
   _getLocation ()async{
    Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -50,17 +50,24 @@ class _ProfileFormState extends State<ProfileForm> {
   }
   _onSubmitted()async{
     await _getLocation();
+    User user;
     if(gender=="Female"){
       interestedIn="Male";
-      _profileBloc.add(Submitting(name: _nameController.text, gender: gender, interestedIn: interestedIn, age: age, location: location, photo: photo)
-      );
+      user=User(name: _nameController.text, gender: gender, interestedIn: interestedIn, ages: age, location: location, photoFile: photo);
+
+      // _profileBloc.add(Submitting(name: _nameController.text, gender: gender, interestedIn: interestedIn, age: age, location: location, photo: photo,hijab:hijab)
+      //
+      // );
     }else
       {
         interestedIn="Female";
-        _profileBloc.add(Submitting(name: _nameController.text, gender: gender, interestedIn: interestedIn, age: age, location: location, photo: photo,hijab:hijab)
-        );
+        user=User(name: _nameController.text, gender: gender, interestedIn: interestedIn, ages: age, location: location, photoFile: photo,email:_emailController.text);
+        //
+        // _profileBloc.add(Submitting(name: _nameController.text, gender: gender, interestedIn: interestedIn, age: age, location: location, photo: photo)
+        // );
       }
 
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileForm2(user: user,profileBloc: _profileBloc,),));
 
 
   }
@@ -68,8 +75,8 @@ class _ProfileFormState extends State<ProfileForm> {
   @override
   void initState() {
    _getLocation();
-   hijab="Veiled";
    _profileBloc=BlocProvider.of<ProfileBloc>(context);
+   gender="Female";
     super.initState();
   }
 
@@ -195,7 +202,7 @@ class _ProfileFormState extends State<ProfileForm> {
                         labelText: 'Email',
                         labelStyle: GoogleFonts.openSans(
                           color: text_color2,
-                          fontSize: size.height*0.02
+                          fontSize: 13
                         ),
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
@@ -206,70 +213,12 @@ class _ProfileFormState extends State<ProfileForm> {
                   ),
 
                 ),
-                Padding(
-                  padding: EdgeInsets.all(size.height*0.02),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                    color: text_color2.withOpacity(0.4),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      autocorrect: false,
-                      obscureText: true,
 
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
 
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: GoogleFonts.openSans(
-                            color: text_color2,
-                            fontSize: size.height*0.03
-                        ),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                    ),
-                  ),
-
-                ),
-                Padding(
-                  padding: EdgeInsets.all(size.height*0.02),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                    color: text_color2.withOpacity(0.4),
-                    child: TextFormField(
-                      controller: _validPasswordController,
-                      autocorrect: false,
-                      obscureText: true,
-
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-
-                      decoration: InputDecoration(
-                        labelText: ' Confirm Password',
-                        labelStyle: GoogleFonts.openSans(
-                            color: text_color2,
-                            fontSize: size.height*0.03
-                        ),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                    ),
-                  ),
-
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Text("Birthday",style: TextStyle(color: Colors.black,fontSize: 20),),
-                ),
                 GestureDetector(
                     onTap: (){
                       DatePicker.showDatePicker(context,showTitleActions: true,
-                        minTime: DateTime(1900,1,1),maxTime: DateTime(DateTime.now().year-19,1,1),
+                        minTime: DateTime(DateTime.now().year-80,1,1),maxTime: DateTime(DateTime.now().year-19,1,1),
                         onConfirm: (time) {
                           setState(() {
                             age=time;
@@ -286,15 +235,20 @@ class _ProfileFormState extends State<ProfileForm> {
                         padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
                         color: text_color2.withOpacity(0.4),
                         child: TextField(
-                          enabled: false,
-                          controller: _ageController,
-                          decoration: InputDecoration(
-
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
+                            enabled: false,
+                            controller: _ageController,
+                            decoration: InputDecoration(
+                            labelText:"Birthday" ,
+                            labelStyle: GoogleFonts.openSans(
+                            color: text_color2,
+                            fontSize: 13
+                            ),
+                              hintText: DateTime(DateTime.now().year-19,1,1).year.toString()+"/"+DateTime(DateTime.now().year-19,1,1).month.toString()+"/"+DateTime(DateTime.now().year-19,1,1).day.toString(),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
                           ),
 
                         ),
@@ -329,56 +283,7 @@ class _ProfileFormState extends State<ProfileForm> {
                   ],
                 ),
                 SizedBox(height: 30,),
-                gender=="Female"?Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          hijab="Veiled";
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
 
-                        decoration: BoxDecoration(
-                          color: text_color2.withOpacity(0.4)
-                        ),
-                        child: Text("Veiled",style: GoogleFonts.assistant(          color:hijab=="Veiled"?Colors.white:Color(0xff8969AE)),),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          hijab="Unveiled";
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-
-                        decoration: BoxDecoration(
-                            color: text_color2.withOpacity(0.4)
-                        ),
-                        child: Text("Unveiled",style: GoogleFonts.assistant(          color:hijab=="Unveiled"?Colors.white:Color(0xff8969AE)),),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          hijab="Can't say";
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-
-                        decoration: BoxDecoration(
-                            color: text_color2.withOpacity(0.4)
-                        ),
-                        child: Text("Can't say",style: GoogleFonts.assistant(          color:hijab=="Can't say"?Colors.white:Color(0xff8969AE)),),
-                      ),
-                    )
-                  ],
-                ):Container(),
 
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),

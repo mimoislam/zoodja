@@ -44,7 +44,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield*  _mapPasswordChangedToState(event.password);
     }
     else if(event is LoginWithCredentialsPressed){
-      yield* _mapLoginWithCredentialsPressedToState(email:event.email,password:event.password);
+      yield* _mapLoginWithCredentialsPressedToState();
     }
 
   }
@@ -58,10 +58,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   }
 
-  Stream<LoginState> _mapLoginWithCredentialsPressedToState({String email, String password})async* {
+  Stream<LoginState> _mapLoginWithCredentialsPressedToState()async* {
     yield LoginState.loading();
     try{
-      await _userRepository.signInWithEmail(email, password);
+      // bool exs=await _userRepository.LoginWithPhoneAndPassword(phone, password);
       yield LoginState.success();
     }
     catch(e){

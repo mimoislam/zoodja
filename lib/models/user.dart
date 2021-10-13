@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User{
@@ -8,7 +10,14 @@ class User{
   String hijab ;
   String interestedIn;
   String photo;
+  String profession;
+  String line;
+  String ville;
+  String email;
+  String eyesColor;
+  File photoFile;
   Timestamp age;
+  DateTime ages;
   int filter;
   GeoPoint location ;
   User(
@@ -18,5 +27,15 @@ class User{
       this.interestedIn,
       this.photo,
       this.age,
-      this.location,this.filter,this.withHijab,this.hijab});
+      this.location,
+        this.filter,
+        this.withHijab,
+        this.hijab,
+        this.photoFile,
+        this.ages,
+        this.ville,
+        this.eyesColor,
+        this.email,
+        this.profession,
+      this.line});
 }

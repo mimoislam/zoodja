@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:zoodja/models/user.dart' as user;
 
 class UserRepository{
   final FirebaseAuth _firebaseAuth;
@@ -43,18 +44,22 @@ class UserRepository{
   }
 
   verifyPhoneNumber( String phone)async{
+
     await _firebaseAuth.verifyPhoneNumber(
       phoneNumber: phone,
       codeSent: (String verificationId, int resendToken) async {
         verification =verificationId;
       },
-      codeAutoRetrievalTimeout: (String verificationId) {  },
+      codeAutoRetrievalTimeout: (String verificationId) {   verification =verificationId;  },
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {  },
       verificationFailed: (FirebaseAuthException error) {
         verification="";
+        print(error);
       },
     );
+
   }
+
 
 
   Future<void>signUpWithEmail(String email, String password)async {
@@ -81,25 +86,29 @@ class UserRepository{
     }
   }
 
-  LoginWithPhoneAndPassword(String phoneNumber, String password)async{
-    bool exist=true;
+  Future <bool>loginWithPhoneAndPassword(String phoneNumber, String password)async{
     bool correctPassword=false;
     try{
-      await _firebaseAuth.signInWithPhoneNumber(phoneNumber);
+
+      await _firestore.collection('users').get().then((users) async{
+        for (var user in users.docs) {
+       if((user['phone']==phoneNumber)&&(user['password']==password)){
+         correctPassword=true;
+       }}
+      });
       String uid=_firebaseAuth.currentUser.uid;
       await _firestore.
       collection("users").
       doc(uid).
       get().then((value) {
         if(password==value["password"]){
-          correctPassword=true;
         }
       });
     }
     catch(e){
-      bool exist=false;
-
+      print(e);
     }
+    return correctPassword;
 
   }
 
@@ -115,30 +124,25 @@ class UserRepository{
   Future <String>getUser()async{
     return (_firebaseAuth.currentUser).uid;
   }
-  Future <void>profileSetup(
-      File photo,
-      String userId,
-      String name,
-      String gender,
-      String interestedIn,
-      DateTime age,
-      GeoPoint location,String hijab)async{
-    print(hijab);
+  Future <void>profileSetup({user.User user,String userId})async{
     UploadTask uploadTask;
-    uploadTask=FirebaseStorage.instance.ref().child('userPhotos').child(userId).child(userId).putFile(photo);
+    uploadTask=FirebaseStorage.instance.ref().child('userPhotos').child(userId).child(userId).putFile(user.photoFile);
     return await uploadTask.then((ref) async {
       await ref.ref.getDownloadURL().then((url) async {
       await _firestore.collection('users').doc(userId).set({
         'uid':userId,
         'photourl':url,
-        'name':name,
-        'location':location,
-        'gender':gender,
-        'interestedIn':interestedIn,
-        'age':age,
+        'name':user.name,
+        'location':user.location,
+        'gender':user.gender,
+        'interestedIn':user.interestedIn,
+        'age':user.ages,
         "filter":500,
-        "hijab":hijab,
-
+        "hijab":user.hijab,
+        "eyesColor":user.eyesColor,
+        "email":user.email,
+        "ville":user.ville,
+        "withHijab":null,
       });
       });
     });

@@ -49,22 +49,13 @@ class LocationChanged extends ProfileEvent{
   List <Object> get props=>[location];
 }
 class Submitting extends ProfileEvent{
-  final String name,gender,interestedIn,hijab;
-  final DateTime age;
-  final GeoPoint location;
-  final File photo;
+final User user;
 
   Submitting(
-      { @required this.name,
-        @required this.gender,
-        @required this.interestedIn,
-        @required this.age,
-        @required this.location,
-        @required this.photo,
-        this.hijab
+      { @required this.user
       });
 
-  List <Object> get props=>[location,age,name,gender,interestedIn,photo,this.hijab];
+  List <Object> get props=>[user];
 
 
 }

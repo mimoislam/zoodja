@@ -29,6 +29,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
   TextEditingController controller=TextEditingController();
   bool saving=false;
   String hijab;
+  String withHijab;
   User user;
   @override
   bool get wantKeepAlive => true;
@@ -245,6 +246,56 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     });
                   },
                 ),
+                user.gender=="Male"?Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          withHijab="Veiled";
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+
+                        decoration: BoxDecoration(
+                            color: text_color2.withOpacity(0.4)
+                        ),
+                        child: Text("Veiled",style: GoogleFonts.assistant(          color:withHijab=="Veiled"?Colors.white:Color(0xff8969AE)),),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          withHijab="Unveiled";
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+
+                        decoration: BoxDecoration(
+                            color: text_color2.withOpacity(0.4)
+                        ),
+                        child: Text("Unveiled",style: GoogleFonts.assistant(          color:withHijab=="Unveiled"?Colors.white:Color(0xff8969AE)),),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          withHijab="";
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+
+                        decoration: BoxDecoration(
+                            color: text_color2.withOpacity(0.4)
+                        ),
+                        child: Text("No matter",style: GoogleFonts.assistant(          color:withHijab==""?Colors.white:Color(0xff8969AE)),),
+                      ),
+                    )
+                  ],
+                ):Container(),
                 SizedBox(
                   height: 50,
                 ),
@@ -261,7 +312,6 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         child: Container(
                           width: size.width*0.7,
                           padding: EdgeInsets.symmetric(vertical: 5),
-
                           decoration: BoxDecoration(
                             color: Color(0xff18516E),
                             borderRadius: BorderRadius.circular(10)
@@ -311,10 +361,10 @@ class _ProfileMenuState extends State<ProfileMenu> {
 
      user= await messageRepository.getUserDetails(widget.userId);
      _currentSliderValue=(user.filter).toDouble();
+     withHijab=(user.withHijab);
      print(photo);
     controller.text=user.name;
     hijab=user.hijab;
-     setState(() {
-     });
+     setState(() {});
   }
 }
