@@ -63,7 +63,7 @@ class _ProfileItemState extends State<ProfileItem> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text((difference!=null?(difference/1000000).floor().toString()+
-                                        " km":"away")+", "+user.love+", "+user.ville,
+                                        " km":"away")+", "+user.love+", ",
                                       style: GoogleFonts.openSans(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w600

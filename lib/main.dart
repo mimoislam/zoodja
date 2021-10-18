@@ -9,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/blocDelegate.dart';
 import 'package:zoodja/repositories/userRepository.dart';
+import 'package:zoodja/ui/constats.dart';
 import 'package:zoodja/ui/pages/home.dart';
  AndroidNotificationChannel channel;
  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;

@@ -13,7 +13,7 @@ class User{
   String profession;
   String line;
   String love;
-  String ville;
+  int ville;
   String email;
   String eyesColor;
   File photoFile;

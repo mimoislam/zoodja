@@ -262,18 +262,16 @@ class _LoginFormState extends State<LoginForm> {
                         print(credential);
                         try{
                           await userRepository.signInWithCredential(credential);
-                         print(await userRepository.getUser());
+                          _loginBloc.add(
+                              LoginWithCredentialsPressed
+                                ()
+                          );
                         }
                         catch(e){
                           show=false;
-                          setState(() {
-
-                          });
+                          setState(() {});
                         }
-                            _loginBloc.add(
-                                LoginWithCredentialsPressed
-                                  ()
-                            );
+
 
                       }
                       ,

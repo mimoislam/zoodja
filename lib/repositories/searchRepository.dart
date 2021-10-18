@@ -119,7 +119,8 @@ class SearchRepository {
             (!matchedList.contains(user.id)) &&
             (user.id != userId) &&
             (currentUser.interestedIn == user['gender']) &&
-            (user['interestedIn'] == currentUser.gender)&&(currentUser.filter.toInt()>=dif)) {
+            (user['interestedIn'] == currentUser.gender)
+            &&(currentUser.filter.toInt()>=dif)) {
           _user.uid = user.id;
           _user.name = user['name'];
           _user.photo = user['photourl'];
@@ -146,6 +147,57 @@ class SearchRepository {
            _user.interestedIn = user['interestedIn'];
            break;
        }
+      }
+      }
+    });
+    return _user;
+  }
+  Future<User> getUserNotExistInList({userId, List<String> userss}) async {
+
+    User _user = User();
+    List<String> chosenList = await getChosenList(userId);
+    List<String> matchedList = await getMatchedList(userId);
+    User currentUser = await getUserInterests(userId);
+    await _firestore.collection('users').get().then((users) async{
+      for (var user in users.docs) {
+        if(!userss.contains(user.id)){
+
+
+        int dif=((await getDifference(user['location']))/1000000).toInt();
+        if(( currentUser.gender=="Female")||(currentUser.withHijab=="")||(currentUser.withHijab==null)){
+          if ((!chosenList.contains(user.id)) &&
+              (!matchedList.contains(user.id)) &&
+              (user.id != userId) &&
+              (currentUser.interestedIn == user['gender']) &&
+              (user['interestedIn'] == currentUser.gender)
+              &&(currentUser.filter.toInt()>=dif)) {
+            _user.uid = user.id;
+            _user.name = user['name'];
+            _user.photo = user['photourl'];
+            _user.age = user['age'];
+            _user.location = user['location'];
+            _user.love = user['love'];
+            _user.line = user['line'];
+            _user.gender = user['gender'];
+            _user.interestedIn = user['interestedIn'];
+            break;
+          }
+        }else{
+          if ((!chosenList.contains(user.id)) &&
+              (!matchedList.contains(user.id)) &&
+              (user.id != userId) &&(currentUser.withHijab==user['hijab']) &&
+              (currentUser.interestedIn == user['gender']) &&
+              (user['interestedIn'] == currentUser.gender)&&(currentUser.filter.toInt()>=dif)) {
+            _user.uid = user.id;
+            _user.name = user['name'];
+            _user.photo = user['photourl'];
+            _user.age = user['age'];
+            _user.location = user['location'];
+            _user.gender = user['gender'];
+            _user.interestedIn = user['interestedIn'];
+            break;
+          }
+        }
       }
       }
     });

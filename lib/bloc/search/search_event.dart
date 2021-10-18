@@ -8,13 +8,20 @@ List<Object> get props => [];
 
 class LoadUserEvent extends SearchEvent{
   final String userId;
-  LoadUserEvent({this.userId});
+  final List <User> users;
+  LoadUserEvent({this.userId,this.users});
   @override
-  List<Object> get props => [userId];
+  List<Object> get props => [userId,users];
 }
 class LoadedUserEvent extends SearchEvent{
   final String userId;
   LoadedUserEvent({this.userId});
+  @override
+  List<Object> get props => [userId];
+}
+class ChangeUserEvent extends SearchEvent{
+  final String userId;
+  ChangeUserEvent({this.userId});
   @override
   List<Object> get props => [userId];
 }

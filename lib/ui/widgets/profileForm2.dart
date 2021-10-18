@@ -17,14 +17,16 @@ class ProfileForm2 extends StatefulWidget {
 
 
 class _ProfileForm2State extends State<ProfileForm2> {
-  bool get  isFilled=> _villeEditingController.text.isNotEmpty &&_professionEditingController.text.isNotEmpty&&_lineEditingController.text.isNotEmpty;
+  bool get  isFilled=> _professionEditingController.text.isNotEmpty&&_lineEditingController.text.isNotEmpty;
 
-  TextEditingController _villeEditingController=TextEditingController();
   TextEditingController _professionEditingController=TextEditingController();
   TextEditingController _lineEditingController=TextEditingController();
   String hijab;
   String dropdownValue = 'Brown';
   String dropdownValue2 = "Film";
+  int wilaya = 1;
+  int commune = 0;
+  List listCommune = [];
   ProfileBloc _profileBloc;
 
   List<String> eyesColor=[
@@ -93,27 +95,89 @@ class _ProfileForm2State extends State<ProfileForm2> {
             padding: EdgeInsets.symmetric(horizontal: 10,vertical: 20),
             child: SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    child: Text("Complete Your Profile",  style: GoogleFonts.openSans(fontSize: 20, color: text_color, fontWeight: FontWeight.bold),),
+                  Center(
+                    child: Container(
+                      child: Text("Complete Your Profile",  style: GoogleFonts.openSans(fontSize: 20, color: text_color, fontWeight: FontWeight.bold),),
+                    ),
                   ),
-                  SizedBox(height: 30,),
+                  SizedBox(height: 20,),
                   Container(
+                      margin: EdgeInsets.all(10),
+                      child: Text("Wilaya", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
 
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(20)
+                  DropdownButtonFormField<int>(
+                    value: wilaya,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: const BorderRadius.all(
+                            const Radius.circular(30.0),
+                          ),
+                        ),
+
                     ),
-                    child: TextFormField(
-                      controller: _villeEditingController,
+                    icon: const Icon(Icons.arrow_drop_down),
+                    iconSize: 24,
+                    elevation: 16,
+
+                    onChanged: (int newValue) {
+                      setState(() {
+                        wilaya = newValue;
+                        getCommune();
+                      });
+                    },
+                    items: algeria_wilaya
+                        .map<DropdownMenuItem<int>>(( value) {
+                      return DropdownMenuItem<int>(
+                        value: value['wilaya_code'],
+                        child: Text(value["wilaya_name_ascii"]),
+                      );
+                    }).toList(),
+                  ) ,
+                  SizedBox(height: 20,),
+                  Container(
+                      margin: EdgeInsets.all(10),
+                      child: Text("Commune", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+
+                  FutureBuilder(
+                    future: getCommune(),
+                    builder: (context, snapshot) {
+                    return DropdownButtonFormField<int>(
+                      value: commune,
                       decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                          labelText: "Ville",
-                          border: InputBorder.none
+                        border: OutlineInputBorder(
+                          borderRadius: const BorderRadius.all(
+                            const Radius.circular(30.0),
+                          ),
+                        ),
+
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 30,),
+                      icon: const Icon(Icons.arrow_drop_down),
+                      iconSize: 24,
+                      elevation: 16,
+
+                      onChanged: (int newValue) {
+                        setState(() {
+                          commune = newValue;
+                        });
+                      },
+                      items: listCommune
+                          .map<DropdownMenuItem<int>>(( value) {
+                        return DropdownMenuItem<int>(
+                          value: value['id'],
+                          child: Text(value["commune_name_ascii"]),
+                        );
+                      }).toList(),
+                    ) ;
+                  },),
+
+                  SizedBox(height: 20,),
+                  Container(
+                      margin: EdgeInsets.all(10),
+                      child: Text("Eyes Color ", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+
                   Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
 
@@ -125,7 +189,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                         isExpanded: true,
                         value: dropdownValue,
                         elevation: 16,
-
+                        underline: Container(),
                         onChanged: (String newValue) {
                           setState(() {
                             dropdownValue = newValue;
@@ -140,7 +204,11 @@ class _ProfileForm2State extends State<ProfileForm2> {
                         }).toList(),
                       )
                   ),
-                  SizedBox(height: 30,),
+                  SizedBox(height: 20,),
+                  Container(
+                      margin: EdgeInsets.all(10),
+                      child: Text("What do you Like ?", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+
                   Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
 
@@ -152,7 +220,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                         isExpanded: true,
                         value: dropdownValue2,
                         elevation: 16,
-
+                        underline: Container(),
                         onChanged: (String newValue) {
                           setState(() {
                             dropdownValue2 = newValue;
@@ -167,7 +235,11 @@ class _ProfileForm2State extends State<ProfileForm2> {
                         }).toList(),
                       )
                   ),
-                  SizedBox(height: 30,),
+                  SizedBox(height: 20,),
+                  Container(
+                      margin: EdgeInsets.all(10),
+                      child: Text("What Is your Profession", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+
                   Container(
 
                     decoration: BoxDecoration(
@@ -185,7 +257,11 @@ class _ProfileForm2State extends State<ProfileForm2> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 30,),
+                  SizedBox(height: 20,),
+                  Container(
+                      margin: EdgeInsets.all(10),
+                      child: Text("Describe yourself one line", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+
                   Container(
 
                     decoration: BoxDecoration(
@@ -262,11 +338,11 @@ class _ProfileForm2State extends State<ProfileForm2> {
                     child: GestureDetector(
                       onTap: isFilled?(){ User user1;
                       if(widget.user.gender=="Female"){
-                        user1=User(name: widget.user.name,love:dropdownValue2,ville: _villeEditingController.text, email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,hijab: hijab,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
+                        user1=User(name: widget.user.name,love:dropdownValue2,ville:commune , email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,hijab: hijab,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
 
                       }else
                       {
-                        user1=User(name: widget.user.name,ville: _villeEditingController.text,love:dropdownValue2,  email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
+                        user1=User(name: widget.user.name,ville:commune ,love:dropdownValue2,  email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
                       }
 
                       _profileBloc.add(Submitting(user:user1));
@@ -302,8 +378,19 @@ class _ProfileForm2State extends State<ProfileForm2> {
   @override
   void initState() {
     hijab="Veiled";
+
+
     _profileBloc=widget.profileBloc;
 
     super.initState();
+  }
+  getCommune()async{
+    listCommune=[];
+    for(int index=0;index<algeria_cites.length;index++){
+      if(int.parse(algeria_cites[index]["wilaya_code"])==wilaya){
+        listCommune.add(algeria_cites[index]);
+      }
+    }
+    commune = listCommune[0]["id"];
   }
 }

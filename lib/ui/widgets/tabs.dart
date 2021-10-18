@@ -71,9 +71,7 @@ class _TabsState extends State<Tabs> {
                     controller:pageController ,
                     onPageChanged: (value) {
                       index=value;
-                      setState(() {
-
-                      });
+                      setState(() {});
                     },
                     children: pages,
                   ),

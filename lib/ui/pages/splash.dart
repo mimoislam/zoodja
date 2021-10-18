@@ -8,59 +8,18 @@ class Splash extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size=  MediaQuery.of(context).size;
     return Scaffold(
-          body: Stack(
-            children: [
-              // Container(
-              //
-              //     child: Image.asset("assets/dzd.png")),
-              Container(
-                height: MediaQuery.of(context).size.height,
-              width:MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [
-                        const Color(0xffF77931).withOpacity(0.8),
-                        const Color(0xFFF84268).withOpacity(0.8),
-                        const Color(0xFFF84268),
-                      ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                      stops: [0.0, 0.6,1.0],
-                      ),
-                ),
+          body:
 
+          Container(
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.fill,
+                image:AssetImage("assets/Login.png",),
               ),
-              Container(
-                  height: MediaQuery.of(context).size.height,
-                  width:MediaQuery.of(context).size.width,
-                  child: Image.asset("assets/dzd.png")),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset("assets/logo.png",height: 100,),
-                  Container(
-                    width: size.width,
-                    child: Center(
-                      child: Text(
-                              'ZOOIDJA',
-                              style: GoogleFonts.poppins(color: Colors.white,fontSize: size.width*0.15),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: size.width,
-                    child: Center(
-                      child: Text(
-                        'Trouver votre paire',
-                        style: GoogleFonts.poppins(color: Colors.white,fontSize: size.width*0.1),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
+            ),
+          )
+    )
+         ;
   }
 }

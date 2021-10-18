@@ -33,7 +33,9 @@ class _SearchState extends State<Search> {
   int difference;
  String animation="";
  double opacity=0;
-getDifference(GeoPoint userLocation)async{
+  List<String> list=[];
+
+  getDifference(GeoPoint userLocation)async{
   Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   double location= Geolocator.distanceBetween(
       userLocation.latitude, userLocation.longitude, position.latitude, position.longitude
@@ -112,11 +114,9 @@ getDifference(GeoPoint userLocation)async{
         );
       }
       if(state is LoadUserState){
-        _user=state.user;
+        _user=state.users[0];
         _currentUser=state.currentUser;
-        List<User> list=[
-          _user,
-        ];
+        getUsers(state);
         if(_user.location==null){
 
           return Center(
@@ -134,18 +134,24 @@ getDifference(GeoPoint userLocation)async{
 
         return Draggable(
           onDragEnd: (details) {
+
             if(details.offset.dx>=75){
               animation="love";
               Timer(Duration(seconds: 2), () async{
+                 _searchRepository.chooseUser(widget.userId, _user.uid, _currentUser.name, _currentUser.photo);
+                state.users.removeAt(0);
+                getUsers(state);
 
-                _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
               });
             }
             if(details.offset.dx<=(-75)){
               animation="dislove";
               Timer(Duration(seconds: 2), ()async {
+                 _searchRepository.passUser(widget.userId, _user.uid);
+                state.users.removeAt(0);
 
-                _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
+                getUsers(state);
+
               });
             }
             setState(() {
@@ -167,8 +173,6 @@ getDifference(GeoPoint userLocation)async{
                     photoWidth: size.width*0.8,
                     photo: _user.photo,
                     clipRadius: size.height*0.05,
-
-
                 ),
                 animation==""?Container():Container(
                   padding: EdgeInsets.all(size.height*0.035),
@@ -226,7 +230,7 @@ getDifference(GeoPoint userLocation)async{
                                 children: [
                                   Icon(Icons.location_on,color: Colors.white,),
                                   Text(difference!=null?(difference/1000000).floor().toString()+
-                                      " km ":"away" +", "+_user.love+", "+_user.ville,
+                                      " km ":"away" +", "+_user.love,
                                   style: GoogleFonts.openSans(
                                     color: Colors.white,
                                   ),
@@ -271,8 +275,12 @@ getDifference(GeoPoint userLocation)async{
 
                           });
                         });
-                        Timer(Duration(seconds: 2), () {
-                            _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
+                        Timer(Duration(seconds: 2), ()async {
+                           _searchRepository.passUser(widget.userId, _user.uid);
+                          state.users.removeAt(0);
+
+                          getUsers(state);
+
                         });
                         setState(() {
 
@@ -292,8 +300,13 @@ getDifference(GeoPoint userLocation)async{
 
                           });
                         });
-                        Timer(Duration(seconds: 2), () {
-                           _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
+                        Timer(Duration(seconds: 2), () async{
+                           _searchRepository.chooseUser(widget.userId, _user.uid, _currentUser.name, _currentUser.photo);
+                          state.users.removeAt(0);
+
+                          getUsers(state);
+
+
                         });
                         setState(() {
 
@@ -317,5 +330,23 @@ getDifference(GeoPoint userLocation)async{
       }else return Container();
       }
       ,);
+  }
+
+  void getUsers( state) {
+    list=[];
+    for(int index=(state.users.length-1);index<state.users.length ;index++){
+      list.add(state.users[index].uid);
+    }
+    _searchRepository.getUserNotExistInList(userId: widget.userId,userss: list).then((value) {
+      for (User user in state.users){
+        if(user.uid==value.uid){
+          return;
+        }
+      }
+      state.users.add(value);
+      for (User user in state.users){
+        print(user.uid);
+      }
+    });
   }
 }

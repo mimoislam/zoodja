@@ -17,14 +17,7 @@ class UserRepository{
        _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
   _firestore = fireStore ?? FirebaseFirestore.instance;
 
-  Future <void>signInWithEmail(String email, String password)async {
-      await  _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-      String token = await FirebaseMessaging.instance.getToken();
-      print(token);
 
-      // Save the initial token to the database
-      await saveTokenToDatabase(token);
-  }
 
   Future<void> saveTokenToDatabase(String token) async {
     // Assume user is logged in for this example
@@ -73,8 +66,11 @@ class UserRepository{
 
   }
   signInWithCredential(credential)async{
-
    await _firebaseAuth.signInWithCredential(credential);
+   String token = await FirebaseMessaging.instance.getToken();
+
+   saveTokenToDatabase(token);
+
   }
 
   Future deleteUser() async {
@@ -86,31 +82,13 @@ class UserRepository{
     }
   }
 
-  Future <bool>loginWithPhoneAndPassword(String phoneNumber, String password)async{
-    bool correctPassword=false;
-    try{
+updateToken()async{
+    String s=await FirebaseMessaging.instance.getToken();
+  await _firestore.collection('users').doc((_firebaseAuth.currentUser).uid).set({
+    'token':s,
+  });
+}
 
-      await _firestore.collection('users').get().then((users) async{
-        for (var user in users.docs) {
-       if((user['phone']==phoneNumber)&&(user['password']==password)){
-         correctPassword=true;
-       }}
-      });
-      String uid=_firebaseAuth.currentUser.uid;
-      await _firestore.
-      collection("users").
-      doc(uid).
-      get().then((value) {
-        if(password==value["password"]){
-        }
-      });
-    }
-    catch(e){
-      print(e);
-    }
-    return correctPassword;
-
-  }
 
   Future <void> signout()async
   {
@@ -127,6 +105,9 @@ class UserRepository{
   Future <void>profileSetup({user.User user,String userId})async{
     UploadTask uploadTask;
     uploadTask=FirebaseStorage.instance.ref().child('userPhotos').child(userId).child(userId).putFile(user.photoFile);
+    String token = await FirebaseMessaging.instance.getToken();
+
+    await saveTokenToDatabase(token);
     return await uploadTask.then((ref) async {
       await ref.ref.getDownloadURL().then((url) async {
       await _firestore.collection('users').doc(userId).set({
@@ -148,6 +129,7 @@ class UserRepository{
       });
       });
     });
+
 
   }
   Future <void>profileUpdate(
