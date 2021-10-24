@@ -84,7 +84,7 @@ class _ProfileItemState extends State<ProfileItem> {
                                     fontSize: 15
                                   ),
                                 ),
-                                Text("Color of Eyes"+user.eyesColor,
+                                Text("Color of Eyes "+user.eyesColor,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                       color: Colors.black,

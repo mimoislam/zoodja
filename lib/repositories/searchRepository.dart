@@ -130,6 +130,7 @@ class SearchRepository {
           _user.line = user['line'];
           _user.gender = user['gender'];
           _user.interestedIn = user['interestedIn'];
+          _user.eyesColor = user['eyesColor'];
           break;
         }
       }else{
@@ -145,6 +146,8 @@ class SearchRepository {
            _user.location = user['location'];
            _user.gender = user['gender'];
            _user.interestedIn = user['interestedIn'];
+           _user.eyesColor = user['eyesColor'];
+
            break;
        }
       }
@@ -161,8 +164,6 @@ class SearchRepository {
     await _firestore.collection('users').get().then((users) async{
       for (var user in users.docs) {
         if(!userss.contains(user.id)){
-
-
         int dif=((await getDifference(user['location']))/1000000).toInt();
         if(( currentUser.gender=="Female")||(currentUser.withHijab=="")||(currentUser.withHijab==null)){
           if ((!chosenList.contains(user.id)) &&
@@ -180,6 +181,7 @@ class SearchRepository {
             _user.line = user['line'];
             _user.gender = user['gender'];
             _user.interestedIn = user['interestedIn'];
+            _user.eyesColor = user['eyesColor'];
             break;
           }
         }else{
@@ -195,6 +197,8 @@ class SearchRepository {
             _user.location = user['location'];
             _user.gender = user['gender'];
             _user.interestedIn = user['interestedIn'];
+            _user.eyesColor = user['eyesColor'];
+
             break;
           }
         }

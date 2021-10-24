@@ -10,6 +10,7 @@ import 'package:zoodja/models/user.dart';
 import 'package:zoodja/repositories/messageRepository.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
+import 'package:flutter_tags/flutter_tags.dart';
 
 class ProfileMenu extends StatefulWidget {
 final String userId;
@@ -22,6 +23,12 @@ final MessageRepository  messageRepository;
 }
 
 class _ProfileMenuState extends State<ProfileMenu> {
+  List items=["Cooking","Travel","Writing","Reading","Cat Lover","Working"];
+  List items2=["Working"];
+  int max=3;
+
+
+
   MessageRepository  messageRepository;
   UserRepository    userRepository=UserRepository();
   double _currentSliderValue = 20;
@@ -297,18 +304,56 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   ],
                 ):Container(),
                 SizedBox(
+                  height: 20,
+                ),
+                RichText(text: TextSpan(
+                    children: [
+                      for(int index=0; index<items.length;index++)
+                        WidgetSpan(child: GestureDetector(
+                          onTap: (){
+                            print(max>items2.length);
+                            if(items2.contains(items[index])){
+                              items2.remove(items[index]);
+                            }else{
+                              if(max>items2.length){
+                                items2.add(items[index]);
+                              }
+                            }
+                            setState(() {
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                            padding: EdgeInsets.symmetric(horizontal:10,vertical: 5),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.black),
+                                color: items2.contains(items[index])?Color(0xffFE3C72):Colors.white
+                            ),
+                            child: Text(items[index],style: TextStyle(
+                                color: items2.contains(items[index])?Colors.white:Colors.black
+                            ),),
+                          ),
+                        ))
+                    ]
+                )),
+
+                SizedBox(
                   height: 50,
                 ),
                 Text("Contact Us", style: GoogleFonts.openSans(fontWeight: FontWeight.w300,fontSize: 17,color:Color(0xff18516E) ),),
                 SizedBox(
                   height: 20,
                 ),
+
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Center(
                       child: GestureDetector(
+                        onTap: (){
+                        },
                         child: Container(
                           width: size.width*0.7,
                           padding: EdgeInsets.symmetric(vertical: 5),
@@ -367,4 +412,5 @@ class _ProfileMenuState extends State<ProfileMenu> {
     hijab=user.hijab;
      setState(() {});
   }
+
 }

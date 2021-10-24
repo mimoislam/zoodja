@@ -83,6 +83,9 @@ class _MessagingState extends State<Messaging> {
               child: CircularProgressIndicator(),
             );
           }
+          if(state is SendMessageEvent){
+            return Container();
+          }
           if(state is MessagingLoadedState){
             Stream <QuerySnapshot> messageStream=state.messageStream;
 

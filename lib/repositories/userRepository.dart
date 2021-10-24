@@ -68,9 +68,7 @@ class UserRepository{
   signInWithCredential(credential)async{
    await _firebaseAuth.signInWithCredential(credential);
    String token = await FirebaseMessaging.instance.getToken();
-
-   saveTokenToDatabase(token);
-
+   await saveTokenToDatabase(token);
   }
 
   Future deleteUser() async {
@@ -85,7 +83,7 @@ class UserRepository{
 updateToken()async{
     String s=await FirebaseMessaging.instance.getToken();
   await _firestore.collection('users').doc((_firebaseAuth.currentUser).uid).set({
-    'token':s,
+    'tokens':s,
   });
 }
 
@@ -107,7 +105,6 @@ updateToken()async{
     uploadTask=FirebaseStorage.instance.ref().child('userPhotos').child(userId).child(userId).putFile(user.photoFile);
     String token = await FirebaseMessaging.instance.getToken();
 
-    await saveTokenToDatabase(token);
     return await uploadTask.then((ref) async {
       await ref.ref.getDownloadURL().then((url) async {
       await _firestore.collection('users').doc(userId).set({
@@ -126,6 +123,7 @@ updateToken()async{
         "line":user.line,
         "love":user.love,
         "withHijab":null,
+        'tokens':token,
       });
       });
     });

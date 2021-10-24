@@ -219,6 +219,8 @@ class _SearchState extends State<Search> {
                                   SizedBox(width: 10,),
                                   GestureDetector(
                                     onTap: (){
+                                      print("_user.eyesColor");
+                                      print(_user.eyesColor);
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileItem(user: _user,difference:difference),));
                                     },
                                     child: Icon(Icons.info_outline,color: Colors.white,),)
