@@ -18,7 +18,9 @@ class ProfileForm2 extends StatefulWidget {
 
 class _ProfileForm2State extends State<ProfileForm2> {
   bool get  isFilled=> _professionEditingController.text.isNotEmpty&&_lineEditingController.text.isNotEmpty;
-
+  List <String>items=["Cooking","Travel","Writing","Reading","Cat Lover","Working"];
+  List<String> items2=[];
+  int max=3;
   TextEditingController _professionEditingController=TextEditingController();
   TextEditingController _lineEditingController=TextEditingController();
   String hijab;
@@ -331,23 +333,58 @@ class _ProfileForm2State extends State<ProfileForm2> {
                     ],
                   ):Container(),
                   SizedBox(height: 30,),
+                  Container(
+                      margin: EdgeInsets.all(10),
+                      child: Text("Tags (Rest ${max-items2.length})", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
 
+                  RichText(text: TextSpan(
+                      children: [
+                        for(int index=0; index<items.length;index++)
+                          WidgetSpan(child: GestureDetector(
+                            onTap: (){
+                              print(max>items2.length);
+                              if(items2.contains(items[index])){
+                                items2.remove(items[index]);
+                              }else{
+                                if(max>items2.length){
+                                  items2.add(items[index]);
+                                }
+                              }
+                              setState(() {
+                              });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                              padding: EdgeInsets.symmetric(horizontal:10,vertical: 5),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black),
+                                  color: items2.contains(items[index])?Color(0xffFE3C72):Colors.white
+                              ),
+                              child: Text(items[index],style: TextStyle(
+                                  color: items2.contains(items[index])?Colors.white:Colors.black
+                              ),),
+                            ),
+                          ))
+                      ]
+                  )),
 
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: GestureDetector(
                       onTap: isFilled?(){ User user1;
                       if(widget.user.gender=="Female"){
-                        user1=User(name: widget.user.name,love:dropdownValue2,ville:commune , email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,hijab: hijab,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
+                        user1=User(name: widget.user.name,love:dropdownValue2,ville:commune , email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,hijab: hijab,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text,tags: items2);
 
                       }else
                       {
-                        user1=User(name: widget.user.name,ville:commune ,love:dropdownValue2,  email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text);
+                        user1=User(name: widget.user.name,ville:commune ,love:dropdownValue2,  email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text,tags: items2);
                       }
 
                       _profileBloc.add(Submitting(user:user1));
                       Navigator.pop(context);
                       }:null,
+
                       child: Center(
                         child: Container(
                           width: size.width*0.8,

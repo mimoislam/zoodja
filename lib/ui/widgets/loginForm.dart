@@ -27,6 +27,7 @@ class _LoginFormState extends State<LoginForm> {
 
   _onFormSubmitted()async{
     await userRepository.verifyPhoneNumber("+213"+_phoneController.text);
+    print(userRepository.verification);
     if(userRepository.verification==""){
 
       return ;
@@ -258,19 +259,24 @@ class _LoginFormState extends State<LoginForm> {
                     child: GestureDetector(
                       onTap:
                           ()async{
+                        print("userRepository.verification");
+                        print(userRepository.verification);
                         PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: userRepository.verification, smsCode: _verificationController.text);
+                        print("credential");
                         print(credential);
-                        try{
+                        // try{
                           await userRepository.signInWithCredential(credential);
                           _loginBloc.add(
                               LoginWithCredentialsPressed
                                 ()
                           );
-                        }
-                        catch(e){
-                          show=false;
-                          setState(() {});
-                        }
+                        // }
+                        // catch(e){
+                        //   print("errror");
+                        //   print(e);
+                        //   show=false;
+                        //   setState(() {});
+                        // }
 
 
                       }

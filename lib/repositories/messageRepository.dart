@@ -39,6 +39,7 @@ class MessageRepository{
       _user.filter=value["filter"];
       _user.withHijab=value["withHijab"];
       _user.hijab=value["hijab"];
+      _user.tags= value["tags"].cast<String>();
     });
     return _user;
   }

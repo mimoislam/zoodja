@@ -21,14 +21,17 @@ class UserRepository{
 
   Future<void> saveTokenToDatabase(String token) async {
     // Assume user is logged in for this example
-    String userId = FirebaseAuth.instance.currentUser.uid;
-
+    String userId =  FirebaseAuth.instance.currentUser.uid;
+    bool firstTime=await isFirstTime(userId);
+    print("firstTime");
+    print(firstTime);
+    if(firstTime){
     await FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
         .update({
       'tokens':token,
-    });
+    });}
   }
   Future<bool>isFirstTime(String userId)async{
     bool exist;
@@ -68,7 +71,9 @@ class UserRepository{
   signInWithCredential(credential)async{
    await _firebaseAuth.signInWithCredential(credential);
    String token = await FirebaseMessaging.instance.getToken();
+   print(FirebaseAuth.instance.currentUser.uid);
    await saveTokenToDatabase(token);
+
   }
 
   Future deleteUser() async {
@@ -124,6 +129,7 @@ updateToken()async{
         "love":user.love,
         "withHijab":null,
         'tokens':token,
+        "tags":user.tags,
       });
       });
     });
@@ -135,6 +141,8 @@ updateToken()async{
       String userId,
       String name,
       int filter,
+      List<String> list,
+      withHijab
       )async{
     UploadTask uploadTask;
     if(photo!=null)
@@ -144,12 +152,17 @@ updateToken()async{
         await _firestore.collection('users').doc(userId).update({
           'photourl':url,
           'name':name,
-          "filter":filter
+          "filter":filter,
+           "tags":list,
+          "withHijab":withHijab
         });
       });
     }): await _firestore.collection('users').doc(userId).update({
       'name':name,
-      "filter":filter
+      "filter":filter,
+      "tags":list,
+      "withHijab":withHijab
+
     });
 
   }

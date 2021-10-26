@@ -24,7 +24,7 @@ final MessageRepository  messageRepository;
 
 class _ProfileMenuState extends State<ProfileMenu> {
   List items=["Cooking","Travel","Writing","Reading","Cat Lover","Working"];
-  List items2=["Working"];
+  List<String> items2=["Working"];
   int max=3;
 
 
@@ -75,8 +75,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
 
                         });
                         print(saving);
-                       await  userRepository.profileUpdate(photo, widget.userId, controller.text, _currentSliderValue.toInt());
-
+                       await  userRepository.profileUpdate(photo, widget.userId, controller.text, _currentSliderValue.toInt(),items2,withHijab);
                           saving=false;
                         setState(() {
 
@@ -409,6 +408,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
      withHijab=(user.withHijab);
      print(photo);
     controller.text=user.name;
+    items2=user.tags;
     hijab=user.hijab;
      setState(() {});
   }

@@ -21,6 +21,7 @@ class User{
   DateTime ages;
   int filter;
   GeoPoint location ;
+  List <String> tags;
   User(
       {this.uid,
       this.name,
@@ -38,5 +39,5 @@ class User{
         this.eyesColor,
         this.email,
         this.profession,
-      this.line,this.love});
+      this.line,this.love,this.tags});
 }
