@@ -105,7 +105,7 @@ class _LoginFormState extends State<LoginForm> {
                 children: [
                   SizedBox(height: size.height*0.15,),
                   Center(
-                    child: Text('True Love Stories never          have endings',textAlign: TextAlign.center,
+                    child: Text('True Love Stories never have endings',textAlign: TextAlign.center,
                       style: GoogleFonts.openSans(fontSize: size.width*0.06, color: text_color, fontWeight: FontWeight.bold),),
                   ),
                   Padding(

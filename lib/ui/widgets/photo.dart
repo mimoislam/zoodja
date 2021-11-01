@@ -9,7 +9,7 @@ final String photoLink;
   Widget build(BuildContext context) {
     return ExtendedImage.network(
       photoLink,
-      fit:  BoxFit.cover,
+      fit:  BoxFit.fill,
       cache: true,
       enableSlideOutPage: true,
       filterQuality: FilterQuality.high,

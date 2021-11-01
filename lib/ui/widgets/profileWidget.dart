@@ -9,6 +9,8 @@ ProfileWidget({
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: photoHeight+50,
+
       child: Padding(
           padding: EdgeInsets.all(padding),
           child: Container(

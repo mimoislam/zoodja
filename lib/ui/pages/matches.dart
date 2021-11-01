@@ -10,6 +10,7 @@ import 'package:zoodja/repositories/matchesRepository.dart';
 import 'package:zoodja/ui/pages/messaging.dart';
 import 'package:zoodja/ui/widgets/iconWidget.dart';
 import 'package:zoodja/ui/widgets/pageTurn.dart';
+import 'package:zoodja/ui/widgets/photo.dart';
 import 'package:zoodja/ui/widgets/profileWidget.dart';
 import 'package:zoodja/ui/widgets/userGender.dart';
 class Matches extends StatefulWidget {
@@ -156,9 +157,9 @@ class _MatchesState extends State<Matches> {
                       padding: size.height*0.01,
                       photo: user[index]['photourl'],
                       photoWidth: size.width*0.5,
-                      photoHeight: size.height*0.3,
+                      photoHeight: 150.0,
                       clipRadius: size.height*0.01,
-                      containerHeight: size.height*0.03 ,
+                      containerHeight: 150.0 ,
                       containerWidth: size.width*0.5,
                       child: Text(" "+user[index]['name'],style: GoogleFonts.openSans(color: Colors.white),)
                     ),
@@ -201,7 +202,8 @@ class _MatchesState extends State<Matches> {
                   if((snapshot.data.docs!=null)&&(snapshot.data.docs.length!=0)){
                     final user =snapshot.data.docs;
                     print(snapshot.data.docs.length==0);
-                    return SliverGrid(delegate: SliverChildBuilderDelegate(
+                    return SliverGrid(
+                        delegate: SliverChildBuilderDelegate(
                         (BuildContext context,int index){
                           return GestureDetector(
                             onTap: ()async{
@@ -209,74 +211,169 @@ class _MatchesState extends State<Matches> {
                               User currentUser=await matchesRepository.getUserDetails(widget.userId);
                               await getDifference(selectUser.location);
                               showDialog(context: context, builder: (context) => Dialog(
-                                child: ProfileWidget(
-                                  padding: size.height*0.01,
-                                  photo: selectUser.photo,
-                                  photoHeight: size.height*0.69,
-                                  photoWidth: size.width,
-                                  clipRadius: size.height*0.01,
-                                  containerWidth: size.width,
-                                    containerHeight: size.height*0.2,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment: CrossAxisAlignment.center,                                      children: [
-                                        Text(" "+selectUser.name+", "+
-                                            (DateTime.now().year-selectUser.age.toDate().year).toString(),
-                                          style: GoogleFonts.openSans(color: Colors.white,fontSize: 20),),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-
-                                          children: [
-                                            Icon(Icons.location_on,color: Colors.white,),
-                                            Text(difference!=null?(difference/1000).floor().toString()+
-                                                "km away":"away",
-                                              style: GoogleFonts.openSans(
-                                                color: Colors.white
-                                                  ,fontSize: 20
-                                              ),),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  child2:  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                child:
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),),
+                                  child:Stack(
+                                    alignment: Alignment.bottomCenter,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.all(size.height*0.02),
-                                        child: iconWidget(Icons.clear , (){
-                                          _matchesBloc.add(DeleteUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid));
-                                          Navigator.of(context).pop();
-                                        }, 30.0, Colors.blue),
+                                      Container(
 
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: PhotoWidget( photoLink: selectUser.photo,),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          decoration: BoxDecoration(
+                                            gradient:  LinearGradient(
+                                                colors: [
+                                                  Colors.transparent,
+                                                  Colors.black54,
+                                                  Colors.black87,
+                                                  Colors.black
+                                                ],
+                                                stops: [0.1,0.2,0.4,0.9],
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter
+                                            ),
+                                            color: Colors.black45,
+                                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10)),
+                                          ),
+                                          width: 150,
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,                                      children: [
+                                                  Text(" "+selectUser.name+", "+
+                                                      (DateTime.now().year-selectUser.age.toDate().year).toString(),
+                                                    style: GoogleFonts.openSans(color: Colors.white,fontSize: 20),),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+
+                                                    children: [
+                                                      Icon(Icons.location_on,color: Colors.white,),
+                                                      Text(difference!=null?(difference/1000).floor().toString()+
+                                                          "km away":"away",
+                                                        style: GoogleFonts.openSans(
+                                                            color: Colors.white
+                                                            ,fontSize: 20
+                                                        ),),
+                                                    ],
+                                                  ),
+                                                ],
+                                                ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.all(size.height*0.02),
+                                                    child: iconWidget(Icons.clear , (){
+                                                      _matchesBloc.add(DeleteUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid));
+                                                      Navigator.of(context).pop();
+                                                    }, 30.0, Colors.blue),
+
+                                                  ),
+
+                                                  Padding(
+                                                    padding: EdgeInsets.all(size.height*0.02),
+                                                    child: iconWidget(FontAwesomeIcons.solidHeart , (){
+                                                      _matchesBloc.add(AcceptUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid,
+                                                          currentUserName: currentUser.name,currentUserPhotoUrl: currentUser.photo,
+                                                          selectedUserName: selectUser.name,selectedUserPhotoUrl: selectUser.photo));
+                                                      Navigator.of(context).pop();
+
+                                                      pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
+                                                    }, 30.0, Colors.red),
+
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ),
 
-                                      Padding(
-                                        padding: EdgeInsets.all(size.height*0.02),
-                                        child: iconWidget(FontAwesomeIcons.solidHeart , (){
-                                          _matchesBloc.add(AcceptUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid,
-                                              currentUserName: currentUser.name,currentUserPhotoUrl: currentUser.photo,
-                                              selectedUserName: selectUser.name,selectedUserPhotoUrl: selectUser.photo));
-                                          Navigator.of(context).pop();
-
-                                          pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
-                                        }, 30.0, Colors.red),
-
-                                      )
                                     ],
-                                  )
+                                  ),
+                                )
 
-                                ),
+                                // ProfileWidget(
+                                //   padding: size.height*0.01,
+                                //   photo: selectUser.photo,
+                                //   photoHeight: size.height*0.8,
+                                //   photoWidth: size.width,
+                                //   clipRadius: size.height*0.01,
+                                //   containerWidth: size.width,
+                                //     containerHeight: size.height*0.2,
+                                //   child: Padding(
+                                //     padding: EdgeInsets.symmetric(horizontal: size.height*0.02),
+                                //     child: Column(
+                                //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                //       crossAxisAlignment: CrossAxisAlignment.center,                                      children: [
+                                //         Text(" "+selectUser.name+", "+
+                                //             (DateTime.now().year-selectUser.age.toDate().year).toString(),
+                                //           style: GoogleFonts.openSans(color: Colors.white,fontSize: 20),),
+                                //         Row(
+                                //           mainAxisAlignment: MainAxisAlignment.center,
+                                //
+                                //           children: [
+                                //             Icon(Icons.location_on,color: Colors.white,),
+                                //             Text(difference!=null?(difference/1000).floor().toString()+
+                                //                 "km away":"away",
+                                //               style: GoogleFonts.openSans(
+                                //                 color: Colors.white
+                                //                   ,fontSize: 20
+                                //               ),),
+                                //           ],
+                                //         ),
+                                //       ],
+                                //     ),
+                                //   ),
+                                //   child2:  Row(
+                                //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                //     children: [
+                                //       Padding(
+                                //         padding: EdgeInsets.all(size.height*0.02),
+                                //         child: iconWidget(Icons.clear , (){
+                                //           _matchesBloc.add(DeleteUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid));
+                                //           Navigator.of(context).pop();
+                                //         }, 30.0, Colors.blue),
+                                //
+                                //       ),
+                                //
+                                //       Padding(
+                                //         padding: EdgeInsets.all(size.height*0.02),
+                                //         child: iconWidget(FontAwesomeIcons.solidHeart , (){
+                                //           _matchesBloc.add(AcceptUserEvent(currentUser: widget.userId,selectedUser: selectUser.uid,
+                                //               currentUserName: currentUser.name,currentUserPhotoUrl: currentUser.photo,
+                                //               selectedUserName: selectUser.name,selectedUserPhotoUrl: selectUser.photo));
+                                //           Navigator.of(context).pop();
+                                //
+                                //           pageTurn(Messaging(currentUser: currentUser,selectedUser: selectUser), context);
+                                //         }, 30.0, Colors.red),
+                                //
+                                //       )
+                                //     ],
+                                //   )
+                                //
+                                // ),
                               ),);
                             },
                             child: ProfileWidget(
                               padding: size.height*0.01,
                               photo: user[index].get("photoUrl"),
                               photoWidth: size.width*0.8,
-                              photoHeight: size.height*0.3,
-                              clipRadius: size.height*0.01,
+                              photoHeight: 150.0,
+                              clipRadius: 10.0,
                               containerHeight: size.height*0.03,
                               containerWidth: size.height*0.5,
                               child: Text(" "+user[index].get('name'),style: GoogleFonts.openSans(color: Colors.white),)

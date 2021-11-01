@@ -73,7 +73,6 @@ class _TabsState extends State<Tabs> {
               height: size.height,
               child: Stack(
                 children: [
-
                  PageView(
                    physics: NeverScrollableScrollPhysics(),
                    allowImplicitScrolling: false,
@@ -84,14 +83,14 @@ class _TabsState extends State<Tabs> {
                       },
                       children: pages,
                     ),
-
                   Positioned(
                     bottom: 5,
-                    right: size.width*0.05,
-                    left: size.width*0.05,
+                    right: 10,
+                    left: 10,
                     child: Padding(
                       padding:  EdgeInsets.symmetric(horizontal: 15,vertical: 5),
                       child: Container(
+                        height: 45,
                         decoration: BoxDecoration(
                           color: Color(0xff18516E),
                           borderRadius: BorderRadius.circular(size.height*0.03)
@@ -99,7 +98,7 @@ class _TabsState extends State<Tabs> {
                         child:Padding(
                           padding:  EdgeInsets.symmetric(horizontal: 15,vertical: 5),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
                                 width: 40,
@@ -115,8 +114,14 @@ class _TabsState extends State<Tabs> {
                                   },
                                   child: Column(
                                     children: [
-                                      Icon(Icons.home_outlined,color: Colors.white,size: 30,),
-                                      index==0?Container(width: 20, height:3,color: Colors.white,):Container()
+                                      SizedBox(height: 5,),
+                                      Image.asset("assets/home.png",height: 20,),
+                                      SizedBox(height:4,),
+
+                                      index==0?Container(width: 25, height:2,decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10)
+                                      ),):Container()
 
                                     ],
                                   ),
@@ -233,11 +238,14 @@ class _TabsState extends State<Tabs> {
                                         children: [
                                           Column(
                                             children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(bottom: 5.0),
-                                                child: Image.asset("assets/logo.png"),
-                                              ),
-                                              index==1?Container(width: 20, height:3,color: Colors.white,):Container()
+                                              SizedBox(height: 5,),
+
+                                              Image.asset("assets/logo.png",height: 20,),
+                                              SizedBox(height: 4,),
+                                              index==1?Container(width: 25, height:2,decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(10)
+                                              ),):Container()
                                             ],
                                           ),
                                           (existSelected||existMatch)?Align(
@@ -273,9 +281,14 @@ class _TabsState extends State<Tabs> {
                                 },
                                 child: Column(
                                   children: [
-                                    Icon(Icons.people,color: Colors.white,size: 30,),
-                                    index==1?Container(width: 20, height:3,color: Colors.white,):Container()
+                                    SizedBox(height: 5,),
 
+                                    Image.asset("assets/logo.png",height: 20,),
+                                    SizedBox(height: 4,),
+                                    index==1?Container(width: 25, height:2,decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10)
+                                    ),):Container()
                                   ],
                                 ),
                               ),
@@ -299,12 +312,9 @@ class _TabsState extends State<Tabs> {
                                       if(lengthMessages<user.length)
                                       {
                                         this.eventMessage=true;
-
                                         Timer(Duration(seconds: 2), () {
                                           this.eventMessage=false;
-                                          setState(() {
-
-                                          });
+                                          setState(() {});
                                         });
                                       }
                                       else{
@@ -331,7 +341,7 @@ class _TabsState extends State<Tabs> {
                                             stream: chatStream,
                                             builder: (context, snapshot) {
                                               if(!snapshot.hasData){
-                                                lengthMessages=snapshot.data.size;
+                                                lengthMessages=snapshot.data==null?0:snapshot.data.size;
                                                 return Container();
                                               }
                                               if((snapshot.data.docs.isNotEmpty)){
@@ -360,8 +370,12 @@ class _TabsState extends State<Tabs> {
                                             },
                                             child: Column(
                                               children: [
-                                                Icon(Icons.message_outlined,color: Colors.white,size: 30,),
-                                                index==2?Container(width: 20, height:3,color: Colors.white,):Container()
+                                                SizedBox(height: 5,),
+                                                Image.asset("assets/conversation.png",height: 20,),
+                                                SizedBox(height:4,),                                                index==2?Container(width: 25, height:2,decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(10)
+                                                ),):Container()
 
                                               ],
                                             ),
@@ -387,8 +401,12 @@ class _TabsState extends State<Tabs> {
                                       },
                                       child: Column(
                                         children: [
-                                          Icon(Icons.message_outlined,color: Colors.white,size: 30,),
-                                          index==2?Container(width: 20, height:3,color: Colors.white,):Container()
+                                          SizedBox(height: 5,),
+                                          Image.asset("assets/conversation.png",height: 20,),
+                                          SizedBox(height:4,),                                               index==2?Container(width: 25, height:2,decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),):Container()
 
                                         ],
                                       ),
@@ -410,8 +428,12 @@ class _TabsState extends State<Tabs> {
                                   },
                                   child: Column(
                                     children: [
-                                      Icon(Icons.person_outline_outlined,color: Colors.white,size: 30,),
-                                      index==3?Container(width: 20, height:3,color: Colors.white,):Container()
+                                      SizedBox(height: 5,),
+                                      Image.asset("assets/user.png",height: 20,),
+                                      SizedBox(height:4,),                                       index==3?Container(width: 25, height:2,decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10)
+                                      ),):Container()
                                     ],
                                   ),
                                 ),
