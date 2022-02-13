@@ -76,7 +76,7 @@ class MatchesRepository{
     await _firestore.
     collection("users").
     doc(selectedUserId).
-    collection("matchedmatchedList").
+    collection("matchedList").
     doc(currentUserId).
     delete();
     await _firestore.
@@ -111,9 +111,7 @@ class MatchesRepository{
       token=value["tokens"];
 
     });
-
-    await sendLikedNotification(token);
-    return await _firestore.
+     await _firestore.
     collection("users").
     doc(selectedUserId).
     collection("matchedList").
@@ -121,11 +119,13 @@ class MatchesRepository{
       "name":currentUserName,
       "photourl":currentUserPhotoUrl,
     });
+    await sendMatchNotification(token);
+
 
 
   }
 
-  sendLikedNotification(String token)async {
+  sendMatchNotification(String token)async {
     if (token == null) {
       print('Unable to send FCM message, no token exists.');
       return;
@@ -136,8 +136,7 @@ class MatchesRepository{
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization':"key=AAAAzsv-U_o:APA91bHzogfxjbR4gS_5TvlIAqWnupWfRamYjKWshe3zEkheaVWjZdP9jJO1s4mn7Qj-xDpfSxQDQ7q3O7ShJJtKpbKAO4jPA-0jjeF3tHo3_eq1yIL27OCn9ssMhXZ4UrC0zMBA3aLa"
-        },
+          'Authorization':Authorization  },
         body: constructForMatch(token),
       );
     } catch (e) {

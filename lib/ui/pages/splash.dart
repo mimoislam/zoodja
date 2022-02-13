@@ -8,9 +8,7 @@ class Splash extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size=  MediaQuery.of(context).size;
     return Scaffold(
-          body:
-
-          Container(
+          body: Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               image: DecorationImage(

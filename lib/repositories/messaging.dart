@@ -1,8 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:image/image.dart' as Img;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zoodja/models/message.dart';
 import 'package:http/http.dart' as http;
@@ -12,15 +16,20 @@ import 'package:zoodja/ui/constats.dart';
 class MessagingRepository{
   final FirebaseStorage _firebaseStorage;
   final FirebaseFirestore _firestore;
+
+
   String uuid=Uuid().v4();
   MessagingRepository({FirebaseAuth firebaseAuth, FirebaseStorage fireStore}):
         _firebaseStorage = firebaseAuth ?? FirebaseStorage.instance,
         _firestore = fireStore ?? FirebaseFirestore.instance;
 
+  DocumentReference getMessageRef(){
+    DocumentReference messageRef= _firestore.collection("messages").doc();
+    return messageRef;
+  }
 
-  sendMessage({Message message})async{
+  sendMessage({Message message,DocumentReference messageRef})async{
     UploadTask uploadTask;
-    DocumentReference messageRef=_firestore.collection("messages").doc();
     CollectionReference senderRef=_firestore.
     collection("users").
     doc(message.senderId).
@@ -42,9 +51,22 @@ class MessagingRepository{
           .child("messages")
           .child(messageRef.id)
           .child(uuid);
-      uploadTask=photoRef.putFile(message.photo);
+      File img;
+
+      Img.Image image = Img.decodeImage(message.photo.readAsBytesSync());
+      image=Img.copyResize(image, width: 500);
+      Directory root  = await getTemporaryDirectory();
+      String directoryPath = root.path+'/bozzetto_camera';
+      await Directory(directoryPath).create(recursive: true);
+      String filePath = '$directoryPath/${DateTime.now()}.jpg';
+      img=new File(filePath)
+        ..writeAsBytesSync(Img.encodePng(image));
+      uploadTask =
+          photoRef
+              .putFile(img);
       await uploadTask.then((photo) async {
         await photo.ref.getDownloadURL().then((value) async{
+          img.delete();
           await messageRef.set({
             "senderName":message.senderName,
             "senderId":message.senderId,
@@ -97,7 +119,7 @@ class MessagingRepository{
     String token;
     await FirebaseFirestore.instance
         .collection('users')
-        .doc(message.selectedUserId)
+        .doc(message.senderId)
         .get().then((value) {
 
       token=value["tokens"];
@@ -119,8 +141,7 @@ class MessagingRepository{
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization':"key=AAAAzsv-U_o:APA91bHzogfxjbR4gS_5TvlIAqWnupWfRamYjKWshe3zEkheaVWjZdP9jJO1s4mn7Qj-xDpfSxQDQ7q3O7ShJJtKpbKAO4jPA-0jjeF3tHo3_eq1yIL27OCn9ssMhXZ4UrC0zMBA3aLa"
-        },
+          'Authorization':Authorization },
         body: constructForMessage(token),
       );
     } catch (e) {
@@ -134,7 +155,7 @@ class MessagingRepository{
         .collection("chats")
         .doc(selectedUserId)
         .collection("messages")
-        .orderBy("timestamp",descending:false)
+        .orderBy("timestamp",descending: true).limit(10)
         .snapshots();
   }
   Future<Message>getMessageDetail({messageId})async{
@@ -149,6 +170,7 @@ class MessagingRepository{
           message.timestamp=value["timestamp"];
           message.text=value["text"];
           message.photoUrl=value["photoUrl"];
+          message.isSend=true;
     });
     return message;
   }

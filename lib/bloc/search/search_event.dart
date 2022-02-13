@@ -1,27 +1,20 @@
 part of 'search_bloc.dart';
 
 abstract class SearchEvent extends Equatable {
-@override
-List<Object> get props => [];
+  @override
+  List<Object> get props => [];
 
 }
 
 class LoadUserEvent extends SearchEvent{
   final String userId;
-  final List <User> users;
-  LoadUserEvent({this.userId,this.users});
+  LoadUserEvent({this.userId});
   @override
-  List<Object> get props => [userId,users];
+  List<Object> get props => [userId];
 }
 class LoadedUserEvent extends SearchEvent{
   final String userId;
   LoadedUserEvent({this.userId});
-  @override
-  List<Object> get props => [userId];
-}
-class ChangeUserEvent extends SearchEvent{
-  final String userId;
-  ChangeUserEvent({this.userId});
   @override
   List<Object> get props => [userId];
 }

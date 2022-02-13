@@ -19,31 +19,31 @@ const LoginForm({@required UserRepository userRepository}):
 
 class _LoginFormState extends State<LoginForm> {
   final TextEditingController _phoneController=TextEditingController();
-  final TextEditingController _verificationController=TextEditingController();
 
   LoginBloc _loginBloc;
   bool  get isPopulated=> _phoneController.text.isNotEmpty ;
-  bool show=false;
+  bool isReCAPTCHA=false;
 
   _onFormSubmitted()async{
-    await userRepository.verifyPhoneNumber("+213"+_phoneController.text);
-    print(userRepository.verification);
-    if(userRepository.verification==""){
+    try{
+      setState(() {
+        isReCAPTCHA=true;
+      });
+      await userRepository.verifyPhoneNumber("+213"+_phoneController.text,(){
+        BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
+      },(s){
+        BlocProvider.of<AuthenticationBloc>(context).add(ConfirmEvent(s));
+        isReCAPTCHA=false;
 
-      return ;
+      });
+
+    }catch(e){
+      BlocProvider.of<AuthenticationBloc>(context).add(ToOnBoarding());
     }
-    show=true;
-    setState(() {
-    });
-    print(userRepository.verification);
-    print("userRepository.verification");
-    // _loginBloc.add(
-    //     LoginWithCredentialsPressed
-    //       (
-    //         email: _emailController.text,
-    //         password: _passwordController.text
-    //     )
-    // );
+
+
+
+
   }
 
   @override
@@ -97,7 +97,26 @@ class _LoginFormState extends State<LoginForm> {
       child: BlocBuilder<LoginBloc,LoginState>(
           bloc: _loginBloc,
           builder: (BuildContext context,LoginState state){
-            return SingleChildScrollView(
+            return
+            isReCAPTCHA
+
+                ?Container(
+            child: Center(
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(
+            Colors.blueGrey,
+            ),
+            ),
+            SizedBox(height: 10,),
+            Text("Please Waiting ...")
+            ],
+            ),
+            ),
+            )
+                :SingleChildScrollView(
 
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -144,7 +163,7 @@ class _LoginFormState extends State<LoginForm> {
 
                     ),
                   ),
-                  show==false?Column(
+                  Column(
                     children: [
                       Padding(
                         padding: EdgeInsets.all(size.height*0.02),
@@ -175,34 +194,10 @@ class _LoginFormState extends State<LoginForm> {
 
 
                     ],
-                  ):Padding(
-                    padding: EdgeInsets.all(size.height*0.02),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      color: text_color2.withOpacity(0.4),
-
-                      child: TextFormField(
-                        controller: _verificationController,
-                        autovalidateMode: AutovalidateMode.always,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Verification Code',
-                          labelStyle: GoogleFonts.openSans(
-                              color: text_color2,
-                              fontSize: size.height*0.02
-                          ),
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                        ),
-                      ),
-                    ),
-
                   ),
 
 
-                  show==false? Padding(
+                  Padding(
                     padding: EdgeInsets.all(size.height*0.02),
                     child: Column(
                       children: [
@@ -252,55 +247,6 @@ class _LoginFormState extends State<LoginForm> {
 
                         )
                       ],
-                    ),
-                  )
-                      : Padding(
-                    padding: EdgeInsets.all(size.height*0.02),
-                    child: GestureDetector(
-                      onTap:
-                          ()async{
-                        print("userRepository.verification");
-                        print(userRepository.verification);
-                        PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: userRepository.verification, smsCode: _verificationController.text);
-                        print("credential");
-                        print(credential);
-                        // try{
-                          await userRepository.signInWithCredential(credential);
-                          _loginBloc.add(
-                              LoginWithCredentialsPressed
-                                ()
-                          );
-                        // }
-                        // catch(e){
-                        //   print("errror");
-                        //   print(e);
-                        //   show=false;
-                        //   setState(() {});
-                        // }
-
-
-                      }
-                      ,
-                      child: Container(
-                        width: size.width*0.7,
-                        height: size.height*0.1,
-                        decoration: BoxDecoration(
-                          color: Colors.red
-                          ,
-                          borderRadius: BorderRadius.circular(size.height*0.04),
-
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Verifie",
-                            style: GoogleFonts.openSans(
-                              fontSize: size.height*0.025,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-
-                      ),
                     ),
                   )
 

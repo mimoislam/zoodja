@@ -20,7 +20,13 @@ class AuthenticatedButNoSet extends AuthenticationState{
   final String userId;
   AuthenticatedButNoSet(this.userId);
   List <Object> get props=>[userId];
-
-
 }
 class UnAuthenticated extends AuthenticationState{}
+class Confirm extends AuthenticationState{
+  final String verification;
+  Confirm(this.verification);
+  List <Object> get props=>[verification];
+}
+class OnBoarding extends AuthenticationState{
+
+}

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,8 +17,12 @@ import 'package:zoodja/ui/pages/home.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
+  // when u are outside  the app add notification for it
+
   await Firebase.initializeApp();
   print('Handling a background message ${message.messageId}');
+  print('Handling a background message ${message.notification.title}');
+  print('Handling a background message ${message.notification.title}');
 }
 void main() async{
 
@@ -27,7 +32,25 @@ void main() async{
       await Firebase.initializeApp();
 
       // Set the background messaging handler early on, as a named top-level function
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+      NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // when u are inside the app add notification for it
+        print('Got a message whilst in the foreground!');
+        print('Message data: ${message.data}');
+
+        if (message.notification != null) {
+          print('Message also contained a notification: ${message.notification.title}');
+        }
+      });      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
       print('Handling a background message ${await FirebaseMessaging.instance.getToken()}');
       await FirebaseMessaging.instance
           .setForegroundNotificationPresentationOptions(

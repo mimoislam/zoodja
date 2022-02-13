@@ -17,7 +17,7 @@ class ProfileForm2 extends StatefulWidget {
 
 
 class _ProfileForm2State extends State<ProfileForm2> {
-  bool get  isFilled=> _professionEditingController.text.isNotEmpty&&_lineEditingController.text.isNotEmpty;
+  bool get  isFilled=> _professionEditingController.text.isNotEmpty&&_lineEditingController.text.isNotEmpty&&items2.length!=0;
   List <String>items=["Cooking","Travel","Writing","Reading","Cat Lover","Working"];
   List<String> items2=[];
   int max=3;
@@ -42,6 +42,26 @@ class _ProfileForm2State extends State<ProfileForm2> {
   List<String> love=[
     "Film", 'voyages', 'sport', 'TV', 'Cuisine'
   ];
+
+  showDialogs({String message}){
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return
+          AlertDialog(
+            title: const Text("Missing Field"),
+            content:  Text(message),
+            actions: [
+              GestureDetector(
+                child: const Text(" OK ",style: TextStyle(color: Colors.blue,fontSize: 20),),
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;
@@ -315,21 +335,6 @@ class _ProfileForm2State extends State<ProfileForm2> {
                           child: Text("Unveiled",style: GoogleFonts.assistant(          color:hijab=="Unveiled"?Colors.white:Color(0xff8969AE)),),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            hijab="Can't say";
-                          });
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-
-                          decoration: BoxDecoration(
-                              color: text_color2.withOpacity(0.4)
-                          ),
-                          child: Text("Can't say",style: GoogleFonts.assistant(          color:hijab=="Can't say"?Colors.white:Color(0xff8969AE)),),
-                        ),
-                      )
                     ],
                   ):Container(),
                   SizedBox(height: 30,),
@@ -342,7 +347,6 @@ class _ProfileForm2State extends State<ProfileForm2> {
                         for(int index=0; index<items.length;index++)
                           WidgetSpan(child: GestureDetector(
                             onTap: (){
-                              print(max>items2.length);
                               if(items2.contains(items[index])){
                                 items2.remove(items[index]);
                               }else{
@@ -372,7 +376,16 @@ class _ProfileForm2State extends State<ProfileForm2> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: GestureDetector(
-                      onTap: isFilled?(){ User user1;
+                      onTap: (){
+                        User user1;
+
+                        if ( _professionEditingController.text==""){
+                          return showDialogs(message: " Please Enter Your Profession ");
+                        }else if(_lineEditingController.text==""){
+                          return showDialogs(message: " Please Enter Your Description Line ");
+                        }else if (items2.length==0){
+                          return showDialogs(message: " Please Enter At Least One Tag You Like  ");
+                        }
                       if(widget.user.gender=="Female"){
                         user1=User(name: widget.user.name,love:dropdownValue2,ville:commune , email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,hijab: hijab,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text,tags: items2);
 
@@ -383,7 +396,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
 
                       _profileBloc.add(Submitting(user:user1));
                       Navigator.pop(context);
-                      }:null,
+                      },
 
                       child: Center(
                         child: Container(

@@ -27,8 +27,9 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
       yield* _mapStreamToState(currentUserId:event.currentUserId,selectedUserId:event.selectedUserId);
     }
     if(event is SendMessageEvent){
-      yield* _mapSendMessageToState(message:event.message);
+      yield* _mapSendMessageToState(message:event.message,messageRef: event.documentReference);
     }
+
   }
 
   Stream<MessagingState>_mapStreamToState({String currentUserId, String selectedUserId}) async*{
@@ -38,7 +39,10 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
 
   }
 
-  Stream<MessagingState> _mapSendMessageToState({Message message}) async*{
-    await _messagingRepository.sendMessage(message: message);
+  Stream<MessagingState> _mapSendMessageToState({Message message,DocumentReference messageRef}) async*{
+
+    await _messagingRepository.sendMessage(message: message,messageRef: messageRef);
   }
+
+
 }

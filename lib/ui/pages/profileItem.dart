@@ -20,6 +20,8 @@ class _ProfileItemState extends State<ProfileItem> {
     Size size=MediaQuery.of(context).size;
     return Scaffold(
         body: Container(
+          padding: EdgeInsets.only(top:     MediaQuery.of(context).padding.top+10
+        ),
           child: SingleChildScrollView(
             child: Column(
               children: [

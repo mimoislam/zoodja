@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:zoodja/bloc/messaging/messaging_bloc.dart';
 import 'package:zoodja/models/message.dart';
 import 'package:zoodja/models/user.dart';
@@ -14,6 +16,8 @@ import 'package:zoodja/repositories/messaging.dart';
 import 'package:zoodja/ui/constats.dart';
 import 'package:zoodja/ui/widgets/message.dart';
 import 'package:zoodja/ui/widgets/photo.dart';
+import "package:timeago/timeago.dart" as  timeAgo;
+import 'package:zoodja/ui/widgets/photoLink.dart';
 
 
 class Messaging extends StatefulWidget {
@@ -30,12 +34,11 @@ class _MessagingState extends State<Messaging> {
   MessagingRepository _messagingRepository =MessagingRepository();
   MessagingBloc _messagingBloc;
   bool isValid=false;
+  List<Message> messages=[];
+  ItemScrollController _scrollController = ItemScrollController();
+  bool isListing=false;
+  bool gettingMessages=false;
 
-  bool get isPopulated=>_messageTextController.text.isNotEmpty;
-
-  bool isSubmitButtonEnabled(MessagingState state){
-    return isPopulated ;
-  }
 
   @override
   void initState() {
@@ -56,20 +59,29 @@ class _MessagingState extends State<Messaging> {
     super.dispose();
   }
   void _onFormSubmitted(){
-    print("Message Submitted");
-    _messagingBloc.add(SendMessageEvent(message: Message(
+    DocumentReference messageRef=_messagingRepository.getMessageRef();
+    print(messageRef.id);
+    Message message=Message(
+      uid: messageRef.id,
       text: _messageTextController.text,
       senderId: widget.currentUser.uid,
       senderName: widget.currentUser.name,
       selectedUserId: widget.selectedUser.uid,
       photo: null,
-    )));
+      isSend: false,timestamp: Timestamp. fromDate(DateTime.now())
+    );
+    setState(() {
+      messages.add(message);
+    });
+    _messagingBloc.add(SendMessageEvent(message: message,documentReference: messageRef));
+
     _messageTextController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;
+    double top=MediaQuery.of(context).padding.top;
     return Scaffold(
 
       body: BlocBuilder<MessagingBloc,MessagingState>(
@@ -83,61 +95,342 @@ class _MessagingState extends State<Messaging> {
               child: CircularProgressIndicator(),
             );
           }
-          if(state is SendMessageEvent){
-            return Container();
-          }
+
           if(state is MessagingLoadedState){
             Stream <QuerySnapshot> messageStream=state.messageStream;
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(height: size.height*0.06,),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+            if(!isListing) {
+              messageStream.listen((event) async {
+                if (messages.length == 0) {
+                  setState(() {
+                    gettingMessages=true;
+                  });
+                  for (int index = 0; event.docs.length > index; index++) {
+                    Message message = await getDetails(event.docs[index].id);
+                    messages.insert(0,message);
+                  }
+                  setState(() {
+                    print(messages.length);
+                    gettingMessages=false;
+                  });
+                } else {
+                  for (int index = 1;
+                      event.docChanges.length > index;
+                      index++) {
+                    Message message=Message(uid: event.docChanges[index].doc.id);
+                    if(messages.contains(message)){
+                      for(int index =messages.length-1;index>0;index--){
+                        if (message.uid==messages[index].uid){
+                            messages[index].isSend=true;
+                        }
+                      }
+                    }else {
+                      Message message = await getDetails(event.docChanges[index].doc.id);
+                      messages.add(message);
+                    }
+                  }
+                  if (mounted)
+                    setState(() {
+                    });
+                }
+              });
+              isListing=true;
+            }
+            return gettingMessages
+                ? Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ClipOval(
-                      child: Container(
-                        height: 75,
-                        width: 75,
-                        child: PhotoWidget(photoLink:widget.selectedUser.photo ,),
+                    CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(
+                        Colors.blueGrey,
                       ),
                     ),
-                    SizedBox(width: size.width*0.03,),
-                    Expanded(child: Text(widget.selectedUser.name,style: GoogleFonts.openSans(fontSize: 18,fontWeight: FontWeight.bold),))
+                    SizedBox(height: 10,),
+                    Text("Getting Messages ......")
                   ],
                 ),
-                SizedBox(height: size.height*0.03,),
+              ),
+            )
+                : Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(height: 20+top,),
+                Container(
+                  width: double.infinity,
 
-                Container(width: size.width,height: 1,color: Colors.grey,),
-                SizedBox(height: size.height*0.03,),
+                  margin:EdgeInsets.only(bottom: 20,left: 10) ,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipOval(
+                        child: Container(
+                          height:88,
+                          width: 88,
+                          child: PhotoWidget(photoLink:widget.selectedUser.photo ,),
+                        ),
+                      ),
+                      SizedBox(width: 12,),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
-                StreamBuilder<QuerySnapshot>(
-                  stream: messageStream,
-                  builder:(context, snapshot) {
-                    if(!snapshot.hasData){
-                      return Container(
-                        child: Text("Start Conversation ",style: GoogleFonts.openSans(fontSize: 16,fontWeight: FontWeight.bold),),
-                      );
-                    }
-                    if(snapshot.data.docs.isNotEmpty){
-                      return Expanded
-                        (child: ListView.builder(
-                        itemCount: snapshot.data.docs.length,
-                        scrollDirection: Axis.vertical,
+                          children: [
+                            Text(widget.selectedUser.name,style: GoogleFonts.nunito(fontSize: 22,fontWeight: FontWeight.bold,color: Color(0xff18516E)),overflow: TextOverflow.ellipsis,),
+                            Text(widget.selectedUser.love+" ,"+(DateTime.now().year-widget.selectedUser.age.toDate().year)    .toString() ,overflow: TextOverflow.ellipsis,style: GoogleFonts.montserrat(
+                                color: Color(0xff18516E),
+                                fontSize: 13,fontWeight: FontWeight.w300),),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 12,),
 
-                       itemBuilder: (context, index) {
-                         return MessageWidget(
-                           currentUserId: widget.currentUser.uid,
-                           messageId: snapshot.data.docs[index].id,
-                         );
-                       },
-                      ));
-                    }else{
-                      return Center(child: Text("Start conversation",style: GoogleFonts.openSans(fontSize: 16,fontWeight: FontWeight.bold),),);
-                    }
-                }, ),
+                    ],
+                  ),
+                ),
+
+
+                (messages.length==0)
+                      ?Center(child: Text("Start conversation",style: GoogleFonts.openSans(fontSize: 16,fontWeight: FontWeight.bold),),)
+                      :
+                         Expanded(
+                            child: ScrollablePositionedList.builder(
+                          addAutomaticKeepAlives: true,
+                          initialScrollIndex: messages.length,
+                          itemScrollController: _scrollController,
+                          itemCount: messages.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (context, index) {
+                             bool show = false;
+                             return Column(
+                                      crossAxisAlignment: messages[index].senderId ==
+                                              widget.currentUser.uid
+                                          ? CrossAxisAlignment.end
+                                          : CrossAxisAlignment.start,
+                                      children: [
+                                        messages[index].text != null
+                                            ? Wrap(
+                                                crossAxisAlignment:
+                                                    WrapCrossAlignment.start,
+                                                direction: Axis.horizontal,
+                                                children: [
+                                                  Stack(
+                                                    textDirection:messages[index].senderId ==
+                                                        widget
+                                                            .currentUser.uid?TextDirection.rtl:TextDirection.ltr,
+
+                                                    children: [
+                                                      Image.asset(messages[index].senderId ==
+                                                          widget
+                                                              .currentUser.uid?"assets/triangal.png":"assets/triangal2.png"),
+
+                                                      Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceAround,
+                                                        crossAxisAlignment: messages[index]
+                                                                    .senderId ==
+                                                                widget
+                                                                    .currentUser.uid
+                                                            ? CrossAxisAlignment.end
+                                                            : CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          ConstrainedBox(
+                                                            constraints:
+                                                                BoxConstraints(
+                                                              maxWidth:
+                                                                  size.width *
+                                                                      0.7,
+
+                                                            ),
+                                                            child:
+                                                                GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  show = !show;
+                                                                });
+                                                              },
+                                                              child: Container(
+                                                                margin:EdgeInsets.only(right: 19,top: 11.3,left: 19),
+
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                        color: messages[index].senderId ==
+                                                                                widget
+                                                                                    .currentUser.uid
+                                                                            ? Color(
+                                                                                0xffFE3C72)
+                                                                            : Color(
+                                                                                0xffE6DEEF),
+                                                                      borderRadius: BorderRadius.circular(5)
+                                                                       ),
+                                                                padding: EdgeInsets
+                                                                    .all(size
+                                                                            .height *
+                                                                        0.015),
+                                                                child: Text(
+                                                                  messages[index].text,
+                                                                  style: GoogleFonts.openSans(
+                                                                      color: messages[index].senderId ==
+                                                                              widget
+                                                                                  .currentUser.uid
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Color(
+                                                                              0xff18516E)),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          messages[index].senderId ==
+                                                                  widget.currentUser
+                                                                      .uid
+                                                              ? AnimatedContainer(
+                                                                  duration: Duration(
+                                                                      milliseconds:
+                                                                          300),
+                                                                  height:
+                                                                      show == true
+                                                                          ? 20
+                                                                          : 0,
+                                                                  child: Text(
+                                                                    timeAgo.format(
+                                                                        messages[index]
+                                                                            .timestamp
+                                                                            .toDate()),
+                                                                    style: GoogleFonts
+                                                                        .openSans(
+                                                                            fontSize:
+                                                                                12),
+                                                                  ))
+                                                              : AnimatedContainer(
+                                                                  duration: Duration(
+                                                                      milliseconds:
+                                                                          300),
+                                                                  height:
+                                                                      show == true
+                                                                          ? 20
+                                                                          : 0,
+                                                                  child: Text(
+                                                                    timeAgo.format(
+                                                                        messages[index]
+                                                                            .timestamp
+                                                                            .toDate()),
+                                                                    style: GoogleFonts
+                                                                        .openSans(
+                                                                            fontSize:
+                                                                                12),
+                                                                  ))
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                            : GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PhotoLink(
+                                                          url:
+                                                              messages[index].photoUrl,
+                                                        ),
+                                                      ));
+                                                },
+                                                child: Wrap(
+                                                  crossAxisAlignment:
+                                                      WrapCrossAlignment.start,
+                                                  direction: Axis.horizontal,
+                                                  children: [
+                                                    messages[index].senderId ==
+                                                            widget
+                                                                .currentUser.uid
+                                                        ? Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    vertical:
+                                                                        size.height *
+                                                                            0.01),
+                                                            child: Text(
+                                                              timeAgo.format(
+                                                                  messages[index]
+                                                                      .timestamp
+                                                                      .toDate()),
+                                                              style: GoogleFonts
+                                                                  .openSans(),
+                                                            ),
+                                                          )
+                                                        : Container(),
+                                                    Padding(
+                                                      padding: EdgeInsets.all(
+                                                          size.height * 0.01),
+                                                      child: ConstrainedBox(
+                                                        constraints: BoxConstraints(
+                                                            maxWidth:
+                                                                size.width *
+                                                                    0.6,
+                                                            maxHeight:
+                                                                size.height *
+                                                                    0.5),
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  color:
+                                                                      backgroundColor),
+                                                              borderRadius: BorderRadius
+                                                                  .circular(size
+                                                                          .height *
+                                                                      0.02)),
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    size.height *
+                                                                        0.02),
+                                                            child: PhotoWidget(
+                                                              photoLink:
+                                                                  messages[index]
+                                                                      .photoUrl,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    messages[index].senderId ==
+                                                            widget
+                                                                .currentUser.uid
+                                                        ? SizedBox()
+                                                        : Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    vertical:
+                                                                        size.height *
+                                                                            0.01),
+                                                            child: Text(
+                                                              timeAgo.format(
+                                                                  messages[index]
+                                                                      .timestamp
+                                                                      .toDate()),
+                                                              style: GoogleFonts
+                                                                  .openSans(),
+                                                            ),
+                                                          )
+                                                  ],
+                                                ),
+                                              ),
+                                        messages[index].isSend?Container():Text("Loading")
+                                      ],
+                                    );
+                          },
+                        )),
+
+
+
                 Container(
                   margin: EdgeInsets.only(bottom: 5,left: 5,right: 5),
                   padding: EdgeInsets.only(right: 10,left: 10),
@@ -154,16 +447,27 @@ class _MessagingState extends State<Messaging> {
 
                           if(result != null) {
                             File(result.files.single.path);
+                            DocumentReference messageRef= _messagingRepository.getMessageRef();
+
+
+                            Message message=Message(
+                              uid: messageRef.id,
+                              text: null,
+                              senderName: widget.currentUser.name,
+                              senderId: widget.currentUser.uid,
+                              photo: File(result.files.single.path),
+                              selectedUserId: widget.selectedUser.uid,
+                              isSend: false,
+                              timestamp: Timestamp.fromDate(DateTime.now())
+                            );
+                            setState(() {
+                              messages.add(message);
+                            });
+
                             _messagingBloc.add(SendMessageEvent(
-                              message: Message(
-                                text: null,
-                                senderName: widget.currentUser.name,
-                                senderId: widget.currentUser.uid,
-                                photo: File(result.files.single.path),
-                                selectedUserId: widget.selectedUser.uid,
-                              )
+                              message: message,documentReference: messageRef
                             ));
-                          
+
                           } else {
                             // User canceled the picker
                           }
@@ -218,5 +522,11 @@ class _MessagingState extends State<Messaging> {
         },
       ),
     );
+  }
+  Future<Message>getDetails (String id)async{
+    Message message;
+
+    message=await _messagingRepository.getMessageDetail(messageId: id);
+    return message;
   }
 }

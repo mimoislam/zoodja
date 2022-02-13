@@ -7,6 +7,7 @@ import 'package:zoodja/ui/pages/login.dart';
 import 'package:zoodja/ui/pages/onBording.dart';
 import 'package:zoodja/ui/pages/profile.dart';
 import 'package:zoodja/ui/pages/splash.dart';
+import 'package:zoodja/ui/pages/verify.dart';
 import 'package:zoodja/ui/widgets/tabs.dart';
 
 class Home extends StatelessWidget {
@@ -30,8 +31,18 @@ class Home extends StatelessWidget {
     return Profile(userRepository: _userRepository,userId: state.userId,);
   }
   if(state is UnAuthenticated) {
+    return Login(userRepository: _userRepository);
+  }
+  if (state is Confirm){
+
+    return Verify(userRepository: _userRepository,verification: state.verification,);
+  }
+  if (state is OnBoarding){
     return OnBoardingScreen(userRepository: _userRepository);
-  }else
+
+  }
+
+  else
     return Container();
 
 },

@@ -38,7 +38,9 @@ class MessageRepository{
       _user.interestedIn=value["interestedIn"];
       _user.filter=value["filter"];
       _user.withHijab=value["withHijab"];
+      _user.love=value["love"];
       _user.hijab=value["hijab"];
+      _user.email=value["email"];
       _user.tags= value["tags"].cast<String>();
     });
     return _user;
@@ -57,13 +59,13 @@ class MessageRepository{
            .doc(value.docs.first.id)
            .get()
            .then((message) {
-       _message.text = message['text'];
+             _message.text = message['text'];
        _message.photoUrl = message['photoUrl'];
        _message.timestamp = message['timestamp'];
        _message.viewed = message['viewed'];
        _message.selectedUserId = message['senderId'];
        });
-   });
+   }).onError((error, stackTrace) => _message=null);
   return _message;
   }
 

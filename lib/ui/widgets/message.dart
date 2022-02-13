@@ -7,6 +7,7 @@ import 'package:zoodja/repositories/messaging.dart';
 import "package:timeago/timeago.dart" as  timeAgo;
 import 'package:zoodja/ui/constats.dart';
 import 'package:zoodja/ui/widgets/photo.dart';
+import 'package:zoodja/ui/widgets/photoLink.dart';
 
 class MessageWidget extends StatefulWidget {
   final String messageId,currentUserId;
@@ -22,9 +23,7 @@ class _MessageWidgetState extends State<MessageWidget> {
   Message _message;
 
   Future getDetails()async{
-    print( widget.messageId);
     _message=await _messagingRepository.getMessageDetail(messageId: widget.messageId);
-    print(_message);
     return _message;
   }
 bool show=false;
@@ -101,41 +100,46 @@ bool show=false;
 
                 ],
               )
-                  :Wrap(
+                  :GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PhotoLink(url: _message.photoUrl,),));
+                },
+                    child: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.start,
                 direction: Axis.horizontal,
                 children: [
-                  _message.senderId==widget.currentUserId?Padding(
-                    padding: EdgeInsets.symmetric(vertical: size.height*0.01),
-                    child: Text(timeAgo.format(_message.timestamp.toDate()),style: GoogleFonts.openSans(),),
-                  ):Container(),
-                  Padding(
-                    padding: EdgeInsets.all( size.height*0.01),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: size.width*0.6,
-                        maxHeight: size.height*0.5
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: backgroundColor),
-                          borderRadius: BorderRadius.circular(size.height*0.02)
+                    _message.senderId==widget.currentUserId?Padding(
+                      padding: EdgeInsets.symmetric(vertical: size.height*0.01),
+                      child: Text(timeAgo.format(_message.timestamp.toDate()),style: GoogleFonts.openSans(),),
+                    ):Container(),
+                    Padding(
+                      padding: EdgeInsets.all( size.height*0.01),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: size.width*0.6,
+                          maxHeight: size.height*0.5
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(size.height*0.02),
-                          child: PhotoWidget(photoLink: _message.photoUrl,),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: backgroundColor),
+                            borderRadius: BorderRadius.circular(size.height*0.02)
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(size.height*0.02),
+                            child: PhotoWidget(photoLink: _message.photoUrl,),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  _message.senderId==widget.currentUserId
-                      ?SizedBox()
-                      :Padding(
-                    padding: EdgeInsets.symmetric(vertical: size.height*0.01),
-                    child: Text(timeAgo.format(_message.timestamp.toDate()),style: GoogleFonts.openSans(),),
-                  )
+                    _message.senderId==widget.currentUserId
+                        ?SizedBox()
+                        :Padding(
+                      padding: EdgeInsets.symmetric(vertical: size.height*0.01),
+                      child: Text(timeAgo.format(_message.timestamp.toDate()),style: GoogleFonts.openSans(),),
+                    )
                 ],
               ),
+                  ),
                 SizedBox(height: 10,)
               ],
             );

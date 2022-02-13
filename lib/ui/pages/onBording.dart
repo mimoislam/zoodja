@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/login/login_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
@@ -18,23 +19,14 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
-  bool clicked;
 
-  @override
-  void initState() {
-    clicked=false;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;
     return Scaffold(
 
-        body:clicked? BlocProvider<LoginBloc>(
-          create: (context)=>LoginBloc(userRepository: widget._userRepository),
-          child: LoginForm(userRepository: widget._userRepository,),
-        ):SingleChildScrollView(
+        body:SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(height: 50,),
@@ -57,10 +49,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               Center(
                 child: GestureDetector(
                   onTap: (){
-                    clicked=true;
-                    setState(() {
+                    BlocProvider.of<AuthenticationBloc>(context).add(ToOnBoarding());
 
-                    });
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10,vertical:15),

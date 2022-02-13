@@ -38,7 +38,8 @@ class _ChatWidgetState extends State<ChatWidget> {
         photoUrl: user.photo,
         lastMessage: null,
         lastMessagePhoto: null,
-        timestamp: null
+        timestamp: null,
+        viewed: true
       );
     }else{
       return Chat(
@@ -123,7 +124,7 @@ class _ChatWidgetState extends State<ChatWidget> {
               child: Container(
                 width: size.width,
                 decoration: BoxDecoration(
-                  color:(!chat.viewed)&&(widget.userId!=chat.lastMessageSenderId)?Colors.grey[200]:Colors.transparent,
+                  color:(!(chat.viewed))&&(widget.userId!=chat.lastMessageSenderId)?Colors.grey[200]:Colors.transparent,
                   borderRadius: BorderRadius.circular(size.height*0.02),
                 ),
                 child: Row(
@@ -145,27 +146,29 @@ class _ChatWidgetState extends State<ChatWidget> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(user.name,style: GoogleFonts.openSans(
+                            Text(user.name,style: GoogleFonts.nunito(
                               color: Color(0xff18516E),
-                              fontSize: (!chat.viewed)&&(widget.userId!=chat.lastMessageSenderId)?18:15,
+                              fontSize: (!chat.viewed)&&(widget.userId!=chat.lastMessageSenderId)?25:22,
                               fontWeight: (!chat.viewed)&&(widget.userId!=chat.lastMessageSenderId)?FontWeight.bold:FontWeight.w700
                             ),
                               overflow: TextOverflow.ellipsis,
                             ),
-                            chat.lastMessage!=null?Text(chat.lastMessage,overflow: TextOverflow.fade,style: GoogleFonts.openSans(
-                              color:Color(0xff18516E),
+                            chat.lastMessage!=null?Text(chat.lastMessage,overflow: TextOverflow.fade,style: GoogleFonts.montserrat(
+                                color: Color(0xff18516E),
                                 fontWeight: (!chat.viewed)&&(widget.userId!=chat.lastMessageSenderId)?FontWeight.w500:FontWeight.w300
                             ),)
                                 :chat.lastMessagePhoto==null
-                                ?Text("Chat Room available",style: GoogleFonts.openSans(
-                                color:Colors.grey,
-                                fontSize: size.height*0.02
+                                ?Text("Chat Room available",style: GoogleFonts.montserrat(
+                                color: Color(0xff18516E),
+                                fontWeight: FontWeight.w300,
+                                fontSize: 13
                             ))
                                 :Row(children: [
-                                  Icon(Icons.photo,color: Colors.grey,size: size.height*0.02,),
-                                  Text("Photo",style: GoogleFonts.openSans(
-                                    color:Colors.grey,
-                                    fontSize: size.height*0.015
+                                  Icon(Icons.photo,color: Color(0xff18516E),size: size.height*0.02,),
+                                  Text("Photo",style: GoogleFonts.montserrat(
+                                      color: Color(0xff18516E),
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 13
                                   ),)
                             ],)
 
@@ -174,8 +177,11 @@ class _ChatWidgetState extends State<ChatWidget> {
                       ],
                     ),
                     chat.timestamp!=null?Text(
-                        timeAgo.format(chat.timestamp.toDate())
-                    ):Text(  timeAgo.format(widget.creationTime.toDate()))
+                        timeAgo.format(chat.timestamp.toDate(),locale: 'en_short'),
+                        style: GoogleFonts.nunito(fontSize: 12,fontWeight: FontWeight.bold,color: Color(0xff18516E).withOpacity(0.55)),overflow: TextOverflow.ellipsis,)
+                        :Text(  timeAgo.format(widget.creationTime.toDate(),locale: 'en_short'),
+                        style: GoogleFonts.nunito(fontSize: 12,fontWeight: FontWeight.bold,color: Color(0xff18516E).withOpacity(0.55)),overflow: TextOverflow.ellipsis,)
+
                   ],
                 ),
               ),

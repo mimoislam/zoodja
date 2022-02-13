@@ -14,6 +14,7 @@ import 'package:zoodja/bloc/profile/profile_bloc.dart';
 import 'package:zoodja/models/user.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
+import 'package:zoodja/ui/validator.dart';
 import 'package:zoodja/ui/widgets/gender.dart';
 import 'package:zoodja/ui/widgets/profileForm2.dart';
 
@@ -48,10 +49,47 @@ class _ProfileFormState extends State<ProfileForm> {
    Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
    location=GeoPoint(position.latitude, position.longitude);;
   }
+  showDialogs({String message}){
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return
+          AlertDialog(
+            title: const Text("Missing Field"),
+            content:  Text(message),
+            actions: [
+               GestureDetector(
+                child: const Text(" OK ",style: TextStyle(color: Colors.blue,fontSize: 20),),
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          );
+      },
+    );
+  }
   _onSubmitted()async{
     await _getLocation();
+    bool s=await _userRepository.checkEmail(_emailController.text);
+
     User user;
+    if (s){
+      return showDialogs(message: "Invalid or Used  Email Please Check it Again ");
+    }else
+      if (photo==null){
+      return showDialogs(message: " Please Enter Your Photo ");
+    }else
+    if (_nameController.text==""){
+      return showDialogs(message: " Please Enter Your name ");
+    }else
+    if (_emailController.text==""){
+      return showDialogs(message: " Please Enter Your email ");
+    }
+    else
+    if (age==null){
+      return showDialogs(message: " Please Enter Your Age ");
+    }
     if(gender=="Female"){
+
       interestedIn="Male";
       user=User(name: _nameController.text, gender: gender, interestedIn: interestedIn, ages: age, location: location, photoFile: photo,email: _emailController.text);
 
@@ -196,7 +234,8 @@ class _ProfileFormState extends State<ProfileForm> {
 
                     child: TextFormField(
                       controller: _emailController,
-                      autovalidateMode: AutovalidateMode.always,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) => Validators.isValidEmail(value)?null :"please enter email",
 
                       decoration: InputDecoration(
                         labelText: 'Email',
@@ -289,9 +328,8 @@ class _ProfileFormState extends State<ProfileForm> {
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: GestureDetector(
                     onTap: (){
-                      if(isButtonEnabled(state)){
                         _onSubmitted();
-                      }
+
                     },
                     child: Center(
                       child: Container(

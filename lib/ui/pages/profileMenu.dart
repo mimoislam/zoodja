@@ -11,6 +11,7 @@ import 'package:zoodja/repositories/messageRepository.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:zoodja/ui/pages/whoAreWe.dart';
 
 class ProfileMenu extends StatefulWidget {
 final String userId;
@@ -49,10 +50,38 @@ class _ProfileMenuState extends State<ProfileMenu> {
         ?Container(
               child: SingleChildScrollView(
                   child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(0.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  width: double.infinity,
+                  height: 50,
+                  decoration:  BoxDecoration(
+                      color: Color(0xff213A50)
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Text("Profile",style: GoogleFonts.openSans(fontWeight: FontWeight.bold,fontSize: 22,color: Colors.white),),
+                          Container(
+                            width: 45,
+                            height: 3,
+                            color: Color(0xff20A39E),
+                          )
+                        ]
+                        ,
+                      ),
+
+                    ],
+                  ),
+
+                ),
+
                 SizedBox(
                   height: 40,
                 ),
@@ -74,8 +103,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         setState(() {
 
                         });
-                        print(saving);
-                       await  userRepository.profileUpdate(photo, widget.userId, controller.text, _currentSliderValue.toInt(),items2,withHijab);
+                       await  userRepository.profileUpdate(photo, widget.userId, controller.text, _currentSliderValue.toInt(),items2,withHijab,hijab);
                           saving=false;
                         setState(() {
 
@@ -108,6 +136,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                               ?GestureDetector(
                             onTap: ()async{
                               FilePickerResult result = await FilePicker.platform.pickFiles(type: FileType.image);
+
                               if(result != null) {
                                 setState(() {
                                   photo = File(result.files.single.path);
@@ -121,7 +150,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                               maxWidth:100,
                             ),
                               child: Image.network(user.photo,
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                                   loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
                                     if (loadingProgress == null) return child;
                                     return Center(
@@ -212,21 +241,6 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         child: Text("Unveiled",style: GoogleFonts.assistant(          color:hijab=="Unveiled"?Colors.white:Color(0xff8969AE)),),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          hijab="Can't say";
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-
-                        decoration: BoxDecoration(
-                            color: text_color2.withOpacity(0.4)
-                        ),
-                        child: Text("Can't say",style: GoogleFonts.assistant(          color:hijab=="Can't say"?Colors.white:Color(0xff8969AE)),),
-                      ),
-                    )
                   ],
                 ):Container(),
                 Text("Filters", style: GoogleFonts.openSans(fontWeight: FontWeight.w300,fontSize: 17,color:Color(0xff18516E) ),),
@@ -288,7 +302,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     GestureDetector(
                       onTap: (){
                         setState(() {
-                          withHijab="";
+                          withHijab=null;
                         });
                       },
                       child: Container(
@@ -297,7 +311,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         decoration: BoxDecoration(
                             color: text_color2.withOpacity(0.4)
                         ),
-                        child: Text("No matter",style: GoogleFonts.assistant(          color:withHijab==""?Colors.white:Color(0xff8969AE)),),
+                        child: Text("No matter",style: GoogleFonts.assistant(          color:withHijab==null?Colors.white:Color(0xff8969AE)),),
                       ),
                     )
                   ],
@@ -352,15 +366,17 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     Center(
                       child: GestureDetector(
                         onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => WhoAreWe(),));
+
                         },
                         child: Container(
                           width: size.width*0.7,
-                          padding: EdgeInsets.symmetric(vertical: 5),
+                          padding: EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
                             color: Color(0xff18516E),
                             borderRadius: BorderRadius.circular(10)
                           ),
-                          child: Center(child: Text("Help & Support",style: GoogleFonts.openSans(fontSize: 18,color: Colors.white,),)),
+                          child: Center(child: Text("Who Are We",style: GoogleFonts.openSans(fontSize: 20,color: Colors.white,),)),
                         ),
                       ),
                     ),

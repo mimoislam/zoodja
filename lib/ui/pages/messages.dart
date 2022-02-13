@@ -24,7 +24,7 @@ class _MessagesState extends State<Messages> {
   @override
   void initState() {
     messageRepository=widget.messageRepository;
-    _messageBloc=MessageBloc(messageRepository: messageRepository);
+    _messageBloc=BlocProvider.of<MessageBloc>(context);
 
     super.initState();
   }
@@ -34,10 +34,12 @@ class _MessagesState extends State<Messages> {
     return BlocBuilder<MessageBloc,MessageState>(
       bloc: _messageBloc,
       builder: (context,MessageState state) {
+        print("state");
+        print(state);
       if(state is MessageInitialState){
         _messageBloc
         .add(ChatStreamEvent(currentUserId: widget.userId));
-        // return CircularProgressIndicator();
+        return CircularProgressIndicator();
       }
       if(state is ChatLoadingState){
         return Center(
@@ -47,43 +49,77 @@ class _MessagesState extends State<Messages> {
       if(state is ChatLoadedState){
 
         Stream <QuerySnapshot> chatStream=state.chatStream;
-        return StreamBuilder(
-          stream: state.chatStream,
-          builder: (context, snapshot) {
+        return Padding(
+          padding: const EdgeInsets.only(top:0.0,),
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                width: double.infinity,
+                height: 50,
+                decoration:  BoxDecoration(
+                    color: Color(0xff213A50)
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Chat",style: GoogleFonts.openSans(fontWeight: FontWeight.bold,fontSize: 22,color: Colors.white),),
+                        Container(
+                          width: 45,
+                          height: 3,
+                          color: Color(0xff20A39E),
+                        )
+                      ]
+                      ,
+                    ),
 
-            if(!snapshot.hasData){
-              return Center(child: Text("No data"));
-            }
-            if((snapshot.data.docs.isNotEmpty)){
-              if(snapshot.connectionState==ConnectionState.waiting){
-              return Center(
-                child: CircularProgressIndicator(),
+                  ],
+                ),
 
-              );}
-              else{
-                return Container(
-                  margin: EdgeInsets.only(top: 20),
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: snapshot.data.docs.length,
-                    itemBuilder: (context, index) {
+              ),
 
-                      return ChatWidget(userId: widget.userId,
-                        creationTime: snapshot.data.docs[index].get("timestamp"),
-                        selectedUserId:  snapshot.data.docs[index].id,);
-                    },
-                  ),
-                );
-              }
-             }else{
-              return Center(
-                child: Text("You don't have any conversations",style: GoogleFonts.openSans(
-                  fontSize: 16,fontWeight: FontWeight.bold
-                ),),
-              );
-            }
-          } ,
+              Expanded(
+                child: StreamBuilder(
+                  stream: chatStream,
+                  builder: (context, snapshot) {
+                    if(!snapshot.hasData){
+                      return Center(child: Text("No data"));
+                    }
+                    if((snapshot.data.docs.isNotEmpty)){
+                      if(snapshot.connectionState==ConnectionState.waiting){
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );}
+                      else{
+                        return Container(
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data.docs.length,
+                            itemBuilder: (context, index) {
+                              return ChatWidget(userId: widget.userId,
+                                creationTime: snapshot.data.docs[index].get("timestamp"),
+                                selectedUserId:  snapshot.data.docs[index].id,);
+                            },
+                          ),
+                        );
+                      }
+                     }else{
+                      return Center(
+                        child: Text("You don't have any conversations",style: GoogleFonts.openSans(
+                          fontSize: 16,fontWeight: FontWeight.bold
+                        ),),
+                      );
+                    }
+                  } ,
 
+                ),
+              ),
+            ],
+          ),
         );
       }
       else

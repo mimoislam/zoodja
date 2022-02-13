@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:zoodja/ui/widgets/photo.dart';
 
 class ProfileWidget extends StatelessWidget {
-  final dynamic padding,photoHeight,photoWidth,clipRadius,photo,containerHeight,containerWidth,child,child2;
-ProfileWidget({
- this.padding, this.photoHeight, this.photoWidth, this.clipRadius, this.photo, this.containerHeight, this.containerWidth, this.child, this.child2
+  final dynamic padding,photoHeight,photoWidth,clipRadius,photo,photoWidget,containerHeight,containerWidth,child,child2;
+
+  ProfileWidget({
+ this.padding, this.photoWidget,this.photoHeight, this.photoWidth, this.clipRadius, this.photo, this.containerHeight, this.containerWidth, this.child, this.child2
 });
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: photoHeight+50,
 
       child: Padding(
           padding: EdgeInsets.all(padding),
@@ -27,13 +27,13 @@ ProfileWidget({
                       height: photoHeight,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(clipRadius),
-                        child: PhotoWidget( photoLink: photo,),
+                        child: photo==null?photoWidget:PhotoWidget( photoLink: photo,),
                       ),
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: EdgeInsets.symmetric(vertical: 5),
                         decoration: BoxDecoration(
                           gradient:  LinearGradient(
                               colors: [

@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "888185705466",
-    "project_id": "zoodja-49991",
-    "storage_bucket": "zoodja-49991.appspot.com"
+    "project_number": "626707109984",
+    "project_id": "zoodja2",
+    "storage_bucket": "zoodja2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:888185705466:android:f01d25216ec92e78964a43",
+        "mobilesdk_app_id": "1:626707109984:android:5b1236208c65a7e3b70b05",
         "android_client_info": {
           "package_name": "com.example.zoodja"
         }
       },
       "oauth_client": [
         {
-          "client_id": "888185705466-7lladib6a6p3vujjs5qg7stagqe9crer.apps.googleusercontent.com",
+          "client_id": "626707109984-p5v0nnbph8v2ji1t8q890q76f7ndfal1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.zoodja",
+            "certificate_hash": "110361677a972dfbcb0f86fd6e405af7dd7bb013"
+          }
+        },
+        {
+          "client_id": "626707109984-bvvh44g48co3cdpu2h9ap9ju00bb40cr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAXJ4g5LKBrz-dlLqhR5z9NFPIpXXFHsY8"
+          "current_key": "AIzaSyBOhk3jvf-huE179YVhamfUb7zVsGVoRTc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "888185705466-7lladib6a6p3vujjs5qg7stagqe9crer.apps.googleusercontent.com",
+              "client_id": "626707109984-bvvh44g48co3cdpu2h9ap9ju00bb40cr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

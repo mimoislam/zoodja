@@ -29,6 +29,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }else if(event is LoggedOut){
       yield*_mapLoggedOutToState();
     }
+    else if (event is ToOnBoarding){
+      yield* _mapToLogin();
+
+    }
+    else if (event is ConfirmEvent){
+      yield* _mapConfirmToState(event.verification);
+    }
   }
  Stream<AuthenticationState> _mapStartedToState()async* {
     try{
@@ -42,7 +49,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           yield Authenticated(uid);
         }
       }else{
-        yield UnAuthenticated();
+        yield OnBoarding();
       }
     }catch(e){
       yield UnAuthenticated();
@@ -61,5 +68,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> _mapLoggedOutToState()async* {
         yield UnAuthenticated();
         userRepository.signout();
+  }
+
+  Stream<AuthenticationState> _mapConfirmToState(String verification) async*{
+    yield Confirm(verification);
+  }
+
+  Stream<AuthenticationState> _mapToLogin() async*{
+    yield UnAuthenticated();
   }
 }

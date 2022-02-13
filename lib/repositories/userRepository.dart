@@ -1,24 +1,38 @@
 
 import 'dart:io';
+import 'package:image/image.dart' as Img;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:zoodja/models/user.dart' as user;
 
 class UserRepository{
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
-  String verification;
+
 
   UserRepository({FirebaseAuth firebaseAuth, FirebaseFirestore fireStore}):
        _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
   _firestore = fireStore ?? FirebaseFirestore.instance;
 
 
+  Future<bool>checkEmail(String email )async{
+    bool s=false;
 
+    try{
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email,password: "ssssssss");
+    }
+     catch  (e)
+    {
+        s=true;
+
+    }
+    return s;
+  }
   Future<void> saveTokenToDatabase(String token) async {
     // Assume user is logged in for this example
     String userId =  FirebaseAuth.instance.currentUser.uid;
@@ -39,19 +53,21 @@ class UserRepository{
     return exist;
   }
 
-  verifyPhoneNumber( String phone)async{
-
-    await _firebaseAuth.verifyPhoneNumber(
+  Future<String> verifyPhoneNumber( String phone,Function change,Function change2 )async{
+     await _firebaseAuth.verifyPhoneNumber(
       phoneNumber: phone,
       codeSent: (String verificationId, int resendToken) async {
-        verification =verificationId;
+        change2(verificationId);
+
       },
-      codeAutoRetrievalTimeout: (String verificationId) {   verification =verificationId;  },
-      verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {  },
       verificationFailed: (FirebaseAuthException error) {
-        verification="";
         print(error);
       },
+       codeAutoRetrievalTimeout: (String verificationId) {  },
+       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async{
+         await signInWithCredential(phoneAuthCredential);
+         change();
+       },
     );
 
   }
@@ -69,10 +85,15 @@ class UserRepository{
 
   }
   signInWithCredential(credential)async{
-   await _firebaseAuth.signInWithCredential(credential);
+   await _firebaseAuth.signInWithCredential(credential).catchError((error) {
+     // do something with the error
+     print("error");
+     print(error);
+   });
    String token = await FirebaseMessaging.instance.getToken();
    print(FirebaseAuth.instance.currentUser.uid);
    await saveTokenToDatabase(token);
+   print("object2");
 
   }
 
@@ -107,11 +128,25 @@ updateToken()async{
   }
   Future <void>profileSetup({user.User user,String userId})async{
     UploadTask uploadTask;
-    uploadTask=FirebaseStorage.instance.ref().child('userPhotos').child(userId).child(userId).putFile(user.photoFile);
-    String token = await FirebaseMessaging.instance.getToken();
+    File img;
+
+      Img.Image image = Img.decodeImage(user.photoFile.readAsBytesSync());
+      image=Img.copyResize(image, width: 500);
+      Directory root  = await getTemporaryDirectory();
+      String directoryPath = root.path+'/bozzetto_camera';
+      await Directory(directoryPath).create(recursive: true);
+      String filePath = '$directoryPath/${DateTime.now()}.jpg';
+      img=new File(filePath)
+        ..writeAsBytesSync(Img.encodePng(image));
+      uploadTask =
+          FirebaseStorage.instance.ref().child('userPhotos').child(userId)
+              .child(userId)
+              .putFile(img);
+      String token = await FirebaseMessaging.instance.getToken();
 
     return await uploadTask.then((ref) async {
       await ref.ref.getDownloadURL().then((url) async {
+        img.delete();
       await _firestore.collection('users').doc(userId).set({
         'uid':userId,
         'photourl':url,
@@ -142,27 +177,43 @@ updateToken()async{
       String name,
       int filter,
       List<String> list,
-      withHijab
+      withHijab,
+      hijab
       )async{
+    File img;
     UploadTask uploadTask;
-    if(photo!=null)
-    uploadTask=FirebaseStorage.instance.ref().child('userPhotos').child(userId).child(userId).putFile(photo);
-    return photo!=null?await uploadTask.then((ref) async {
+    if(photo!=null) {
+      Img.Image image = Img.decodeImage(photo.readAsBytesSync());
+      image=Img.copyResize(image, width: 500);
+       Directory root  = await getTemporaryDirectory();
+      String directoryPath = root.path+'/bozzetto_camera';
+      await Directory(directoryPath).create(recursive: true);
+      String filePath = '$directoryPath/${DateTime.now()}.jpg';
+      img=new File(filePath)
+        ..writeAsBytesSync(Img.encodePng(image));
+      uploadTask =
+          FirebaseStorage.instance.ref().child('userPhotos').child(userId)
+              .child(userId)
+              .putFile(img);
+    }return photo!=null?await uploadTask.then((ref) async {
       await ref.ref.getDownloadURL().then((url) async {
+        img.delete();
+
         await _firestore.collection('users').doc(userId).update({
           'photourl':url,
           'name':name,
           "filter":filter,
            "tags":list,
-          "withHijab":withHijab
+          "withHijab":withHijab,
+          "hijab":hijab
         });
       });
     }): await _firestore.collection('users').doc(userId).update({
       'name':name,
       "filter":filter,
       "tags":list,
-      "withHijab":withHijab
-
+      "withHijab":withHijab,
+      "hijab":hijab
     });
 
   }

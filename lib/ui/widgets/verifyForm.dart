@@ -1,113 +1,88 @@
+import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
-import 'package:zoodja/bloc/signup/sign_up_bloc.dart';
+import 'package:zoodja/bloc/verification/verification_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
-class SignUpForm extends StatefulWidget {
+
+
+class VerifyForm extends StatefulWidget {
   final UserRepository _userRepository;
 
-  const SignUpForm({@required UserRepository userRepository}):
+  const VerifyForm({@required UserRepository userRepository}):
         assert(userRepository !=null),
         _userRepository=userRepository ;
-
   @override
-  _SignUpFormState createState() => _SignUpFormState();
+  _VerifyFormState createState() => _VerifyFormState();
 }
 
-class _SignUpFormState extends State<SignUpForm> {
+class _VerifyFormState extends State<VerifyForm> {
+  final TextEditingController _verificationController=TextEditingController();
 
-  final TextEditingController _phoneController=TextEditingController();
-  SignUpBloc _signUpBloc;
-  UserRepository get userRepository=>widget._userRepository;
-
-  bool isSignUpButtonEnabled(SignUpState state){
-
-  }
+  VerificationBloc _verificationBloc;
+bool isLoading=false;
 
   @override
   void initState() {
-    _signUpBloc=BlocProvider.of<SignUpBloc>(context);
-
+    _verificationBloc=BlocProvider.of<VerificationBloc>(context);
     super.initState();
-  }
-  bool isReCAPTCHA=false;
-
-  _onFormSubmitted()async{
-    try{
-      setState(() {
-        isReCAPTCHA=true;
-      });
-      await userRepository.verifyPhoneNumber("+213"+_phoneController.text,(){
-        BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
-      },(s){
-        BlocProvider.of<AuthenticationBloc>(context).add(ConfirmEvent(s));
-        isReCAPTCHA=false;
-
-      });
-
-    }catch(e){
-      BlocProvider.of<AuthenticationBloc>(context).add(ToOnBoarding());
-    }
-
-
-
-
   }
 
   @override
   Widget build(BuildContext context) {
     Size size =MediaQuery.of(context).size;
-    return BlocListener<SignUpBloc,SignUpState>(
-        bloc: _signUpBloc,
-        listener: (BuildContext context,SignUpState state) {
-            if(state.isFailure){
-              return ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content:Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('SignUp Failed'),
-                      Icon(Icons.error)
-                    ],
-                  ),
-                  duration: Duration(seconds: 2),
-                ),
-              );
-            }
-            if(state.isSubmitting){
-              print('isSubmitting');
-              return ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content:Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Signing Up ......'),
-                      CircularProgressIndicator()
-                    ],
-                  ),
-                  duration: Duration(seconds: 2),
-                ),
-              );
-            }
-            if (state.isSuccess){
+    return BlocListener<VerificationBloc,VerificationState>(
+      listener: (BuildContext context,VerificationState state){
+        if(state.isFailure){
 
-              BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
-              Navigator.of(context).pop();
+          Timer(Duration(seconds: 2), () {
+            BlocProvider.of<AuthenticationBloc>(context).add(ToOnBoarding());
+          });
+          return ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Login Failed'),
+                  Icon(Icons.error)
+                ],
+              ),
+              duration: Duration(seconds: 1),
+            ),
+          );
 
-            }
-            if (state.isFailure){
-              print('isf');
-            }
-        },
-        child: BlocBuilder<SignUpBloc,SignUpState>(
-          bloc: _signUpBloc,
-          builder: (BuildContext context,SignUpState state){
-            return isReCAPTCHA
+        }
+        if(state.isSubmitting){
+          print('isSubmitting');
+          isLoading=true;
+          setState(() {
 
+          });
+          return ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Logging In ......'),
+                  CircularProgressIndicator()
+                ],
+              ),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        if (state.isSuccess){
+          BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
+        }
+      },
+      child: BlocBuilder<VerificationBloc,VerificationState>(
+          bloc: _verificationBloc,
+          builder: (BuildContext context,VerificationState state){
+            return isLoading
                 ?Container(
               child: Center(
                 child: Column(
@@ -119,22 +94,22 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                     ),
                     SizedBox(height: 10,),
-                    Text("Please Waiting ...")
+                    Text("Logging In ......")
                   ],
                 ),
               ),
             )
-                :SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child:Container(
-                width: size.width,
-                height: size.height,
-                child: ListView(
+
+                  : SingleChildScrollView(
+
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 20,),
+                    SizedBox(height: size.height*0.15,),
                     Center(
                       child: Text('True Love Stories never have endings',textAlign: TextAlign.center,
-                        style: GoogleFonts.openSans(fontSize: size.width*0.07, color: text_color, fontWeight: FontWeight.bold),),
+                        style: GoogleFonts.openSans(fontSize: size.width*0.06, color: text_color, fontWeight: FontWeight.bold),),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -142,7 +117,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         children: [
                           Container(
                             width: size.width*0.3,
-                            child: Divider(height: size.height*0.05,
+                            child: Divider(height: size.height*0.03,
                               color: text_color,
 
 
@@ -150,7 +125,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           ),
                           Container(
                             width: size.width*0.3,
-                            child: Text('Sign Up',textAlign: TextAlign.center,
+                            child: Text('Sign In',textAlign: TextAlign.center,
                               style: GoogleFonts.openSans(fontSize: size.width*0.07, color: text_color,fontWeight: FontWeight.w300 ),),
 
                           ),
@@ -164,8 +139,14 @@ class _SignUpFormState extends State<SignUpForm> {
                         ],
                       ),
                     ),
-                    SizedBox(height:30,),
+                    SizedBox(height: size.height*0.05,),
+                    Container(
+                      width: size.width*0.8,
+                      child: Divider(height: size.height*0.05,
+                        color: Colors.white,
 
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.all(size.height*0.02),
                       child: Container(
@@ -173,16 +154,14 @@ class _SignUpFormState extends State<SignUpForm> {
                         color: text_color2.withOpacity(0.4),
 
                         child: TextFormField(
-
-                          controller: _phoneController,
+                          controller: _verificationController,
                           autovalidateMode: AutovalidateMode.always,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            prefix: Text("+213"),
-                            labelText: 'Phone Number',
+                            labelText: 'Verification Code',
                             labelStyle: GoogleFonts.openSans(
-                              color: text_color2,
-                              fontSize: size.height*0.02
+                                color: text_color2,
+                                fontSize: size.height*0.02
                             ),
                             focusedBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,
@@ -193,26 +172,25 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
 
                     ),
-
-                    SizedBox(height: 100,),
                     Padding(
                       padding: EdgeInsets.all(size.height*0.02),
                       child: GestureDetector(
-                        onTap:
-                            _onFormSubmitted
-                            ,
+                        onTap: ()async{
+
+                          _verificationBloc.add(Submitting(code:  _verificationController.text,verification:_verificationBloc.verification ));
+                        },
                         child: Container(
                           width: size.width*0.7,
                           height: size.height*0.1,
                           decoration: BoxDecoration(
                             color: Colors.red
-                               ,
+                            ,
                             borderRadius: BorderRadius.circular(size.height*0.04),
 
                           ),
                           child: Center(
                             child: Text(
-                              "Sign Up",
+                              "Verifie",
                               style: GoogleFonts.openSans(
                                 fontSize: size.height*0.025,
                                 color: Colors.white,
@@ -223,13 +201,14 @@ class _SignUpFormState extends State<SignUpForm> {
                         ),
                       ),
                     )
-                  ],
-                ),
-              ) ,
-            );
-          },
-        ),
-        );
-  }
 
+
+                  ]),
+
+            );
+          }
+      ),
+    );
+  }
 }
+

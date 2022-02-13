@@ -20,6 +20,7 @@ class User{
   Timestamp age;
   DateTime ages;
   int filter;
+  bool refine;
   GeoPoint location ;
   List <String> tags;
   User(
@@ -39,5 +40,11 @@ class User{
         this.eyesColor,
         this.email,
         this.profession,
-      this.line,this.love,this.tags});
+      this.line,this.love,this.tags,this.refine});
+  @override
+  bool operator ==(Object other) => (other is User && other.uid == uid)||(other is String && other == uid);
+  bool equals(Object user) {
+    return (user is User && user.uid == uid)||(user is String && user == uid);
+  }
+
 }

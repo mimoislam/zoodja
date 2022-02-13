@@ -8,7 +8,8 @@ abstract class MessagingEvent extends Equatable {
 
 class SendMessageEvent extends MessagingEvent{
   final Message message ;
-  SendMessageEvent({this.message});
+  final DocumentReference documentReference;
+  SendMessageEvent({this.message,this.documentReference});
   @override
   List<Object> get props => [message];
 }
