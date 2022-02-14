@@ -847,12 +847,13 @@ class _SearchState extends State<Search> {
                                   _searchBloc.list.removeAt(0);
                                   _searchBloc.listUsersID.removeAt(0);
                                   _searchBloc.listUsers.removeAt(0);
-                                  setState(() {
+                                  print("state.currentUser.uid");
+                                  print(state.currentUser.uid);
 
-                                  });
                                   if(!state.currentUser.refine){
                                     await _searchBloc.changeRefine();
-                                    return showDialog(context: context, builder: (context) =>AlertDialog(
+                                    return showDialog(
+                                      context: context, builder: (context) =>AlertDialog(
                                       content: Wrap(
                                         children: [
                                           Text("Please Refine Your Search By Going to The Profile Page",style:  GoogleFonts.openSans(

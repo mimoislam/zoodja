@@ -21,6 +21,21 @@ class SearchRepository {
         selectUserName: selectedUser.name,
         selectUserPhotoUrl: selectedUser.photo
       );
+      await _firestore
+          .collection('users')
+          .doc(currentUserId)
+          .collection('chosenList')
+          .doc(selectedUserId)
+          .set({});
+
+      String token;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(selectedUserId)
+          .get().then((value) {
+        token=value["tokens"];
+      });
+      sendMatchNotification(token);
 
     }else{
       await _firestore
@@ -56,8 +71,8 @@ class SearchRepository {
   }
   updateRefine(String userId)async{
     await _firestore.collection('users').doc(userId).set({
-      'refine':true,
-    });
+      'refines':true,
+    },      SetOptions(merge: true),);
 
   }
   passUser(currentUserId, selectedUserId) async {
@@ -301,7 +316,7 @@ class SearchRepository {
     await _firestore.
     collection("users").
     doc(selectedUserId).
-    collection("matchedmatchedList").
+    collection("matchedList").
     doc(currentUserId).
     delete();
     await _firestore.

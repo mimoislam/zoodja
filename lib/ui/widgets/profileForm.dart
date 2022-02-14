@@ -70,9 +70,9 @@ class _ProfileFormState extends State<ProfileForm> {
   _onSubmitted()async{
     await _getLocation();
     bool s=await _userRepository.checkEmail(_emailController.text);
-
+    print(s);
     User user;
-    if (s){
+    if (!s){
       return showDialogs(message: "Invalid or Used  Email Please Check it Again ");
     }else
       if (photo==null){
