@@ -116,7 +116,9 @@ updateToken()async{
 
   Future <void> signout()async
   {
-
+    await _firestore.collection('users').doc(_firebaseAuth.currentUser.uid).update({
+      'refine':0,
+    });
     return await _firebaseAuth.signOut();
   }
   Future <bool>isSignedIn()async{
@@ -165,6 +167,7 @@ updateToken()async{
         "withHijab":null,
         'tokens':token,
         "tags":user.tags,
+        "refine":0
       });
       });
     });

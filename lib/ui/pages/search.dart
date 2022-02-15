@@ -466,12 +466,11 @@ class _SearchState extends State<Search> {
         );
       }
       if(state is LoadUserState){
-        //_user=state.user;
         _currentUser=state.currentUser;
         if(_searchBloc.listUsers.length==0){
-          Timer(Duration(seconds: 20), (){
-            _searchBloc.add(LoadUserEvent(userId:widget.userId));
-          });
+          // Timer(Duration(seconds: 20), (){
+          //   _searchBloc.add(LoadUserEvent(userId:widget.userId));
+          // });
           return Center(
             child: Text("No One HERE",
               style: GoogleFonts.openSans(
@@ -546,97 +545,9 @@ class _SearchState extends State<Search> {
                             onDragEnd: (drag){
                               print(drag.offset.direction);
                               if(drag.offset.direction >= 1.8){
-                                setState(() {
-                                  isDisliked=true;
-                                  isAnimated=true;
-                                });
-                                Timer(Duration(milliseconds: 400),(){
-                                  setState(() {
-                                    isDisliked=false;
-                                    isAnimated=false;
-
-                                  });
-                                  Timer(Duration(milliseconds: 400),() async {
-                                    _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
-                                    _searchBloc.list.removeAt(0);
-                                    _searchBloc.listUsersID.removeAt(0);
-                                    _searchBloc.listUsers.removeAt(0);
-                                    setState(() {
-
-                                    });
-                                    if(!state.currentUser.refine){
-                                      await _searchBloc.changeRefine();
-
-                                      return showDialog(context: context, builder: (context) =>AlertDialog(
-                                        content: Wrap(
-                                          children: [
-                                            Text("Please Refine Your Search By Going to The Profile Page",style:  GoogleFonts.openSans(
-                                                fontWeight: FontWeight.bold
-                                            ),),
-
-
-                                          ],
-                                        ),actions: [
-
-                                        TextButton(onPressed: ()async{
-                                          Navigator.of(context).pop();
-                                        }, child: Text(
-                                          "Okay",style:  GoogleFonts.openSans(
-                                          color:Colors.black,
-                                        ),
-                                        )),
-                                      ],
-                                      ),);
-                                    }
-
-
-                                  });
-                                });
+                              dislikeFunction(state);
                               } if(drag.offset.direction <= 0.5) {
-                                setState(() {
-                                  isLiked=true;
-                                  isAnimated=true;
-                                });
-                                Timer(Duration(milliseconds: 400),(){
-                                  setState(() {
-                                    isLiked=false;
-                                    isAnimated=false;
-
-                                  });
-                                  Timer(Duration(milliseconds: 400),() async {
-                                    _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
-                                    _searchBloc.list.removeAt(0);
-                                    _searchBloc.listUsersID.removeAt(0);
-                                    _searchBloc.listUsers.removeAt(0);
-                                    setState(() {
-
-                                    });
-                                    if(!state.currentUser.refine){
-                                      await _searchBloc.changeRefine();
-                                      return showDialog(context: context, builder: (context) =>AlertDialog(
-                                        content: Wrap(
-                                          children: [
-                                            Text("Please Refine Your Search By Going to The Profile Page",style:  GoogleFonts.openSans(
-                                                fontWeight: FontWeight.bold
-                                            ),),
-
-
-                                          ],
-                                        ),actions: [
-
-                                        TextButton(onPressed: ()async{
-                                          Navigator.of(context).pop();
-                                        }, child: Text(
-                                          "Okay",style:  GoogleFonts.openSans(
-                                          color:Colors.black,
-                                        ),
-                                        )),
-                                      ],
-                                      ),);
-                                    }
-
-                                  });
-                                });
+                            likeFunction(state);
                               }
                             },
                             axis: Axis.horizontal,
@@ -773,52 +684,7 @@ class _SearchState extends State<Search> {
                         children: [
                           GestureDetector(
                             onTap:(){
-                              setState(() {
-                                isDisliked=true;
-                                isAnimated=true;
-                              });
-                              Timer(Duration(milliseconds: 400),(){
-                                setState(() {
-                                  isDisliked=false;
-                                  isAnimated=false;
-
-                                });
-                                Timer(Duration(milliseconds: 400),() async {
-                                  _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
-                                  _searchBloc.list.removeAt(0);
-                                  _searchBloc.listUsersID.removeAt(0);
-                                  _searchBloc.listUsers.removeAt(0);
-                                  setState(() {
-
-                                  });
-                                  if(!state.currentUser.refine){
-                                    await _searchBloc.changeRefine();
-
-                                    return showDialog(context: context, builder: (context) =>AlertDialog(
-                                      content: Wrap(
-                                        children: [
-                                          Text("Please Refine Your Search By Going to The Profile Page",style:  GoogleFonts.openSans(
-                                              fontWeight: FontWeight.bold
-                                          ),),
-
-
-                                        ],
-                                      ),actions: [
-
-                                      TextButton(onPressed: ()async{
-                                        Navigator.of(context).pop();
-                                      }, child: Text(
-                                        "Okay",style:  GoogleFonts.openSans(
-                                        color:Colors.black,
-                                      ),
-                                      )),
-                                    ],
-                                    ),);
-                                  }
-
-
-                                });
-                              });
+                              dislikeFunction(state);
                             },
                             child: Container(
                               height: 55,
@@ -832,51 +698,7 @@ class _SearchState extends State<Search> {
                           ),
                           GestureDetector(
                             onTap:(){
-                              setState(() {
-                                isLiked=true;
-                                isAnimated=true;
-                              });
-                              Timer(Duration(milliseconds: 400),(){
-                                setState(() {
-                                  isLiked=false;
-                                  isAnimated=false;
-
-                                });
-                                Timer(Duration(milliseconds: 400),() async {
-                                  _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
-                                  _searchBloc.list.removeAt(0);
-                                  _searchBloc.listUsersID.removeAt(0);
-                                  _searchBloc.listUsers.removeAt(0);
-                                  print("state.currentUser.uid");
-                                  print(state.currentUser.uid);
-
-                                  if(!state.currentUser.refine){
-                                    await _searchBloc.changeRefine();
-                                    return showDialog(
-                                      context: context, builder: (context) =>AlertDialog(
-                                      content: Wrap(
-                                        children: [
-                                          Text("Please Refine Your Search By Going to The Profile Page",style:  GoogleFonts.openSans(
-                                              fontWeight: FontWeight.bold
-                                          ),),
-
-
-                                        ],
-                                      ),actions: [
-
-                                      TextButton(onPressed: ()async{
-                                        Navigator.of(context).pop();
-                                      }, child: Text(
-                                        "Okay",style:  GoogleFonts.openSans(
-                                        color:Colors.black,
-                                      ),
-                                      )),
-                                    ],
-                                    ),);
-                                  }
-
-                                });
-                              });
+                            likeFunction(state);
                             },
                             child: Container(
                               height: 55,
@@ -908,36 +730,104 @@ class _SearchState extends State<Search> {
         }
       ,);
   }
-}
-Widget love({photoHeight, photoWidth, clipRadius}){
-  return Container(
-    width: photoWidth,
-    height: photoHeight,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      color: Color(0xffFE3C72).withOpacity(0.5),
-    ),
-    child: Icon(
-      FontAwesomeIcons.solidHeart,
-      color: Colors.white,
-      size: 100,
-    ),
-  );
-}
-Widget dislove({photoHeight, photoWidth, clipRadius}){
-  return Container(
-    width: photoWidth,
-    height: photoHeight,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(clipRadius),
-      color: Color(0xff20A39E).withOpacity(0.5),
+  likeFunction(state){
+    setState(() {
+      isLiked=true;
+      isAnimated=true;
+    });
+    Timer(Duration(milliseconds: 400),(){
+      setState(() {
+        isLiked=false;
+        isAnimated=false;
 
-    ),
+      });
+      Timer(Duration(milliseconds: 400),() async {
+        _searchBloc.add(SelectUserEvent(name: _currentUser.name,selectedUserId: _user.uid,currentUserId: widget.userId,photoUrl: _currentUser.photo));
+        _searchBloc.list.removeAt(0);
+        _searchBloc.listUsersID.removeAt(0);
+        _searchBloc.listUsers.removeAt(0);
 
-    child: Icon(
-      Icons.clear_sharp,
-      color: Colors.white,
-      size: 100,
-    ),
-  );
+        state.currentUser.refine++;
+        if(state.currentUser.refine==5){
+
+          return showDialog
+            (
+            barrierDismissible: false,
+
+            context: context, builder: (context) =>AlertDialog(
+            content: Wrap(
+              children: [
+                Text("Please Refine Your Search By Going to The Profile Page",style:  GoogleFonts.openSans(
+                    fontWeight: FontWeight.bold
+                ),),
+
+
+              ],
+            ),actions: [
+
+            TextButton(onPressed: ()async{
+              _searchBloc.changeRefine();
+              Navigator.of(context).pop();
+            }, child: Text(
+              "Okay",style:  GoogleFonts.openSans(
+              color:Colors.black,
+            ),
+            )),
+          ],
+
+          ),);
+        }
+
+      });
+    });
+  }
+  dislikeFunction(state){
+    setState(() {
+      isDisliked=true;
+      isAnimated=true;
+    });
+    Timer(Duration(milliseconds: 400),(){
+      setState(() {
+        isDisliked=false;
+        isAnimated=false;
+
+      });
+      Timer(Duration(milliseconds: 400),() async {
+        _searchBloc.add(PassUserEvent(currentUserId: widget.userId,selectedUserId: _user.uid));
+        _searchBloc.list.removeAt(0);
+        _searchBloc.listUsersID.removeAt(0);
+        _searchBloc.listUsers.removeAt(0);
+        state.currentUser.refine++;
+        if(state.currentUser.refine==5){
+
+          return showDialog
+            (
+            barrierDismissible: false,
+
+            context: context, builder: (context) =>AlertDialog(
+            content: Wrap(
+              children: [
+                Text("Please Refine Your Search By Going to The Profile Page",style:  GoogleFonts.openSans(
+                    fontWeight: FontWeight.bold
+                ),),
+
+
+              ],
+            ),actions: [
+
+            TextButton(onPressed: ()async{
+              _searchBloc.changeRefine();
+              Navigator.of(context).pop();
+            }, child: Text(
+              "Okay",style:  GoogleFonts.openSans(
+              color:Colors.black,
+            ),
+            )),
+          ],
+
+          ),);
+        }
+      });
+    });
+  }
 }

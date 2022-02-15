@@ -9,8 +9,7 @@ import 'package:zoodja/ui/widgets/chat.dart';
 class Messages extends StatefulWidget {
   final String userId;
   final MessageRepository messageRepository;
-  final MessageBloc messageBloc;
-  const Messages({ this.userId,this.messageBloc,this.messageRepository}) ;
+  const Messages({ this.userId,this.messageRepository}) ;
 
   @override
   _MessagesState createState() => _MessagesState();

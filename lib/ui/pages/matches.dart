@@ -15,9 +15,8 @@ import 'package:zoodja/ui/widgets/profileWidget.dart';
 import 'package:zoodja/ui/widgets/userGender.dart';
 class Matches extends StatefulWidget {
   final String userId;
-  final MatchesBloc matchesBloc;
   final MatchesRepository  matchesRepository;
-  const Matches({this.userId,this.matchesBloc,this.matchesRepository}) ;
+  const Matches({this.userId,this.matchesRepository}) ;
 
   @override
   _MatchesState createState() => _MatchesState();
@@ -26,8 +25,7 @@ class Matches extends StatefulWidget {
 class _MatchesState extends State<Matches> {
   MatchesRepository  matchesRepository;
   MatchesBloc _matchesBloc;
-  @override
-  bool get wantKeepAlive => true;
+
   int difference;
   getDifference(GeoPoint userLocation)async{
     Position position=await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -40,7 +38,6 @@ class _MatchesState extends State<Matches> {
 
   @override
   void initState() {
-    // _matchesBloc=widget.matchesBloc;
     matchesRepository=widget.matchesRepository;
     _matchesBloc=MatchesBloc(matchesRepository: matchesRepository);
     super.initState();
@@ -59,6 +56,7 @@ class _MatchesState extends State<Matches> {
         }
         if(state is LoadUserState){
           return Container(
+            color: Colors.white,
             child: CustomScrollView(
               slivers: [
                 SliverAppBar(
@@ -183,7 +181,7 @@ class _MatchesState extends State<Matches> {
                   backgroundColor: Colors.white,
                   pinned: true,
                   title:  Text(
-                    "People who liked you",
+                    "Someone liked you",
                     style: GoogleFonts.openSans(
                         color: Colors.black,
                         fontSize: 20.0

@@ -41,7 +41,7 @@ class _TabsState extends State<Tabs> {
   void initState() {
     pageController=PageController(initialPage: 0);
     _messageBloc=MessageBloc(messageRepository: messageRepository);
-     _matchesBloc=ms.MatchesBloc(matchesRepository: matchesRepository);
+    _matchesBloc=ms.MatchesBloc(matchesRepository: matchesRepository);
     _searchBloc=SearchBloc(searchRepository: searchRepository);
     super.initState();
   }
@@ -63,8 +63,8 @@ class _TabsState extends State<Tabs> {
     double topPadding=MediaQuery.of(context).padding.top;
     List<Widget> pages=[
       Search(userId: widget.userId),
-      Matches(userId: widget.userId,matchesBloc: _matchesBloc, matchesRepository: matchesRepository,),
-      Messages(userId: widget.userId,messageBloc: _messageBloc,messageRepository: messageRepository,),
+      Matches(userId: widget.userId, matchesRepository: matchesRepository,),
+      Messages(userId: widget.userId,messageRepository: messageRepository,),
       ProfileMenu(userId:widget.userId,messageRepository: messageRepository,)
     ];
     return Theme(data: ThemeData(
@@ -155,11 +155,12 @@ class _TabsState extends State<Tabs> {
                             state.matchedList.listen((event) {
 
                               existMatch=event.docs.length!=0;
+                              eventMatch=event.docs.length!=0;
                               setState(() {
 
                               });
                                   Timer(Duration(seconds: 3), () {
-                                    this.eventMatch=false;
+                                    eventMatch=false;
                                     setState(() {
 
                                     });
@@ -167,7 +168,9 @@ class _TabsState extends State<Tabs> {
 
                             });
                             state.selectedList.listen((event) {
+
                               existSelected=event.docs.length!=0;
+                              eventSelected=event.docs.length!=0;
                               setState(() {
 
                               });

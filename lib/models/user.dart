@@ -20,7 +20,7 @@ class User{
   Timestamp age;
   DateTime ages;
   int filter;
-  bool refine;
+  int refine;
   GeoPoint location ;
   List <String> tags;
   User(

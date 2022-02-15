@@ -19,8 +19,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   List <String> listUsersID=[];
   User currentUser;
   changeRefine()async{
-    await _searchRepository.updateRefine(currentUser.uid);
-    currentUser.refine=true;
+    await _searchRepository.updateRefine(currentUser.uid,currentUser.refine);
   }
   SearchBloc({@required SearchRepository searchRepository }):
         assert(searchRepository!=null),

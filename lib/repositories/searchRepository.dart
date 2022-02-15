@@ -69,10 +69,10 @@ class SearchRepository {
     }
 
   }
-  updateRefine(String userId)async{
-    await _firestore.collection('users').doc(userId).set({
-      'refines':true,
-    },      SetOptions(merge: true),);
+  updateRefine(String userId,int i)async{
+    await _firestore.collection('users').doc(userId).update({
+      'refine':i,
+    });
 
   }
   passUser(currentUserId, selectedUserId) async {
@@ -90,13 +90,14 @@ class SearchRepository {
     User currentUser = User();
 
     await _firestore.collection('users').doc(userId).get().then((user) {
+      currentUser.uid = user.id;
       currentUser.name = user['name'];
       currentUser.photo = user['photourl'];
       currentUser.gender = user['gender'];
       currentUser.interestedIn = user['interestedIn'];
       currentUser.filter = user['filter'];
       currentUser.withHijab = user['withHijab'];
-      currentUser.refine = !(user.data().containsKey("refine"))?false:user["refine"];
+      currentUser.refine = !(user.data().containsKey("refine"))?0:user["refine"];
     });
     return currentUser;
   }
