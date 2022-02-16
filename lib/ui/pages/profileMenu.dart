@@ -27,6 +27,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
   List items=["Cooking","Travel","Writing","Reading","Cat Lover","Working"];
   List<String> items2=["Working"];
   int max=3;
+  bool change=false;
 
 
 
@@ -366,8 +367,10 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     Center(
                       child: GestureDetector(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => WhoAreWe(),));
+                          change=!change;
+                          setState(() {
 
+                          });
                         },
                         child: Container(
                           width: size.width*0.7,
@@ -375,6 +378,24 @@ class _ProfileMenuState extends State<ProfileMenu> {
                           decoration: BoxDecoration(
                             color: Color(0xff18516E),
                             borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Center(child: Text(change?"Change Language to French":"Changer la langue en anglais",style: GoogleFonts.openSans(fontSize: 15,color: Colors.white,),)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Center(
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => WhoAreWe(),));
+
+                        },
+                        child: Container(
+                          width: size.width*0.7,
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                              color: Color(0xff18516E),
+                              borderRadius: BorderRadius.circular(10)
                           ),
                           child: Center(child: Text("Who Are We",style: GoogleFonts.openSans(fontSize: 20,color: Colors.white,),)),
                         ),

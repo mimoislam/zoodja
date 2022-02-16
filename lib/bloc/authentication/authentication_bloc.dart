@@ -42,7 +42,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final isSignedIn = await userRepository.isSignedIn();
       if(true){
         //final uid = await userRepository.getUser();
-        final uid = "FfCj3fSFOUgd8lrWe1QstlcBgRS2";
+        final uid = "zAuL7EScPpaX5O3AwByhro6DhwX2";
         final isFirstTime=await userRepository.isFirstTime(uid);
         if(!isFirstTime){
           yield AuthenticatedButNoSet(uid);
