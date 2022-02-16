@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 
@@ -36,6 +37,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     else if (event is ConfirmEvent){
       yield* _mapConfirmToState(event.verification);
     }
+    else if (event is GotoCreation){
+      yield* _mapConditionToState(userId:event.userId);
+    }
   }
  Stream<AuthenticationState> _mapStartedToState()async* {
     try{
@@ -45,7 +49,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         final uid = "zAuL7EScPpaX5O3AwByhro6DhwX2";
         final isFirstTime=await userRepository.isFirstTime(uid);
         if(!isFirstTime){
-          yield AuthenticatedButNoSet(uid);
+          yield AuthenticatedButNoSet1(uid);
         }else{
           yield Authenticated(uid);
         }
@@ -77,5 +81,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   Stream<AuthenticationState> _mapToLogin() async*{
     yield UnAuthenticated();
+  }
+
+  Stream<AuthenticationState>_mapConditionToState({String userId}) async*{
+    yield AuthenticatedButNoSet(userId);
+
   }
 }

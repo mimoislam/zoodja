@@ -63,7 +63,7 @@ class _MatchesState extends State<Matches> {
                   backgroundColor: Colors.white,
                   expandedHeight: 0,
                   title: Text(
-                    "Matched Users",
+                    "You have … match",
                     style: GoogleFonts.openSans(
                       color: Colors.black,
                       fontSize: 20.0

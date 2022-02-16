@@ -11,6 +11,11 @@ abstract class AuthenticationEvent extends  Equatable {
 class AppStarted extends AuthenticationEvent{}
 
 class LoggedIn extends AuthenticationEvent{}
+class GotoCreation extends AuthenticationEvent{
+  final String userId;
+  GotoCreation(this.userId);
+  List <Object> get props=>[userId];
+}
 
 class LoggedOut extends AuthenticationEvent{}
 class ToOnBoarding extends AuthenticationEvent{}

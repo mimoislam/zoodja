@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
+import 'package:zoodja/ui/pages/condition.dart';
 import 'package:zoodja/ui/pages/login.dart';
 import 'package:zoodja/ui/pages/onBording.dart';
 import 'package:zoodja/ui/pages/profile.dart';
@@ -27,7 +28,15 @@ class Home extends StatelessWidget {
     return Splash();
   }if(state is Authenticated){
     return Tabs(userId: state.userId,);
-  }if(state is AuthenticatedButNoSet){
+  }
+
+
+  if(state is AuthenticatedButNoSet1){
+    return Condition(userId: state.userId);
+  }
+
+
+  if(state is AuthenticatedButNoSet){
     return Profile(userRepository: _userRepository,userId: state.userId,);
   }
   if(state is UnAuthenticated) {

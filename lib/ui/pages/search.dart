@@ -746,7 +746,9 @@ class _SearchState extends State<Search> {
         _searchBloc.list.removeAt(0);
         _searchBloc.listUsersID.removeAt(0);
         _searchBloc.listUsers.removeAt(0);
+        setState(() {
 
+        });
         state.currentUser.refine++;
         if(state.currentUser.refine==5){
 
@@ -797,6 +799,9 @@ class _SearchState extends State<Search> {
         _searchBloc.list.removeAt(0);
         _searchBloc.listUsersID.removeAt(0);
         _searchBloc.listUsers.removeAt(0);
+        setState(() {
+
+        });
         state.currentUser.refine++;
         if(state.currentUser.refine==5){
 

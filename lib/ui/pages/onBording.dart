@@ -37,7 +37,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: GestureDetector(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Condition(),));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Condition(userId: "0"),));
                   },
                   child: RichText(text: TextSpan(
                       children: [
