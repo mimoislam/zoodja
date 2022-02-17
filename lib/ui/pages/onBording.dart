@@ -7,6 +7,7 @@ import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
 import 'package:zoodja/ui/pages/condition.dart';
 import 'package:zoodja/ui/widgets/loginForm.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class OnBoardingScreen extends StatefulWidget {
@@ -41,8 +42,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   },
                   child: RichText(text: TextSpan(
                       children: [
-                        TextSpan(text: "By tapping Log In, you agree with our",style: GoogleFonts.openSans(color: text_color)),
-                        TextSpan(text: " Terms of Service and Privacy Policy",
+                        TextSpan(text: AppLocalizations.of(context).by_tapping,style: GoogleFonts.openSans(color: text_color)),
+                        TextSpan(text: AppLocalizations.of(context).terms_of_Service,
 
                             style: GoogleFonts.openSans(color: text_color,decoration: TextDecoration.underline)),
                        ]
@@ -64,7 +65,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         color: Color(0xffFE3C72),
                         borderRadius: BorderRadius.circular(15)
                     ),
-                    child: Text("Find your perfect match",style: GoogleFonts.openSans(color: Colors.white,fontSize: 16),),
+                    child: Text(AppLocalizations.of(context).find_your_perfect_match,style: GoogleFonts.openSans(color: Colors.white,fontSize: 16),),
                   ),
                 ),
               ),

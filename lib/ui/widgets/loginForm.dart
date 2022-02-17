@@ -7,6 +7,8 @@ import 'package:zoodja/bloc/login/login_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
 import 'package:zoodja/ui/pages/signUp.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class LoginForm extends StatefulWidget {
 final UserRepository _userRepository;
@@ -124,7 +126,7 @@ class _LoginFormState extends State<LoginForm> {
                 children: [
                   SizedBox(height: size.height*0.15,),
                   Center(
-                    child: Text('True Love Stories never have endings',textAlign: TextAlign.center,
+                    child: Text(AppLocalizations.of(context).true_Love_Stories_never_have_endings,textAlign: TextAlign.center,
                       style: GoogleFonts.openSans(fontSize: size.width*0.06, color: text_color, fontWeight: FontWeight.bold),),
                   ),
                   Padding(
@@ -141,7 +143,7 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                         Container(
                           width: size.width*0.3,
-                          child: Text('Sign In',textAlign: TextAlign.center,
+                          child: Text(AppLocalizations.of(context).sign_In,textAlign: TextAlign.center,
                             style: GoogleFonts.openSans(fontSize: size.width*0.07, color: text_color,fontWeight: FontWeight.w300 ),),
 
                         ),
@@ -237,7 +239,7 @@ class _LoginFormState extends State<LoginForm> {
                           },
                           child: Center(
                             child: Text(
-                              "Are you new ? Get an Account",
+                              AppLocalizations.of(context).are_you_new,
                               style: TextStyle(
                                 fontSize: size.height*0.025,
                                 color: Colors.blue,

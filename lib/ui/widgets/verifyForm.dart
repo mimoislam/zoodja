@@ -8,6 +8,7 @@ import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/verification/verification_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class VerifyForm extends StatefulWidget {
@@ -108,7 +109,7 @@ bool isLoading=false;
                   children: [
                     SizedBox(height: size.height*0.15,),
                     Center(
-                      child: Text('True Love Stories never have endings',textAlign: TextAlign.center,
+                      child: Text(AppLocalizations.of(context).true_Love_Stories_never_have_endings,textAlign: TextAlign.center,
                         style: GoogleFonts.openSans(fontSize: size.width*0.06, color: text_color, fontWeight: FontWeight.bold),),
                     ),
                     Padding(
@@ -125,7 +126,7 @@ bool isLoading=false;
                           ),
                           Container(
                             width: size.width*0.3,
-                            child: Text('Sign In',textAlign: TextAlign.center,
+                            child: Text(AppLocalizations.of(context).code,textAlign: TextAlign.center,
                               style: GoogleFonts.openSans(fontSize: size.width*0.07, color: text_color,fontWeight: FontWeight.w300 ),),
 
                           ),
@@ -158,7 +159,7 @@ bool isLoading=false;
                           autovalidateMode: AutovalidateMode.always,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            labelText: 'Verification Code',
+                            labelText: AppLocalizations.of(context).put_the_code_received_by_SMS,
                             labelStyle: GoogleFonts.openSans(
                                 color: text_color2,
                                 fontSize: size.height*0.02
@@ -190,7 +191,7 @@ bool isLoading=false;
                           ),
                           child: Center(
                             child: Text(
-                              "Verifie",
+                              AppLocalizations.of(context).verifier,
                               style: GoogleFonts.openSans(
                                 fontSize: size.height*0.025,
                                 color: Colors.white,

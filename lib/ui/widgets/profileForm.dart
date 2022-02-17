@@ -17,6 +17,7 @@ import 'package:zoodja/ui/constats.dart';
 import 'package:zoodja/ui/validator.dart';
 import 'package:zoodja/ui/widgets/gender.dart';
 import 'package:zoodja/ui/widgets/profileForm2.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileForm extends StatefulWidget {
   final UserRepository _userRepository;
@@ -225,7 +226,7 @@ class _ProfileFormState extends State<ProfileForm> {
                     ),
                   ),
                 ),
-                textFieldWidget(_nameController, "User Name", size),
+                textFieldWidget(_nameController,AppLocalizations.of(context).username, size),
                 Padding(
                   padding: EdgeInsets.all(size.height*0.02),
                   child: Container(
@@ -235,10 +236,9 @@ class _ProfileFormState extends State<ProfileForm> {
                     child: TextFormField(
                       controller: _emailController,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) => Validators.isValidEmail(value)?null :"please enter email",
-
+                      validator: (value) => Validators.isValidEmail(value)?null :AppLocalizations.of(context).please_Enter_Email,
                       decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: AppLocalizations.of(context).email,
                         labelStyle: GoogleFonts.openSans(
                           color: text_color2,
                           fontSize: 13
@@ -277,7 +277,7 @@ class _ProfileFormState extends State<ProfileForm> {
                             enabled: false,
                             controller: _ageController,
                             decoration: InputDecoration(
-                            labelText:"Birthday" ,
+                            labelText:AppLocalizations.of(context).date_of_Birth,
                             labelStyle: GoogleFonts.openSans(
                             color: text_color2,
                             fontSize: 13
@@ -302,17 +302,17 @@ class _ProfileFormState extends State<ProfileForm> {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal:10),
-                      child: Text("Gender" ,style:TextStyle(color: Colors.black,fontSize: size.width*0.09)),
+                      child: Text(AppLocalizations.of(context).genre ,style:TextStyle(color: Colors.black,fontSize: size.width*0.09)),
                     ),
                     Row(
                       mainAxisAlignment:  MainAxisAlignment.spaceAround,
                       children: [
-                        genderWidget(FontAwesomeIcons.venus, "Female", size, gender, (){
+                        genderWidget(FontAwesomeIcons.venus, AppLocalizations.of(context).woman, size, gender, (){
                           setState(() {
                             gender="Female";
                           });
                         }),
-                        genderWidget(FontAwesomeIcons.mars, "Male", size, gender, (){
+                        genderWidget(FontAwesomeIcons.mars,AppLocalizations.of(context).man, size, gender, (){
                           setState(() {
                             gender="Male";
                           });

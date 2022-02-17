@@ -7,6 +7,9 @@ import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/signup/sign_up_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
 import 'package:zoodja/ui/constats.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
 class SignUpForm extends StatefulWidget {
   final UserRepository _userRepository;
 
@@ -24,9 +27,7 @@ class _SignUpFormState extends State<SignUpForm> {
   SignUpBloc _signUpBloc;
   UserRepository get userRepository=>widget._userRepository;
 
-  bool isSignUpButtonEnabled(SignUpState state){
 
-  }
 
   @override
   void initState() {
@@ -57,6 +58,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
 
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +135,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   children: [
                     SizedBox(height: 20,),
                     Center(
-                      child: Text('True Love Stories never have endings',textAlign: TextAlign.center,
+                      child: Text(AppLocalizations.of(context).true_Love_Stories_never_have_endings,textAlign: TextAlign.center,
                         style: GoogleFonts.openSans(fontSize: size.width*0.07, color: text_color, fontWeight: FontWeight.bold),),
                     ),
                     Padding(
@@ -150,7 +152,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           ),
                           Container(
                             width: size.width*0.3,
-                            child: Text('Sign Up',textAlign: TextAlign.center,
+                            child: Text(AppLocalizations.of(context).sign_Up,textAlign: TextAlign.center,
                               style: GoogleFonts.openSans(fontSize: size.width*0.07, color: text_color,fontWeight: FontWeight.w300 ),),
 
                           ),
@@ -212,7 +214,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           ),
                           child: Center(
                             child: Text(
-                              "Sign Up",
+                              AppLocalizations.of(context).sign_Up,
                               style: GoogleFonts.openSans(
                                 fontSize: size.height*0.025,
                                 color: Colors.white,

@@ -44,7 +44,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
  Stream<AuthenticationState> _mapStartedToState()async* {
     try{
       final isSignedIn = await userRepository.isSignedIn();
-      if(true){
+      if(false){
         //final uid = await userRepository.getUser();
         final uid = "zAuL7EScPpaX5O3AwByhro6DhwX2";
         final isFirstTime=await userRepository.isFirstTime(uid);
