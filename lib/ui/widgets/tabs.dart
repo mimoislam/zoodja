@@ -259,33 +259,92 @@ class _TabsState extends State<Tabs> {
                           );
                             // return Container();
                           },),
-                         Container(
-                                  width: 40,
-                                  height: 40,
-                                  child: GestureDetector(
-                                    onTap: (){
-                                      if(index!=2){
-                                        index=2;
+                            BlocBuilder<MessageBloc,
+                                MessageState>(
+                              bloc: _messageBloc,
+                              builder: (context, state) {
+                              if(state is MessageInitialState){
+                              _messageBloc
+                                  .add(ChatStreamEvent(currentUserId: widget.userId));
+                              return CircularProgressIndicator();
+                              }
+                              if(state is ChatLoadingState){
+                              return Center(
+                              child: CircularProgressIndicator(),
+                              );
+                              }
+                              if(state is ChatLoadedState){
+                                state.chatStream.listen((event) async{
 
+                                  for(var uid in event.docChanges){
+                                    print("uid.doc.id");
+                                    print(uid.doc.id);
+                                    Message message=await messageRepository.
+                                    getLastMessage(currentUserId: widget.userId,selectedUserId: uid.doc.id);
+                                    if(message.viewed==false){
+                                      existMessage=true;
+                                      eventMessage=true;
+                                      setState(() {
+
+                                      });
+                                      Timer(Duration(seconds: 3), () {
+                                        this.eventMessage=false;
                                         setState(() {
 
                                         });
-                                        pageController.jumpToPage(2);
+                                      });
+                                    }
+                                  }
+                                });
 
-                                      }
-                                    },
-                                    child: Column(
-                                      children: [
-                                        Image.asset("assets/conversation.png",height: 30,),
-                                        SizedBox(height:4,),                                               index==2?Container(width: 25, height:2,decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(10)
-                                        ),):Container()
+                              }
+                              return Container(
+                                width: 40,
+                                height: 40,
+                                child: GestureDetector(
+                                  onTap: (){
+                                    if(index!=2){
+                                      index=2;
 
-                                      ],
-                                    ),
+                                      setState(() {
+
+                                      });
+                                      pageController.jumpToPage(2);
+
+                                    }
+                                  },
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Image.asset("assets/conversation.png",height: 30,),
+                                          SizedBox(height:4,),                                               index==2?Container(width: 25, height:2,decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),):Container()
+
+                                        ],
+                                      ),
+                                      (existMessage)?Positioned(
+                                        top: -5,
+                                        right: -5,
+                                        child: Container(
+                                          width: 10,height: 10,
+                                          decoration: BoxDecoration(
+                                              color:Colors.red,
+                                              borderRadius: BorderRadius.circular(15)
+                                          ),
+                                        ),
+                                      ):Container()
+                                    ],
                                   ),
                                 ),
+                              );
+                                // return Container();
+                              },),
+
                             Container(
                               width: 40,
                               height: 40,

@@ -17,6 +17,13 @@
   "wilaya": "Wilaya",
   "commune": "Commune",
   "eyes_Color": "Couleur des yeux :",
+  "what_do_you_like": "Qu'est-ce que tu aimes ?",
+  "please_Profession": "Veuillez entrer votre profession ",
+  "please_Description": "Veuillez entrer votre ligne de description ",
+  "please_Tag": " Veuillez entrer au moins une étiquette que vous aimez ",
+  "missing_Field": "Champ manquant",
+
+
   "brown": "Marrons",
   "blue": "Bleus",
   "hazelnut": "Noisettes",
@@ -37,6 +44,7 @@
   "sign_out": "Se déconnecter",
   "who_are_we": "Qui Sommes Nous",
   "are_you_new": "Es-tu Nouveau ? Avoir un compte",
+  "change_Language": "Changer la langue en anglais",
   "please_Enter_Email": "Veuillez saisir un e-mail"
 
 }

@@ -39,7 +39,7 @@ class _MatchesState extends State<Matches> {
   @override
   void initState() {
     matchesRepository=widget.matchesRepository;
-    _matchesBloc=MatchesBloc(matchesRepository: matchesRepository);
+    _matchesBloc=BlocProvider.of<MatchesBloc>(context);
     super.initState();
   }
 

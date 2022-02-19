@@ -33,8 +33,7 @@ class _MessagesState extends State<Messages> {
     return BlocBuilder<MessageBloc,MessageState>(
       bloc: _messageBloc,
       builder: (context,MessageState state) {
-        print("state");
-        print(state);
+
       if(state is MessageInitialState){
         _messageBloc
         .add(ChatStreamEvent(currentUserId: widget.userId));
@@ -46,7 +45,6 @@ class _MessagesState extends State<Messages> {
         );
       }
       if(state is ChatLoadedState){
-
         Stream <QuerySnapshot> chatStream=state.chatStream;
         return Padding(
           padding: const EdgeInsets.only(top:0.0,),
@@ -93,12 +91,16 @@ class _MessagesState extends State<Messages> {
                         child: CircularProgressIndicator(),
                       );}
                       else{
+
                         return Container(
                           child: ListView.builder(
                             padding: EdgeInsets.zero,
                             scrollDirection: Axis.vertical,
                             itemCount: snapshot.data.docs.length,
                             itemBuilder: (context, index) {
+                              print("snapshot.data.docs.length");
+
+                              print(snapshot.data.docs[index].id);
                               return ChatWidget(userId: widget.userId,
                                 creationTime: snapshot.data.docs[index].get("timestamp"),
                                 selectedUserId:  snapshot.data.docs[index].id,);

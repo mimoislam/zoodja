@@ -16,7 +16,14 @@
   "woman": "Woman",
   "wilaya": "Wilaya",
   "commune": "Commune",
-  "eyes_Color": "Couleur des yeux :",
+  "eyes_Color": "Eyes Color :",
+  "what_do_you_like": "What do you Like ?",
+  "please_Profession": "Please Enter Your Profession ",
+  "please_Description": " Please Enter Your Description Line ",
+  "please_Tag": " Please Enter At Least One Tag You Like ",
+  "missing_Field": "Missing Field",
+
+
   "brown": "Brown",
   "blue": "Blue",
   "hazelnut": "Hazelnut",
@@ -26,7 +33,7 @@
   "your_passions": "Your passions",
   "voyages": "Voyages",
   "sport": "Sport",
-  "cuisine": "Cuisine",
+  "cuisine": "Cooking",
   "films": "Films",
   "your_job": "Your job",
   "describe_yourself_in_one_line": "Describe yourself in one line",
@@ -37,5 +44,6 @@
   "sign_out": "Sign out",
   "who_are_we": "Who are we",
   "are_you_new": "Are you new ? Get an Account",
+  "change_Language": "Change Language to French",
   "please_Enter_Email": "Please Enter Email"
 }

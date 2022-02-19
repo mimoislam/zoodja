@@ -177,11 +177,10 @@ updateToken()async{
   Future <void>profileUpdate(
       File photo,
       String userId,
-      String name,
       int filter,
       List<String> list,
       withHijab,
-      hijab
+      hijab,line
       )async{
     File img;
     UploadTask uploadTask;
@@ -198,25 +197,27 @@ updateToken()async{
           FirebaseStorage.instance.ref().child('userPhotos').child(userId)
               .child(userId)
               .putFile(img);
-    }return photo!=null?await uploadTask.then((ref) async {
+    }
+    return photo!=null?await uploadTask.then((ref) async {
       await ref.ref.getDownloadURL().then((url) async {
         img.delete();
 
         await _firestore.collection('users').doc(userId).update({
           'photourl':url,
-          'name':name,
           "filter":filter,
            "tags":list,
           "withHijab":withHijab,
-          "hijab":hijab
+          "hijab":hijab,
+          "line":line
         });
       });
     }): await _firestore.collection('users').doc(userId).update({
-      'name':name,
       "filter":filter,
       "tags":list,
       "withHijab":withHijab,
-      "hijab":hijab
+      "hijab":hijab,
+      "line":line
+
     });
 
   }

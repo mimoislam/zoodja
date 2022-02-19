@@ -117,14 +117,18 @@ class _MessagingState extends State<Messaging> {
                   for (int index = 1;
                       event.docChanges.length > index;
                       index++) {
+
                     Message message=Message(uid: event.docChanges[index].doc.id);
-                    if(messages.contains(message)){
+                    if(messages.contains(message))
+                      {
                       for(int index =messages.length-1;index>0;index--){
                         if (message.uid==messages[index].uid){
                             messages[index].isSend=true;
                         }
                       }
-                    }else {
+                    }
+                    else
+                      {
                       Message message = await getDetails(event.docChanges[index].doc.id);
                       messages.add(message);
                     }

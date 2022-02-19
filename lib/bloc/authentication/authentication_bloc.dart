@@ -44,11 +44,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
  Stream<AuthenticationState> _mapStartedToState()async* {
     try{
       final isSignedIn = await userRepository.isSignedIn();
-      if(false){
+      if(true){
         //final uid = await userRepository.getUser();
-        final uid = "zAuL7EScPpaX5O3AwByhro6DhwX2";
+        final uid = "O1PYAh5FsZh7o92aNJIHXIlt3rG2";
         final isFirstTime=await userRepository.isFirstTime(uid);
-        if(!isFirstTime){
+        if(false){
           yield AuthenticatedButNoSet1(uid);
         }else{
           yield Authenticated(uid);
@@ -57,6 +57,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         yield OnBoarding();
       }
     }catch(e){
+      print(e);
       yield UnAuthenticated();
     }
  }
@@ -64,7 +65,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> _mapLoggedInToState() async*{
     final isFirstTime=await userRepository.isFirstTime(await userRepository.getUser());
     if(!isFirstTime){
-      yield AuthenticatedButNoSet(await userRepository.getUser());
+      yield AuthenticatedButNoSet1(await userRepository.getUser());
     }else{
       yield Authenticated(await userRepository.getUser());
     }

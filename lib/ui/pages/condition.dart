@@ -645,6 +645,9 @@ class _ConditionState extends State<Condition> {
                                     value: isChecked,
                                     onChanged: (bool value) {
                                         isChecked = value;
+                                        setState(() {
+
+                                        });
                                     },
                                 ),
                                 Text("Do You accept This Condition ?",style: GoogleFonts.openSans(fontSize: 15,fontWeight: FontWeight.bold),)

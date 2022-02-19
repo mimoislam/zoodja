@@ -15,14 +15,13 @@ import 'package:zoodja/ui/pages/home.dart';
  AndroidNotificationChannel channel;
  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  // when u are outside  the app add notification for it
 
-  await Firebase.initializeApp();
   print('Handling a background message ${message.messageId}');
   print('Handling a background message ${message.notification.title}');
-  print('Handling a background message ${message.notification.title}');
+  print('Handling a background message ${message.notification.body}');
+
+
+
 }
 void main() async{
 
@@ -30,6 +29,17 @@ void main() async{
       await Firebase.initializeApp();
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
+      final ios=IOSInitializationSettings();
+      final android=AndroidInitializationSettings('@mipmap/ic_launcher');
+      final settingss=InitializationSettings(
+        android: android,
+        iOS: ios
+      );
+
+      FlutterLocalNotificationsPlugin notificaiton=FlutterLocalNotificationsPlugin();
+      notificaiton.initialize(settingss,onSelectNotification: (payload)async{
+        print(payload);
+      });
 
       // Set the background messaging handler early on, as a named top-level function
 
@@ -45,13 +55,43 @@ void main() async{
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         // when u are inside the app add notification for it
         print('Got a message whilst in the foreground!');
-        print('Message data: ${message.data}');
+        print('Message data: ${message.notification.title}');
+        if(message.notification.title==titleForMatch)
+        notificaiton.show(0, message.notification.title, message.notification.body, NotificationDetails(
+            android: AndroidNotificationDetails(
+              "Channel ID",
+              "Channel name",
+              "Channel description",
+            ),
+            iOS: IOSNotificationDetails(
+            )
+        ),payload: "ssss");
+        if(message.notification.title==titleForMessage)
+          notificaiton.show(1, message.notification.title, message.notification.body, NotificationDetails(
+              android: AndroidNotificationDetails(
+                "Channel ID",
+                "Channel name",
+                "Channel description",
+              ),
+              iOS: IOSNotificationDetails(
+              )
+          ),payload: "ssss");
+        if(message.notification.title==titleForLike)
+          notificaiton.show(2, message.notification.title, message.notification.body, NotificationDetails(
+              android: AndroidNotificationDetails(
+                "Channel ID",
+                "Channel name",
+                "Channel description",
+              ),
+              iOS: IOSNotificationDetails(
+              )
+          ),payload: "ssss");
 
         if (message.notification != null) {
           print('Message also contained a notification: ${message.notification.title}');
         }
-      });      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-      print('Handling a background message ${await FirebaseMessaging.instance.getToken()}');
+      });
+      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
       await FirebaseMessaging.instance
           .setForegroundNotificationPresentationOptions(
         alert: true,

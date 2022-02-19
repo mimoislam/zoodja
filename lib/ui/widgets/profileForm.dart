@@ -311,12 +311,12 @@ class _ProfileFormState extends State<ProfileForm> {
                           setState(() {
                             gender="Female";
                           });
-                        }),
+                        },"Female"),
                         genderWidget(FontAwesomeIcons.mars,AppLocalizations.of(context).man, size, gender, (){
                           setState(() {
                             gender="Male";
                           });
-                        })
+                        },"Male")
                       ],
                     ),
                   ],

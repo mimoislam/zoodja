@@ -1,6 +1,22 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:zoodja/models/keyValueRecordType.dart';
+
+String titleForMessage="Go Check Your Messages";
+String titleForMatch="You Have Match";
+String titleForLike="Someone Liked you";
+List <KeyValueRecordType>items=
+[
+  KeyValueRecordType(key: "Cooking", value: 'Cooking'),
+  KeyValueRecordType(key: "Travel", value: 'Travel'),
+  KeyValueRecordType(key: "Writing", value: 'Writing'),
+  KeyValueRecordType(key: "Reading", value: 'Reading'),
+  KeyValueRecordType(key: "Cat Lover", value: 'Cat Lover'),
+  KeyValueRecordType(key: "Working", value: 'Working'),
+];
+List<KeyValueRecordType> love=[];
+List<KeyValueRecordType> eyesColor=[];
 
 const backgroundColor=Colors.blueGrey;
 const text_color=Color(0xff18516E);
@@ -12,7 +28,7 @@ String constructForMessage(String token) {
     "to" : token,
     "notification" : {
       "body" : "You Have  received Message",
-      "title": "Title of Your Notification"
+      "title": titleForMessage
     }
   });
 }
@@ -21,7 +37,7 @@ String constructForMatch(String token) {
     "to" : token,
     "notification" : {
       "body" : "Go Check it ",
-      "title": "You Have  Match",
+      "title": titleForMatch,
     }
   });
 }
@@ -30,7 +46,7 @@ String constructForLike(String token) {
     "to" : token,
     "notification" : {
       "body" : "Go Check it ",
-      "title":"Someone Liked you",
+      "title":titleForLike,
     }
   });
 }

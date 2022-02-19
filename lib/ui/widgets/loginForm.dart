@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/login/login_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
@@ -33,8 +34,10 @@ class _LoginFormState extends State<LoginForm> {
       });
       await userRepository.verifyPhoneNumber("+213"+_phoneController.text,(){
         BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
-      },(s){
+      },(s)async{
+        final signature = await SmsAutoFill().getAppSignature;
         BlocProvider.of<AuthenticationBloc>(context).add(ConfirmEvent(s));
+
         isReCAPTCHA=false;
 
       });

@@ -1,10 +1,13 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/profile/profile_bloc.dart';
+import 'package:zoodja/models/keyValueRecordType.dart';
 import 'package:zoodja/models/user.dart';
 import 'package:zoodja/ui/constats.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class ProfileForm2 extends StatefulWidget {
@@ -18,30 +21,20 @@ class ProfileForm2 extends StatefulWidget {
 
 class _ProfileForm2State extends State<ProfileForm2> {
   bool get  isFilled=> _professionEditingController.text.isNotEmpty&&_lineEditingController.text.isNotEmpty&&items2.length!=0;
-  List <String>items=["Cooking","Travel","Writing","Reading","Cat Lover","Working"];
   List<String> items2=[];
   int max=3;
   TextEditingController _professionEditingController=TextEditingController();
   TextEditingController _lineEditingController=TextEditingController();
   String hijab;
-  String dropdownValue = 'Brown';
-  String dropdownValue2 = "Film";
+  KeyValueRecordType dropdownValue ;
+  KeyValueRecordType dropdownValue2 ;
   int wilaya = 1;
   int commune = 0;
   List listCommune = [];
   ProfileBloc _profileBloc;
 
-  List<String> eyesColor=[
-    "Brown",
-    'Blue',
-    'Hazel',
-    'Amber',
-    'Gray',
-    'Green'
-  ];
-  List<String> love=[
-    "Film", 'voyages', 'sport', 'TV', 'Cuisine'
-  ];
+
+
 
   showDialogs({String message}){
     return showDialog(
@@ -49,7 +42,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
       builder: (context) {
         return
           AlertDialog(
-            title: const Text("Missing Field"),
+            title:  Text(AppLocalizations.of(this.context).missing_Field),
             content:  Text(message),
             actions: [
               GestureDetector(
@@ -64,7 +57,26 @@ class _ProfileForm2State extends State<ProfileForm2> {
 
   @override
   Widget build(BuildContext context) {
+    List <KeyValueRecordType>items=
+    [
+      KeyValueRecordType(key: "Cooking", value: 'Cooking'),
+      KeyValueRecordType(key: "Travel", value: 'Travel'),
+      KeyValueRecordType(key: "Writing", value: 'Writing'),
+      KeyValueRecordType(key: "Reading", value: 'Reading'),
+      KeyValueRecordType(key: "Cat Lover", value: 'Cat Lover'),
+      KeyValueRecordType(key: "Working", value: 'Working'),
+    ];
     Size size=MediaQuery.of(context).size;
+    if(dropdownValue2==null){
+      dropdownValue2=KeyValueRecordType(key: "Film", value: AppLocalizations.of(context).films);
+    }
+
+
+    if(dropdownValue==null){
+      dropdownValue=      KeyValueRecordType(key: "Brown", value: AppLocalizations.of(context).brown);
+    }
+
+
     return BlocListener<ProfileBloc, ProfileState>(
       bloc: _profileBloc,
   listener: (context, state) {
@@ -128,7 +140,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                   SizedBox(height: 20,),
                   Container(
                       margin: EdgeInsets.all(10),
-                      child: Text("Wilaya", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+                      child: Text(AppLocalizations.of(context).wilaya, style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
 
                   DropdownButtonFormField<int>(
                     value: wilaya,
@@ -161,7 +173,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                   SizedBox(height: 20,),
                   Container(
                       margin: EdgeInsets.all(10),
-                      child: Text("Commune", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+                      child: Text(AppLocalizations.of(context).commune, style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
 
                   FutureBuilder(
                     future: getCommune(),
@@ -198,7 +210,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                   SizedBox(height: 20,),
                   Container(
                       margin: EdgeInsets.all(10),
-                      child: Text("Eyes Color ", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+                      child: Text(AppLocalizations.of(context).eyes_Color, style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
 
                   Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -207,21 +219,21 @@ class _ProfileForm2State extends State<ProfileForm2> {
                           border: Border.all(color: Colors.black),
                           borderRadius: BorderRadius.circular(20)
                       ),
-                      child: DropdownButton<String>(
+                      child: DropdownButton<KeyValueRecordType>(
                         isExpanded: true,
                         value: dropdownValue,
                         elevation: 16,
                         underline: Container(),
-                        onChanged: (String newValue) {
+                        onChanged: (KeyValueRecordType newValue) {
                           setState(() {
                             dropdownValue = newValue;
                           });
                         },
                         items:eyesColor
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
+                            .map<DropdownMenuItem<KeyValueRecordType>>((KeyValueRecordType value) {
+                          return DropdownMenuItem<KeyValueRecordType>(
                             value: value,
-                            child: Text(value),
+                            child: Text(value.value),
                           );
                         }).toList(),
                       )
@@ -229,7 +241,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                   SizedBox(height: 20,),
                   Container(
                       margin: EdgeInsets.all(10),
-                      child: Text("What do you Like ?", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+                      child: Text(AppLocalizations.of(context).what_do_you_like, style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
 
                   Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -238,21 +250,21 @@ class _ProfileForm2State extends State<ProfileForm2> {
                           border: Border.all(color: Colors.black),
                           borderRadius: BorderRadius.circular(20)
                       ),
-                      child: DropdownButton<String>(
+                      child: DropdownButton<KeyValueRecordType>(
                         isExpanded: true,
                         value: dropdownValue2,
                         elevation: 16,
                         underline: Container(),
-                        onChanged: (String newValue) {
+                        onChanged: (KeyValueRecordType newValue) {
                           setState(() {
                             dropdownValue2 = newValue;
                           });
                         },
                         items:love
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
+                            .map<DropdownMenuItem<KeyValueRecordType>>((KeyValueRecordType value) {
+                          return DropdownMenuItem<KeyValueRecordType>(
                             value: value,
-                            child: Text(value),
+                            child: Text(value.value),
                           );
                         }).toList(),
                       )
@@ -260,7 +272,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                   SizedBox(height: 20,),
                   Container(
                       margin: EdgeInsets.all(10),
-                      child: Text("What Is your Profession", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+                      child: Text(AppLocalizations.of(context).your_job, style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
 
                   Container(
 
@@ -274,7 +286,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                       maxLength: 50,
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                          labelText: "Profession",
+                          labelText: AppLocalizations.of(context).your_job,
                           border: InputBorder.none
                       ),
                     ),
@@ -282,7 +294,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                   SizedBox(height: 20,),
                   Container(
                       margin: EdgeInsets.all(10),
-                      child: Text("Describe yourself one line", style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
+                      child: Text(AppLocalizations.of(context).describe_yourself_in_one_line, style: GoogleFonts.openSans(fontWeight: FontWeight.w600,fontSize: 17,color:Color(0xff18516E) ),)),
 
                   Container(
 
@@ -296,7 +308,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                       maxLength: 100,
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                          labelText: "Describe yourself one line",
+                          labelText: AppLocalizations.of(context).describe_yourself_in_one_line,
                           border: InputBorder.none
                       ),
                     ),
@@ -317,7 +329,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                           decoration: BoxDecoration(
                               color: text_color2.withOpacity(0.4)
                           ),
-                          child: Text("Veiled",style: GoogleFonts.assistant(          color:hijab=="Veiled"?Colors.white:Color(0xff8969AE)),),
+                          child: Text(AppLocalizations.of(context).veiled,style: GoogleFonts.assistant(          color:hijab=="Veiled"?Colors.white:Color(0xff8969AE)),),
                         ),
                       ),
                       GestureDetector(
@@ -332,7 +344,7 @@ class _ProfileForm2State extends State<ProfileForm2> {
                           decoration: BoxDecoration(
                               color: text_color2.withOpacity(0.4)
                           ),
-                          child: Text("Unveiled",style: GoogleFonts.assistant(          color:hijab=="Unveiled"?Colors.white:Color(0xff8969AE)),),
+                          child: Text(AppLocalizations.of(context).non_Veiled,style: GoogleFonts.assistant(          color:hijab=="Unveiled"?Colors.white:Color(0xff8969AE)),),
                         ),
                       ),
                     ],
@@ -348,10 +360,10 @@ class _ProfileForm2State extends State<ProfileForm2> {
                           WidgetSpan(child: GestureDetector(
                             onTap: (){
                               if(items2.contains(items[index])){
-                                items2.remove(items[index]);
+                                items2.remove(items[index].key);
                               }else{
                                 if(max>items2.length){
-                                  items2.add(items[index]);
+                                  items2.add(items[index].key);
                                 }
                               }
                               setState(() {
@@ -363,10 +375,10 @@ class _ProfileForm2State extends State<ProfileForm2> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(color: Colors.black),
-                                  color: items2.contains(items[index])?Color(0xffFE3C72):Colors.white
+                                  color: items2.contains(items[index].key)?Color(0xffFE3C72):Colors.white
                               ),
-                              child: Text(items[index],style: TextStyle(
-                                  color: items2.contains(items[index])?Colors.white:Colors.black
+                              child: Text(items[index].value,style: TextStyle(
+                                  color: items2.contains(items[index].key)?Colors.white:Colors.black
                               ),),
                             ),
                           ))
@@ -378,20 +390,20 @@ class _ProfileForm2State extends State<ProfileForm2> {
                     child: GestureDetector(
                       onTap: (){
                         User user1;
-
+                        print(AppLocalizations.of(context).please_Profession);
                         if ( _professionEditingController.text==""){
-                          return showDialogs(message: " Please Enter Your Profession ");
+                          return showDialogs(message: AppLocalizations.of(context).please_Profession);
                         }else if(_lineEditingController.text==""){
-                          return showDialogs(message: " Please Enter Your Description Line ");
+                          return showDialogs(message: AppLocalizations.of(context).please_Description);
                         }else if (items2.length==0){
-                          return showDialogs(message: " Please Enter At Least One Tag You Like  ");
+                          return showDialogs(message: AppLocalizations.of(context).please_Tag);
                         }
                       if(widget.user.gender=="Female"){
-                        user1=User(name: widget.user.name,love:dropdownValue2,ville:commune , email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,hijab: hijab,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text,tags: items2);
+                        user1=User(name: widget.user.name,love:dropdownValue2.key,ville:commune , email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,hijab: hijab,profession: _professionEditingController.text,eyesColor: dropdownValue.key,line: _lineEditingController.text,tags: items2);
 
                       }else
                       {
-                        user1=User(name: widget.user.name,ville:commune ,love:dropdownValue2,  email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,profession: _professionEditingController.text,eyesColor: dropdownValue,line: _lineEditingController.text,tags: items2);
+                        user1=User(name: widget.user.name,ville:commune ,love:dropdownValue2.key,  email: widget.user.email,gender: widget.user.gender, interestedIn: widget.user.interestedIn, ages: widget.user.ages, location: widget.user.location, photoFile: widget.user.photoFile,profession: _professionEditingController.text,eyesColor: dropdownValue.key,line: _lineEditingController.text,tags: items2);
                       }
 
                       _profileBloc.add(Submitting(user:user1));

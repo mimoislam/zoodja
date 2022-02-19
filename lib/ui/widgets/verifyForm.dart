@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/bloc/verification/verification_bloc.dart';
 import 'package:zoodja/repositories/userRepository.dart';
@@ -31,6 +32,16 @@ bool isLoading=false;
   void initState() {
     _verificationBloc=BlocProvider.of<VerificationBloc>(context);
     super.initState();
+    _listen();
+  }
+  _listen ()async{
+    await SmsAutoFill().listenForCode();
+  }
+  @override
+  void dispose() {
+    SmsAutoFill().unregisterListener();
+
+    super.dispose();
   }
 
   @override
@@ -154,21 +165,23 @@ bool isLoading=false;
                         padding: EdgeInsets.symmetric(horizontal: 8),
                         color: text_color2.withOpacity(0.4),
 
-                        child: TextFormField(
-                          controller: _verificationController,
-                          autovalidateMode: AutovalidateMode.always,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).put_the_code_received_by_SMS,
-                            labelStyle: GoogleFonts.openSans(
-                                color: text_color2,
-                                fontSize: size.height*0.02
-                            ),
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
+                        child:    PinFieldAutoFill(
+                          decoration: UnderlineDecoration(
+                            textStyle: TextStyle(fontSize: 20, color: Colors.black),
+                            colorBuilder: FixedColorBuilder(Colors.black.withOpacity(0.3)),
                           ),
+                          currentCode: "000000",
+                          codeLength: 6,
+                          controller: _verificationController,
+                          onCodeSubmitted: (code) {
+                            _verificationBloc.add(Submitting(code:  _verificationController.text,verification:_verificationBloc.verification ));
+
+                          },
+                          onCodeChanged: (code) {
+                            if (code.length == 6) {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            }
+                          },
                         ),
                       ),
 

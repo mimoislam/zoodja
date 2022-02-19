@@ -6,8 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:zoodja/bloc/authentication/authentication_bloc.dart';
 import 'package:zoodja/generated/l10n.dart';
+import 'package:zoodja/models/keyValueRecordType.dart';
 import 'package:zoodja/repositories/lang.dart';
 import 'package:zoodja/repositories/userRepository.dart';
+import 'package:zoodja/ui/constats.dart';
 import 'package:zoodja/ui/pages/condition.dart';
 import 'package:zoodja/ui/pages/login.dart';
 import 'package:zoodja/ui/pages/onBording.dart';
@@ -26,6 +28,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return ChangeNotifierProvider(
 
       create: (context) => Lang(),
@@ -48,6 +51,20 @@ class Home extends StatelessWidget {
         home:BlocBuilder<AuthenticationBloc,AuthenticationState>(
           builder: (context,state){
 
+            love=[
+              KeyValueRecordType(key: "Film", value: AppLocalizations.of(context).films),
+              KeyValueRecordType(key: "voyages", value: AppLocalizations.of(context).voyages),
+              KeyValueRecordType(key: "sport", value: AppLocalizations.of(context).sport),
+              KeyValueRecordType(key: "TV", value: "TV"),
+              KeyValueRecordType(key: "Cuisine", value: AppLocalizations.of(context).cuisine),
+            ];
+            eyesColor=[
+              KeyValueRecordType(key: "Brown", value: AppLocalizations.of(context).brown),
+              KeyValueRecordType(key: "Blue", value: AppLocalizations.of(context).blue),
+              KeyValueRecordType(key: "Hazel", value: AppLocalizations.of(context).hazelnut),
+              KeyValueRecordType(key: "Gray", value: AppLocalizations.of(context).gray),
+              KeyValueRecordType(key: "Green", value:AppLocalizations.of(context).greens),
+            ];
 
             if (state is Uninitialised){
               return Splash();
