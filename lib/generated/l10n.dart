@@ -205,11 +205,61 @@ class S {
     );
   }
 
-  /// `Couleur des yeux :`
+  /// `Eyes Color :`
   String get eyes_Color {
     return Intl.message(
-      'Couleur des yeux :',
+      'Eyes Color :',
       name: 'eyes_Color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What do you Like ?`
+  String get what_do_you_like {
+    return Intl.message(
+      'What do you Like ?',
+      name: 'what_do_you_like',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Enter Your Profession `
+  String get please_Profession {
+    return Intl.message(
+      'Please Enter Your Profession ',
+      name: 'please_Profession',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` Please Enter Your Description Line `
+  String get please_Description {
+    return Intl.message(
+      ' Please Enter Your Description Line ',
+      name: 'please_Description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` Please Enter At Least One Tag You Like `
+  String get please_Tag {
+    return Intl.message(
+      ' Please Enter At Least One Tag You Like ',
+      name: 'please_Tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Missing Field`
+  String get missing_Field {
+    return Intl.message(
+      'Missing Field',
+      name: 'missing_Field',
       desc: '',
       args: [],
     );
@@ -305,10 +355,10 @@ class S {
     );
   }
 
-  /// `Cuisine`
+  /// `Cooking`
   String get cuisine {
     return Intl.message(
-      'Cuisine',
+      'Cooking',
       name: 'cuisine',
       desc: '',
       args: [],
@@ -410,6 +460,16 @@ class S {
     return Intl.message(
       'Are you new ? Get an Account',
       name: 'are_you_new',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Language to French`
+  String get change_Language {
+    return Intl.message(
+      'Change Language to French',
+      name: 'change_Language',
       desc: '',
       args: [],
     );

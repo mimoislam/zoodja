@@ -482,6 +482,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
     user=await messageRepository.getUserDetails(widget.userId);
     _currentSliderValue = (user.filter).toDouble();
     _lineEditingController.text=user.line;
+    photo=null;
     withHijab = (user.withHijab);
     items2 = user.tags;
     hijab = user.hijab;
