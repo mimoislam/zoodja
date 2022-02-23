@@ -76,6 +76,8 @@ class _MessagingState extends State<Messaging> {
     _messagingBloc.add(SendMessageEvent(message: message,documentReference: messageRef));
 
     _messageTextController.clear();
+    _scrollController.scrollTo(index: messages.length,duration: Duration(seconds: 1));
+
   }
 
   @override
@@ -509,7 +511,7 @@ class _MessagingState extends State<Messaging> {
                       GestureDetector(
                         onTap: isValid
                             ? _onFormSubmitted
-                            : null,
+                            : (){},
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: size.height*0.01),
                           child: Icon(Icons.send,color:isValid? Colors.white: Colors.grey,size: size.height*0.04,),

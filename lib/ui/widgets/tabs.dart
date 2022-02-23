@@ -277,11 +277,9 @@ class _TabsState extends State<Tabs> {
                                 state.chatStream.listen((event) async{
 
                                   for(var uid in event.docChanges){
-                                    print("uid.doc.id");
-                                    print(uid.doc.id);
                                     Message message=await messageRepository.
                                     getLastMessage(currentUserId: widget.userId,selectedUserId: uid.doc.id);
-                                    if(message.viewed==false){
+                                    if((message.viewed==false)&&(message.selectedUserId!=widget.userId)){
                                       existMessage=true;
                                       eventMessage=true;
                                       setState(() {

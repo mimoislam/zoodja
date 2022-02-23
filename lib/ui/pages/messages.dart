@@ -19,8 +19,6 @@ class _MessagesState extends State<Messages> {
   MessageRepository messageRepository=MessageRepository();
   MessageBloc _messageBloc;
   @override
-  bool get wantKeepAlive => true;
-  @override
   void initState() {
     messageRepository=widget.messageRepository;
     _messageBloc=BlocProvider.of<MessageBloc>(context);
@@ -98,9 +96,7 @@ class _MessagesState extends State<Messages> {
                             scrollDirection: Axis.vertical,
                             itemCount: snapshot.data.docs.length,
                             itemBuilder: (context, index) {
-                              print("snapshot.data.docs.length");
 
-                              print(snapshot.data.docs[index].id);
                               return ChatWidget(userId: widget.userId,
                                 creationTime: snapshot.data.docs[index].get("timestamp"),
                                 selectedUserId:  snapshot.data.docs[index].id,);

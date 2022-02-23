@@ -33,9 +33,8 @@ class UserRepository{
     }
     return s;
   }
-  Future<void> saveTokenToDatabase(String token) async {
+  Future<void> saveTokenToDatabase(String token,String userId) async {
     // Assume user is logged in for this example
-    String userId =  FirebaseAuth.instance.currentUser.uid;
     bool firstTime=await isFirstTime(userId);
     print("firstTime");
     print(firstTime);
@@ -91,8 +90,7 @@ class UserRepository{
      print(error);
    });
    String token = await FirebaseMessaging.instance.getToken();
-   print(FirebaseAuth.instance.currentUser.uid);
-   await saveTokenToDatabase(token);
+   await saveTokenToDatabase(token,FirebaseAuth.instance.currentUser.uid);
    print("object2");
 
   }

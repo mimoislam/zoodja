@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:zoodja/repositories/userRepository.dart';
@@ -46,11 +47,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final isSignedIn = await userRepository.isSignedIn();
       if(true){
         //final uid = await userRepository.getUser();
-        final uid = "O1PYAh5FsZh7o92aNJIHXIlt3rG2";
+        final uid = "zAuL7EScPpaX5O3AwByhro6DhwX2";
         final isFirstTime=await userRepository.isFirstTime(uid);
         if(false){
           yield AuthenticatedButNoSet1(uid);
         }else{
+          String token = await FirebaseMessaging.instance.getToken();
+          await userRepository.saveTokenToDatabase(token,uid);
           yield Authenticated(uid);
         }
       }else{
@@ -63,10 +66,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
  }
 
   Stream<AuthenticationState> _mapLoggedInToState() async*{
-    final isFirstTime=await userRepository.isFirstTime(await userRepository.getUser());
+    String uid=await userRepository.getUser();
+    final isFirstTime=await userRepository.isFirstTime(uid);
     if(!isFirstTime){
       yield AuthenticatedButNoSet1(await userRepository.getUser());
     }else{
+      String token = await FirebaseMessaging.instance.getToken();
+      await userRepository.saveTokenToDatabase(token,uid);
       yield Authenticated(await userRepository.getUser());
     }
   }

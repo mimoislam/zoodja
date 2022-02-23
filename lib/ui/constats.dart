@@ -28,7 +28,8 @@ String constructForMessage(String token) {
     "to" : token,
     "notification" : {
       "body" : "You Have  received Message",
-      "title": titleForMessage
+      "title": titleForMessage,
+      'priority': 'high',
     }
   });
 }

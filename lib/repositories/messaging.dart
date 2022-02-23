@@ -117,9 +117,11 @@ class MessagingRepository{
       });
     }
     String token;
+    print("message.selectedUserId");
+    print(message.selectedUserId);
     await FirebaseFirestore.instance
         .collection('users')
-        .doc(message.senderId)
+        .doc(message.selectedUserId)
         .get().then((value) {
 
       token=value["tokens"];

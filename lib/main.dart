@@ -91,6 +91,7 @@ void main() async{
           print('Message also contained a notification: ${message.notification.title}');
         }
       });
+
       FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
       await FirebaseMessaging.instance
           .setForegroundNotificationPresentationOptions(
